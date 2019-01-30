@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface LocationRepository extends CrudRepository<Location, Long> {
 
+
   @Query(value = "select name, id, parent_id, type_code from find_cities(?1)", nativeQuery = true)
   public List<Location> findCities(@Param("id") Integer id);
 
@@ -17,5 +18,12 @@ public interface LocationRepository extends CrudRepository<Location, Long> {
 
   @Query(value = "select name, id, parent_id, type_code from gov_fin_location_info where type_code = 0", nativeQuery = true)
   public List<Location> findStates();
+
+  @Query(value = "select name, id, parent_id, type_code from gov_fin_location_info where type_code not in (0 ,1)", nativeQuery = true)
+  public List<Location> findAllCities();
+
+  @Query(value = "select name, id, parent_id, type_code from gov_fin_location_info where type_code = 1", nativeQuery = true)
+  public List<Location> findAllCounties();
+
 
 }
