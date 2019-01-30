@@ -98,17 +98,17 @@ public class LocationService {
         return otherList;
     }
 
-//    @GetMapping("/api/location/city")
-//    public List<Location> findCities(@RequestParam("id") Integer id) {
-//        return (List<Location>) locationRepository.findAll();
-//    }
-//    @GetMapping("/api/location/state")
-//    public List<Location> findStates() {
-//        return (List<Location>) locationRepository.findAll();
-//    }
-//    @GetMapping("/api/location/county")
-//    public List<Location> findCounties(@RequestParam("id") Integer id) {
-//        return (List<Location>) locationRepository.findAll();
-//    }
+    @GetMapping("/api/location/city")
+    public List<Location> findCities(@RequestParam("id") Integer id) {
+        return (List<Location>) locationRepository.findAll();
+    }
+    @GetMapping("/api/location/state")
+    public List<Location> findStates() {
+        return (List<Location>) locationRepository.findAll();
+    }
+    @GetMapping("/api/location/county")
+    public List<Location> findCounties(@RequestParam("id") Integer id) {
+        return (List<Location>) locationRepository.findAll();
+    }
 
 }
