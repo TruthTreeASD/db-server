@@ -23,15 +23,15 @@ public class Test implements CommandLineRunner {
 
         // to display all locations
 //        List<Location> locationList = (List<Location>) locationRepository.findAll();
-//        for (int i =0; i< locationList.size(); i++){
-//            System.out.println(locationList.get(i).getId() + " " + locationList.get(i).getName());
+//        for (Location location: locationList){
+//            System.out.println(location.toString());
 //        }
 
         // to display all collections
-        List<Collection> collectionList = (List<Collection>) collectionRepository.findAll();
-        for (Collection collection : collectionList){
-            System.out.println("Collection name :" + collection.getId() + "->" + collection.getName());
-        }
+//        List<Collection> collectionList = (List<Collection>) collectionRepository.findAll();
+//        for (Collection collection : collectionList){
+//            System.out.println("Collection name :" + collection.getId() + "->" + collection.getName());
+//        }
 
     }
 }
