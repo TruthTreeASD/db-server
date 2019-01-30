@@ -27,7 +27,7 @@ public class LocationService {
 
   @ApiOperation(value = "find cities")
   @GetMapping("/api/location/city")
-  public List<Location> findCities(@RequestParam("id") Integer id) {
+  public List<Location> findCities(@RequestParam(value = "id", required = false) Integer id) {
     return id == null ? locationRepository.findAllCities() : locationRepository.findCities(id);
   }
 
@@ -38,7 +38,7 @@ public class LocationService {
   }
   @ApiOperation(value = "find all counties")
   @GetMapping("/api/location/county")
-  public List<Location> findCounties(@RequestParam("id") Integer id) {
+  public List<Location> findCounties(@RequestParam(value = "id", required = false) Integer id) {
     return id == null ? locationRepository.findAllCounties() : locationRepository.findCounties(id);
   }
 
