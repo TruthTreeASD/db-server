@@ -5,6 +5,7 @@ import com.example.demo.repositories.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class LocationService {
         return (List<Location>) locationRepository.findAll();
     }
 
-    @GetMapping("/api/level=state/all")
+    @GetMapping("/api/location/state/all")
     public List<Location> findAllStates() {
         List<Location> locationList = (List<Location>) locationRepository.findAll();
         List<Location> stateList = new ArrayList<>();
@@ -33,7 +34,7 @@ public class LocationService {
         return stateList;
     }
 
-    @GetMapping("/api/level=county/all")
+    @GetMapping("/api/location/county/all")
     public List<Location> findAllCounties() {
         List<Location> locationList = (List<Location>) locationRepository.findAll();
         List<Location> countyList = new ArrayList<>();
@@ -46,7 +47,7 @@ public class LocationService {
 
     }
 
-    @GetMapping("/api/level=city/all")
+    @GetMapping("/api/location/city/all")
     public List<Location> findAllCities() {
         List<Location> locationList = (List<Location>) locationRepository.findAll();
         List<Location> cityList = new ArrayList<>();
@@ -59,7 +60,7 @@ public class LocationService {
 
     }
 
-    @GetMapping("/api/level=town/all")
+    @GetMapping("/api/location/town/all")
     public List<Location> findAllTowns() {
         List<Location> locationList = (List<Location>) locationRepository.findAll();
         List<Location> townList = new ArrayList<>();
@@ -72,7 +73,7 @@ public class LocationService {
 
     }
 
-    @GetMapping("/api/level=district/all")
+    @GetMapping("/api/location/district/all")
     public List<Location> findAllDistricts() {
         List<Location> locationList = (List<Location>) locationRepository.findAll();
         List<Location> districtList = new ArrayList<>();
@@ -85,7 +86,7 @@ public class LocationService {
 
     }
 
-    @GetMapping("/api/level=other/all")
+    @GetMapping("/api/location/other/all")
     public List<Location> findAllOtherLocations() {
         List<Location> locationList = (List<Location>) locationRepository.findAll();
         List<Location> otherList = new ArrayList<>();
@@ -96,4 +97,18 @@ public class LocationService {
         }
         return otherList;
     }
+
+//    @GetMapping("/api/location/city")
+//    public List<Location> findCities(@RequestParam("id") Integer id) {
+//        return (List<Location>) locationRepository.findAll();
+//    }
+//    @GetMapping("/api/location/state")
+//    public List<Location> findStates() {
+//        return (List<Location>) locationRepository.findAll();
+//    }
+//    @GetMapping("/api/location/county")
+//    public List<Location> findCounties(@RequestParam("id") Integer id) {
+//        return (List<Location>) locationRepository.findAll();
+//    }
+
 }

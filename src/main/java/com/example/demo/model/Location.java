@@ -1,16 +1,16 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
 @Table(name = "gov_fin_location_info")
 public class Location {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String name;
+    @Column(name = "parent_id")
     String parent_id;
+    @Column(name = "type_code")
     int type_code;
     Integer fips_code_state;
     Integer fips_county;
