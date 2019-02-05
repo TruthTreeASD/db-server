@@ -36,6 +36,7 @@ public class LocationService {
   public List<Location> findStates() {
     return (List<Location>) locationRepository.findStates();
   }
+
   @ApiOperation(value = "find all counties")
   @GetMapping("/api/location/county")
   public List<Location> findCounties(@RequestParam(value = "id", required = false) Integer id) {

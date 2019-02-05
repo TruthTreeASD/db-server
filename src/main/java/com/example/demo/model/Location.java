@@ -12,8 +12,11 @@ public class Location {
     String parent_id;
     @Column(name = "type_code")
     int type_code;
+    @Column(name = "fips_code_state")
     Integer fips_code_state;
+    @Column(name = "fips_county")
     Integer fips_county;
+    @Column(name = "fips_place")
     Integer fips_place;
     Integer fyenddate;
 
