@@ -12,6 +12,8 @@ import com.example.demo.repositories.CollectionRepository;
 import com.example.demo.repositories.LocationRepository;
 import com.example.demo.repositories.PropertyRepository;
 import com.example.demo.util.BeanMapper;
+import com.example.demo.util.http.ResponseMessage;
+import com.example.demo.util.http.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,26 +35,26 @@ public class LocationService {
 
   @ApiOperation(value = "find all locations")
   @GetMapping("/api/location/all")
-  public List<Location> findAllLocationBasedData() {
-    return (List<Location>) locationRepository.findAll();
+  public ResponseMessage<List<Location>> findAllLocationBasedData() {
+    return Result.success((List < Location >) locationRepository.findAll());
   }
 
   @ApiOperation(value = "find cities")
   @GetMapping("/api/location/city")
-  public List<Location> findCities(@RequestParam(value = "id", required = false) Integer id) {
-    return id == null ? locationRepository.findAllCities() : locationRepository.findCities(id);
+  public ResponseMessage<List<Location>> findCities(@RequestParam(value = "id", required = false) Integer id) {
+    return id == null ? Result.success(locationRepository.findAllCities()) : Result.success(locationRepository.findCities(id));
   }
 
   @ApiOperation(value = "find all states")
   @GetMapping("/api/location/state")
-  public List<Location> findStates() {
-    return (List<Location>) locationRepository.findStates();
+  public ResponseMessage<List<Location>> findStates() {
+    return  Result.success(locationRepository.findStates());
   }
 
   @ApiOperation(value = "find all counties")
   @GetMapping("/api/location/county")
-  public List<Location> findCounties(@RequestParam(value = "id", required = false) Integer id) {
-    return id == null ? locationRepository.findAllCounties() : locationRepository.findCounties(id);
+  public ResponseMessage<List<Location>> findCounties(@RequestParam(value = "id", required = false) Integer id) {
+    return id == null ? Result.success(locationRepository.findAllCounties()) :Result.success(locationRepository.findCounties(id));
   }
 
 

@@ -9,6 +9,8 @@ import com.example.demo.repositories.CollectionRepository;
 import com.example.demo.repositories.LocationRepository;
 import com.example.demo.repositories.PropertyRepository;
 import com.example.demo.util.BeanMapper;
+import com.example.demo.util.http.ResponseMessage;
+import com.example.demo.util.http.Result;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -40,10 +42,9 @@ public class CollectionService {
         return (List<Collection>) collectionRepository.findAll();
     }
 
-
     @ApiOperation(value = "find Availbe Attr by location level")
     @GetMapping("/api/collections")
-    public List<CollectionsDTO> findAvailbeAttr(@RequestParam(value = "level") String level) {
+    public ResponseMessage findAvailbeAttr(@RequestParam(value = "level") String level) {
         List<Integer> ids = null;
         switch (level.toLowerCase()) {
             case "state":
@@ -56,7 +57,7 @@ public class CollectionService {
                 ids = collectionRepository.findCityAttrIds();
                 break;
             default:
-                return null;
+                return Result.error("Wrong location level: please choose from state/county/city");
         }
 
         List<AttributeMapping> attributeMappings = (List)attributeMappingRepository.findAllById(ids);
@@ -78,12 +79,12 @@ public class CollectionService {
             collectionsDTO.setAttributes(attributeInfoDTOS);
             collectionsDTOS.add(collectionsDTO);
         }
-        return collectionsDTOS;
+        return Result.success(collectionsDTOS);
 
     }
     @ApiOperation(value = "find time-range for given location level and attr id")
     @GetMapping("/api/time_range")
-    public List<CollectionTimeRangeDTO> findAvailbeAttr(@RequestParam(value = "level") String level, @RequestParam("attributes") List<Integer> attributes) {
+    public ResponseMessage<List<CollectionTimeRangeDTO>> findAvailbeAttr(@RequestParam(value = "level") String level, @RequestParam("attributes") List<Integer> attributes) {
         String maxMinVal = null;
         List<CollectionTimeRangeDTO> res = new ArrayList<>();
         level = level.toLowerCase();
@@ -110,9 +111,6 @@ public class CollectionService {
                         break;
                     case 2:
                         maxMinVal = collectionRepository.findCityTimeRangeByAttrId(attributeMapping.getId());
-                        break;
-                    default:
-                        return null;
                 }
                 System.out.println(maxMinVal);
                 Optional<Property> property = propertyRepository.findById(id);
@@ -129,6 +127,6 @@ public class CollectionService {
             collectionTimeRangeDTO.setAttributes(attrDtos);
             res.add(collectionTimeRangeDTO);
         }
-        return res;
+        return Result.success(res);
     }
 }
