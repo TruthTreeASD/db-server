@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+    <mapping>
+        <class-a>com.example.demo.model.Property</class-a>
+        <class-b>com.example.demo.dto.PropertyDTO</class-b>
+        <field>
+            <a>id</a>
+            <b>propertyId</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.example.demo.model.Collection</class-a>
+        <class-b>com.example.demo.dto.CollectionsDTO</class-b>
+        <field>
+            <a>id</a>
+            <b>collectionId</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.example.demo.model.AttributeMapping</class-a>
+        <class-b>com.example.demo.dto.AttributeInfoDTO</class-b>
+        <field>
+            <a>id</a>
+            <b>attributeId</b>
+        </field>
+    </mapping>
+
+    <mapping>
+        <class-a>com.example.demo.model.Collection</class-a>
+        <class-b>com.example.demo.dto.CollectionTimeRangeDTO</class-b>
+        <field>
+            <a>id</a>
+            <b>collectionId</b>
+        </field>
+    </mapping>
+
+    <mapping>
+        <class-a>com.example.demo.model.AttributeMapping</class-a>
+        <class-b>com.example.demo.dto.AttrTimeRangeDTO</class-b>
+        <field>
+            <a>name</a>
+            <b>attributeName</b>
+        </field>
+        <field>
+            <a>id</a>
+            <b>attributeId</b>
+        </field>
+    </mapping>
+
+
+
+</mappings>

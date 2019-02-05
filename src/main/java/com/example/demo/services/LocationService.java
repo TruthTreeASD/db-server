@@ -1,7 +1,17 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.AttributeInfoDTO;
+import com.example.demo.dto.CollectionsDTO;
+import com.example.demo.dto.PropertyDTO;
+import com.example.demo.model.AttributeMapping;
 import com.example.demo.model.Location;
+import com.example.demo.model.Collection;
+import com.example.demo.model.Property;
+import com.example.demo.repositories.AttributeMappingRepository;
+import com.example.demo.repositories.CollectionRepository;
 import com.example.demo.repositories.LocationRepository;
+import com.example.demo.repositories.PropertyRepository;
+import com.example.demo.util.BeanMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins="*")
@@ -18,6 +29,7 @@ import java.util.List;
 public class LocationService {
   @Autowired
   LocationRepository locationRepository;
+
 
   @ApiOperation(value = "find all locations")
   @GetMapping("/api/location/all")
@@ -42,5 +54,7 @@ public class LocationService {
   public List<Location> findCounties(@RequestParam(value = "id", required = false) Integer id) {
     return id == null ? locationRepository.findAllCounties() : locationRepository.findCounties(id);
   }
+
+
 
 }
