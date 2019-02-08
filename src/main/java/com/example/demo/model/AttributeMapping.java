@@ -14,7 +14,8 @@ public class AttributeMapping {
     int id;
     String name;
     int collection_id;
-    public int getId() {
+	int property_id;
+	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
@@ -38,5 +39,14 @@ public class AttributeMapping {
 	public void setProperty_id(int property_id) {
 		this.property_id = property_id;
 	}
-	int property_id;
+
+	@Override
+	public String toString() {
+		return "AttributeMapping{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", collection_id=" + collection_id +
+				", property_id=" + property_id +
+				'}';
+	}
 }

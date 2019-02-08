@@ -20,4 +20,8 @@ public class LookUpService {
     public List<LookUpData> findAllRecords() {
         return (List<LookUpData>) lookUpRepository.findAll();
     }
+
+    public List<LookUpData> findAllRecordsWithAttributeIds() {
+        return null;
+    }
 }
