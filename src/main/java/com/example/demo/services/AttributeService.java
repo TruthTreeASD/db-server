@@ -93,7 +93,7 @@ public class AttributeService {
 
         for(AttributeMapping attributeMapping: attributeForCollectionsAndProperties){
             for(LookUpData look: lookUpData){
-                if(attributeMapping.getId() == look.getAttribute_mapping_id()){
+                if(attributeMapping.getId() == look.getLookUpPK().getAttribute_mapping_id()){
                     AttributeValue attributeValue = new AttributeValue(look.getValue(), attributeMapping.getName(),
                             attributeMapping.getId(),attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
                     attributeValueList.add(attributeValue);
