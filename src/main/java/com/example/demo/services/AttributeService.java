@@ -101,7 +101,7 @@ public class AttributeService {
         for (AttributeMapping attributeMapping : attributeForCollectionsAndProperties) {
             List<LookUpData> lookUpDataList = lookUpRepository.findLookUpDataForAttributeId(attributeMapping.getId());
             for (LookUpData look : lookUpDataList) {
-                AttributeValue attributeValue = new AttributeValue(look.getLookUpPK(), attributeMapping.getName(),
+                AttributeValue attributeValue = new AttributeValue(look.getValue(), look.getLookUpPK(), attributeMapping.getName(),
                         attributeMapping.getId(), attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
                 attributeValueList.add(attributeValue);
             }
@@ -138,7 +138,7 @@ public class AttributeService {
                 if (attributeMapping.getId() == id) {
                     List<LookUpData> lookUpDataList = lookUpRepository.findLookUpDataForAttributeId(attributeMapping.getId());
                     for (LookUpData look : lookUpDataList) {
-                        AttributeValue attributeValue = new AttributeValue(look.getLookUpPK(), attributeMapping.getName(),
+                        AttributeValue attributeValue = new AttributeValue(look.getValue(), look.getLookUpPK(), attributeMapping.getName(),
                                 attributeMapping.getId(), attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
                         attributeValueList.add(attributeValue);
                     }
@@ -168,7 +168,7 @@ public class AttributeService {
             for (LookUpData look : lookUpDataList) {
                 for (Integer state_id : stateIds) {
                     if (look.getLookUpPK().getLocation_id().equals(state_id)) {
-                        AttributeValue attributeValue = new AttributeValue(look.getLookUpPK(), attributeMapping.getName(),
+                        AttributeValue attributeValue = new AttributeValue(look.getValue(), look.getLookUpPK(), attributeMapping.getName(),
                                 attributeMapping.getId(), attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
                         attributeValueList.add(attributeValue);
                     }
@@ -194,7 +194,7 @@ public class AttributeService {
                 for (Integer state_id : stateIds) {
                     if (look.getLookUpPK().getLocation_id().equals(state_id) && look.getLookUpPK().getYear() >= startYear
                             && look.getLookUpPK().getYear() <= endYear) {
-                        AttributeValue attributeValue = new AttributeValue(look.getLookUpPK(), attributeMapping.getName(),
+                        AttributeValue attributeValue = new AttributeValue(look.getValue(),look.getLookUpPK(), attributeMapping.getName(),
                                 attributeMapping.getId(), attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
                         attributeValueList.add(attributeValue);
                     }

@@ -3,19 +3,28 @@ package com.example.demo.model;
 import com.example.demo.model.primeKey.LookUpPK;
 
 public class AttributeValue {
-
+    private Double value;
     private LookUpPK lookUpPK;
     private String attributeName;
     private Integer attributeId;
     private int propertyId;
     private int collectionId;
 
-    public AttributeValue(LookUpPK lookUpPK, String attributeName, Integer attributeId, int propertyId, int collectionId) {
+    public AttributeValue(Double value,LookUpPK lookUpPK, String attributeName, Integer attributeId, int propertyId, int collectionId) {
+        this.value = value;
         this.lookUpPK = lookUpPK;
         this.attributeName = attributeName;
         this.attributeId = attributeId;
         this.propertyId = propertyId;
         this.collectionId = collectionId;
+    }
+
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
     }
 
     public LookUpPK getLookUpPK() {
