@@ -10,8 +10,6 @@ import java.io.Serializable;
 @Table(name = "gov_fin_lookup")
 
 public class LookUpData implements Serializable {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Integer id;
 

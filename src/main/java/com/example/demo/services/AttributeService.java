@@ -4,6 +4,7 @@ import com.example.demo.model.AttributeMapping;
 import com.example.demo.model.AttributeValue;
 import com.example.demo.model.LookUpData;
 import com.example.demo.repositories.AttributeMappingRepository;
+import com.example.demo.repositories.LookUpRepository;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,8 @@ public class AttributeService {
     AttributeMappingRepository attributeMappingRepository;
     @Autowired
     LookUpService lookUpService;
+    @Autowired
+    LookUpRepository lookUpRepository;
 
 
     @ApiOperation(value = "find Availbe Attr by location level")
@@ -49,12 +52,12 @@ public class AttributeService {
 
     @ApiOperation(value = "find attributes for a collection")
     @GetMapping("/api/attributes/collection")
-    public List<AttributeMapping> findAllAttributesForACollection(@RequestParam(value = "collection") List<Integer> collection){
+    public List<AttributeMapping> findAllAttributesForACollection(@RequestParam(value = "collection") List<Integer> collection) {
         List<AttributeMapping> allAttributes = (List<AttributeMapping>) attributeMappingRepository.findAll();
         List<AttributeMapping> attributeForCollections = new ArrayList<>();
-        for(AttributeMapping attributeMapping: allAttributes){
-            for(Integer collection_id: collection){
-                if(attributeMapping.getCollection_id() == collection_id){
+        for (AttributeMapping attributeMapping : allAttributes) {
+            for (Integer collection_id : collection) {
+                if (attributeMapping.getCollection_id() == collection_id) {
                     attributeForCollections.add(attributeMapping);
                     break;
                 }
@@ -68,124 +71,156 @@ public class AttributeService {
     @GetMapping("/api/attributes/collection&property")
     public List<AttributeValue> findAllAttributesForCollectionAndProperty(
             @RequestParam(value = "collection") List<Integer> collection,
-            @RequestParam(value = "property") List<Integer> property){
+            @RequestParam(value = "property") List<Integer> property) {
+
+        return findAllAttributesWithValuesHelper(collection, property);
+
+    }
+
+    private List<AttributeValue> findAllAttributesWithValuesHelper(List<Integer> collection, List<Integer> property) {
         List<AttributeMapping> allAttributes = (List<AttributeMapping>) attributeMappingRepository.findAll();
-        List<LookUpData> lookUpData = lookUpService.findAllRecords();
         List<AttributeMapping> attributeForCollections = new ArrayList<>();
         List<AttributeMapping> attributeForCollectionsAndProperties = new ArrayList<>();
         List<AttributeValue> attributeValueList = new ArrayList<>();
-        for(AttributeMapping attributeMapping: allAttributes){
-            for(Integer collection_id: collection){
-                if(attributeMapping.getCollection_id() == collection_id){
+        for (AttributeMapping attributeMapping : allAttributes) {
+            for (Integer collection_id : collection) {
+                if (attributeMapping.getCollection_id() == collection_id) {
                     attributeForCollections.add(attributeMapping);
                     break;
                 }
             }
         }
-        for(AttributeMapping attributeMapping: attributeForCollections){
-            for(Integer property_id: property){
-                if(attributeMapping.getProperty_id() == property_id){
+        for (AttributeMapping attributeMapping : attributeForCollections) {
+            for (Integer property_id : property) {
+                if (attributeMapping.getProperty_id() == property_id) {
                     attributeForCollectionsAndProperties.add(attributeMapping);
                     break;
                 }
             }
         }
-
-        for(AttributeMapping attributeMapping: attributeForCollectionsAndProperties){
-            for(LookUpData look: lookUpData){
-                if(attributeMapping.getId() == look.getLookUpPK().getAttribute_mapping_id()){
-                    AttributeValue attributeValue = new AttributeValue(look.getValue(), attributeMapping.getName(),
-                            attributeMapping.getId(),attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
-                    attributeValueList.add(attributeValue);
-                    break;
-                }
+        for (AttributeMapping attributeMapping : attributeForCollectionsAndProperties) {
+            List<LookUpData> lookUpDataList = lookUpRepository.findLookUpDataForAttributeId(attributeMapping.getId());
+            for (LookUpData look : lookUpDataList) {
+                AttributeValue attributeValue = new AttributeValue(look.getLookUpPK(), attributeMapping.getName(),
+                        attributeMapping.getId(), attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
+                attributeValueList.add(attributeValue);
             }
         }
-
         return attributeValueList;
     }
 
 
-//    @ApiOperation(value = "find attributes for a collection and property for specific states")
-//    @GetMapping("/api/attributes/collection&property")
-//    public List<AttributeMapping> findAllAttributesForCollectionAndPropertyAndStates(
-//            @RequestParam(value = "collection") List<Integer> collection,
-//            @RequestParam(value = "property") List<Integer> property,
-//            @RequestParam(value = "state") List<Integer> stateIds){
-//        List<AttributeMapping> attributeMappingsForCollectionAndProperty = findAllAttributesForCollectionAndProperty(collection, property);
-//        List<LookUpData> specifiedStateData = new ArrayList<>();
-//        List<LookUpData> lookUpData = lookUpService.findAllRecords();
-//        List<AttributeMapping> attributeMappings = new ArrayList<>();
-//        for(Integer state_id: stateIds){
-//            for(LookUpData look: lookUpData){
-//                if(look.getLocation_id() == state_id){
-//                    specifiedStateData.add(look);
-//                }
-//            }
-//        }
-//
-//        for(AttributeMapping attributeMapping: attributeMappingsForCollectionAndProperty){
-//            for(LookUpData lookUpData1: specifiedStateData){
-//                if(attributeMapping.getId() == lookUpData1.getAttribute_mapping_id()){
-//                    attributeMappings.add(attributeMapping);
-//                }
-//            }
-//        }
-//        return attributeMappings;
-//    }
-
-    @ApiOperation(value = "find attributes by specified id")
-    @GetMapping("/api/attributes/level=state&attributeIds")
-    public List<AttributeMapping> findAllAttributesByAttributeIds(
-            @RequestParam(value = "attributes") List<Integer> attributeIds){
-        List<AttributeMapping> allAttributes = (List<AttributeMapping>) attributeMappingRepository.findAllById(attributeIds);
-        List<AttributeMapping> attributesByIds = new ArrayList<>();
-        for(AttributeMapping attributeMapping: allAttributes){
-            for(Integer id : attributeIds){
-                if(attributeMapping.getId() == id){
-                    attributesByIds.add(attributeMapping);
+    @ApiOperation(value = "find attributes for a collection and property for specific states")
+    @GetMapping("/api/attributes/collection&property&states")
+    public List<AttributeValue> findAllAttributesForCollectionAndPropertyAndStates(@RequestParam(value = "collection") List<Integer> collection,
+                                                                                   @RequestParam(value = "property") List<Integer> property,
+                                                                                   @RequestParam(value = "location") List<Integer> states) {
+        List<AttributeValue> attributeValues = new ArrayList<>();
+        List<AttributeValue> attributeValueList = findAllAttributesWithValuesHelper(collection, property);
+        for (AttributeValue attributeValue : attributeValueList) {
+            for (Integer state_id : states) {
+                if (attributeValue.getLookUpPK().getLocation_id().equals(state_id)) {
+                    attributeValues.add(attributeValue);
                 }
             }
-
         }
-        return attributesByIds;
+        return attributeValues;
     }
-//
-//    @ApiOperation(value = "find attributes by specified id for specific states")
-//    @GetMapping("/api/attributes/level=state")
-//    public List<AttributeMapping> findAllAttributesByAttributeIdsForStates(
-//            @RequestParam(value = "attributes") List<Integer> attributeIds,
-//            @RequestParam(value = "state") List<Integer> stateIds){
-//        List<AttributeMapping> attributeMappingList = findAllAttributesByAttributeIds(attributeIds);
-//        List<AttributeMapping> attributeMappings = new ArrayList<>();
-//        List<LookUpData> specifiedStateData = new ArrayList<>();
-//        List<LookUpData> lookUpData = lookUpService.findAllRecords();
-//        for(Integer state_id: stateIds){
-//            for(LookUpData look: lookUpData){
-//                if(look.getLocation_id() == state_id){
-//                    specifiedStateData.add(look);
-//                }
-//            }
-//        }
-//
-//        for(AttributeMapping attributeMapping: attributeMappingList){
-//            for(LookUpData lookUpData1: specifiedStateData){
-//                if(attributeMapping.getId() == lookUpData1.getAttribute_mapping_id()){
-//                    attributeMappings.add(attributeMapping);
-//                }
-//            }
-//        }
-//        return attributeMappings;
-//
-//    }
 
-//    public List<AttributeMapping> findAttributesWithYearRange(
-//            @RequestParam(value = "attributes") List<Integer> attributeIds,
-//            @RequestParam(value = "state") List<Integer> stateIds,
-//            @RequestParam(value = "yearRange") List<Integer> yearRange){
-//
-//    }
+    @ApiOperation(value = "find attributes by specified id")
+    @GetMapping("/api/attributes/attributeIds")
+    public List<AttributeValue> findAllAttributesByAttributeIds(
+            @RequestParam(value = "attributes") List<Integer> attributeIds) {
+        List<AttributeValue> attributeValueList = new ArrayList<>();
+        List<AttributeMapping> allAttributes = (List<AttributeMapping>) attributeMappingRepository.findAllById(attributeIds);
+        for (AttributeMapping attributeMapping : allAttributes) {
+            for (Integer id : attributeIds) {
+                if (attributeMapping.getId() == id) {
+                    List<LookUpData> lookUpDataList = lookUpRepository.findLookUpDataForAttributeId(attributeMapping.getId());
+                    for (LookUpData look : lookUpDataList) {
+                        AttributeValue attributeValue = new AttributeValue(look.getLookUpPK(), attributeMapping.getName(),
+                                attributeMapping.getId(), attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
+                        attributeValueList.add(attributeValue);
+                    }
+                    break;
+                }
 
+            }
+        }
+        return attributeValueList;
+    }
+
+    @ApiOperation(value = "find attributes by specified id for specific states")
+    @GetMapping("/api/attributes/attributeIds&states")
+    public List<AttributeValue> findAllAttributesByAttributeIdsForStates(
+            @RequestParam(value = "attributes") List<Integer> attributeIds,
+            @RequestParam(value = "state") List<Integer> stateIds) {
+
+        return findAttributeByIdsForStateHelper(attributeIds, stateIds);
+
+    }
+
+    private List<AttributeValue> findAttributeByIdsForStateHelper(List<Integer> attributeIds, List<Integer> stateIds) {
+        List<AttributeValue> attributeValueList = new ArrayList<>();
+        List<AttributeMapping> allAttributes = (List<AttributeMapping>) attributeMappingRepository.findAllById(attributeIds);
+        for (AttributeMapping attributeMapping : allAttributes) {
+            List<LookUpData> lookUpDataList = lookUpRepository.findLookUpDataForAttributeId(attributeMapping.getId());
+            for (LookUpData look : lookUpDataList) {
+                for (Integer state_id : stateIds) {
+                    if (look.getLookUpPK().getLocation_id().equals(state_id)) {
+                        AttributeValue attributeValue = new AttributeValue(look.getLookUpPK(), attributeMapping.getName(),
+                                attributeMapping.getId(), attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
+                        attributeValueList.add(attributeValue);
+                    }
+                }
+            }
+        }
+        return attributeValueList;
+    }
+
+    @ApiOperation(value = "find attributes by specified id for specific states within year range")
+    @GetMapping("/api/attributes/attributeIds&states&yearRange")
+    public List<AttributeValue> findAllAttributesByAttributeIdsForStatesInYears(
+            @RequestParam(value = "attributes") List<Integer> attributeIds,
+            @RequestParam(value = "state") List<Integer> stateIds,
+            @RequestParam(value = "yearRange") List<Integer> yearRange) {
+        int startYear = yearRange.get(0);
+        int endYear = yearRange.get(1);
+        List<AttributeValue> attributeValueList = new ArrayList<>();
+        List<AttributeMapping> allAttributes = (List<AttributeMapping>) attributeMappingRepository.findAllById(attributeIds);
+        for (AttributeMapping attributeMapping : allAttributes) {
+            List<LookUpData> lookUpDataList = lookUpRepository.findLookUpDataForAttributeId(attributeMapping.getId());
+            for (LookUpData look : lookUpDataList) {
+                for (Integer state_id : stateIds) {
+                    if (look.getLookUpPK().getLocation_id().equals(state_id) && look.getLookUpPK().getYear() >= startYear
+                            && look.getLookUpPK().getYear() <= endYear) {
+                        AttributeValue attributeValue = new AttributeValue(look.getLookUpPK(), attributeMapping.getName(),
+                                attributeMapping.getId(), attributeMapping.getProperty_id(), attributeMapping.getCollection_id());
+                        attributeValueList.add(attributeValue);
+                    }
+                }
+            }
+        }
+        return attributeValueList;
+    }
+
+    @ApiOperation(value = "find attributes by specified id for specific states within year range")
+    @GetMapping("/api/attributes/attributeIds&states&yearRange")
+    public List<AttributeValue> findAllAttributesByIdsForStatesAndYears(
+            @RequestParam(value = "attributes") List<Integer> attributeIds,
+            @RequestParam(value = "state") List<Integer> stateIds,
+            @RequestParam(value = "yearList") List<Integer> yearList) {
+        List<AttributeValue> attributeValueList = findAttributeByIdsForStateHelper(attributeIds, stateIds);
+        List<AttributeValue> attributeValues = new ArrayList<>();
+        for(AttributeValue attributeValue: attributeValueList){
+            for(Integer year: yearList){
+                if(attributeValue.getLookUpPK().getYear().equals(year)){
+                    attributeValues.add(attributeValue);
+                }
+            }
+        }
+        return attributeValues;
+    }
 
 }
 
