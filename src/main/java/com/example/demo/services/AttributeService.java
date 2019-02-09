@@ -205,7 +205,7 @@ public class AttributeService {
     }
 
     @ApiOperation(value = "find attributes by specified id for specific states within year range")
-    @GetMapping("/api/attributes/attributeIds&states&yearRange")
+    @GetMapping("/api/attributes/attributeIds&states&yearList")
     public List<AttributeValue> findAllAttributesByIdsForStatesAndYears(
             @RequestParam(value = "attributes") List<Integer> attributeIds,
             @RequestParam(value = "state") List<Integer> stateIds,
