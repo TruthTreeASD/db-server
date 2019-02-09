@@ -49,6 +49,24 @@
         </field>
     </mapping>
 
+    <mapping>
+        <class-a>com.example.demo.model.AttributeMapping</class-a>
+        <class-b>com.example.demo.dto.CollectionInfoDTO</class-b>
+        <field>
+            <a>name</a>
+            <b>attributeName</b>
+        </field>
+        <field>
+            <a>id</a>
+            <b>attributeId</b>
+        </field>
+        <field>
+            <a>property_id</a>
+            <b>propertyId</b>
+        </field>
+    </mapping>
+
+
 
 
 </mappings>

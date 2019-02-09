@@ -3,6 +3,7 @@ package com.example.demo.repositories;
 import com.example.demo.model.AttributeMapping;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -29,6 +30,10 @@ public interface AttributeMappingRepository extends CrudRepository<AttributeMapp
             "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_location_info.type_code = 0 " +
             "group by attribute_mapping_id, location_id", nativeQuery = true)
     public List<Object> findStateAttrIdsWithLocationIds();
+
+    @Query(value = "select id,name,collection_id,property_id,look_up_data_id " +
+            "from gov_fin_attribute_mapping where collection_id = ?1", nativeQuery = true)
+    public List<AttributeMapping> findByCollectionId(@Param("id") Integer id);
 
 
 

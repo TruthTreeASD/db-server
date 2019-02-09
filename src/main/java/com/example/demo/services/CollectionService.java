@@ -129,4 +129,17 @@ public class CollectionService {
         }
         return Result.success(res);
     }
+
+    @ApiOperation(value = "find Availbe Attr by location level")
+    @GetMapping("/api/collectionSet")
+    public ResponseMessage findAvailbeAttr(@RequestParam(value = "id") Integer id) {
+        List<AttributeMapping> attributeMappings = attributeMappingRepository.findByCollectionId(id);
+        List<CollectionInfoDTO> collectionsDTOS = new ArrayList<>();
+        for (AttributeMapping mapping : attributeMappings) {
+            CollectionInfoDTO collectionInfoDTO = beanMapper.map(mapping, CollectionInfoDTO.class);
+            collectionInfoDTO.setPropertyName(propertyRepository.findById(mapping.getProperty_id()).get().getName());
+            collectionsDTOS.add(collectionInfoDTO);
+        }
+        return Result.success(collectionsDTOS);
+    }
 }
