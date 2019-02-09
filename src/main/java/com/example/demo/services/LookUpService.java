@@ -2,6 +2,8 @@ package com.example.demo.services;
 
 import java.util.List;
 
+import com.example.demo.util.http.ResponseMessage;
+import com.example.demo.util.http.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +19,8 @@ public class LookUpService {
     LookUpRepository lookUpRepository;
 
     @GetMapping("/api/lookup/all")
-    public List<LookUpData> findAllRecords() {
-        return (List<LookUpData>) lookUpRepository.findAll();
+    public ResponseMessage findAllRecords() {
+        return Result.success(lookUpRepository.findAll());
     }
 
     public List<LookUpData> findAllRecordsWithAttributeIds() {

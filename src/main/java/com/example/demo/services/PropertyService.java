@@ -2,6 +2,8 @@ package com.example.demo.services;
 
 import com.example.demo.model.Property;
 import com.example.demo.repositories.PropertyRepository;
+import com.example.demo.util.http.ResponseMessage;
+import com.example.demo.util.http.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,7 @@ public class PropertyService {
     PropertyRepository propertyRepository;
 
     @GetMapping("/api/property/all")
-    public List<Property> findAllProperties() {
-        return (List<Property>) propertyRepository.findAll();
+    public ResponseMessage findAllProperties() {
+        return Result.success(propertyRepository.findAll());
     }
 }

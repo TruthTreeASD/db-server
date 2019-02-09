@@ -14,9 +14,10 @@ public interface CollectionRepository extends CrudRepository<Collection, Integer
             "group by attribute_mapping_id ", nativeQuery = true)
     public List<Integer> findStateAttrIds();
 
-    @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
-            "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_location_info.type_code = 1 " +
-            "group by attribute_mapping_id ", nativeQuery = true)
+    @Query(value = "select attribute_mapping_id from gov_fin_lookup group by attribute_mapping_id ", nativeQuery = true)
+    public List<Integer> findAllAttrids();
+
+    @Query(value = "select attribute_mapping_id from gov_fin_lookup  ", nativeQuery = true)
     public List<Integer> findCountyAttrIds();
 
     @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +

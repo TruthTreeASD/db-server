@@ -5,6 +5,8 @@ import com.example.demo.model.AttributeValue;
 import com.example.demo.model.LookUpData;
 import com.example.demo.repositories.AttributeMappingRepository;
 import com.example.demo.repositories.LookUpRepository;
+import com.example.demo.util.http.ResponseMessage;
+import com.example.demo.util.http.Result;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +28,8 @@ public class AttributeService {
 
     @ApiOperation(value = "find Availbe Attr by location level")
     @GetMapping("/api/attributes")
-    public List<AttributeMapping> findAllAttributesForSpecificStates(@RequestParam(value = "level") String level) {
-        return findAllAttributesAtLevels(level);
+    public ResponseMessage findAllAttributesForSpecificStates(@RequestParam(value = "level") String level) {
+        return Result.success(findAllAttributesAtLevels(level));
     }
 
 
@@ -52,7 +54,7 @@ public class AttributeService {
 
     @ApiOperation(value = "find attributes for a collection")
     @GetMapping("/api/attributes/collection")
-    public List<AttributeMapping> findAllAttributesForACollection(@RequestParam(value = "collection") List<Integer> collection) {
+    public ResponseMessage findAllAttributesForACollection(@RequestParam(value = "collection") List<Integer> collection) {
         List<AttributeMapping> allAttributes = (List<AttributeMapping>) attributeMappingRepository.findAll();
         List<AttributeMapping> attributeForCollections = new ArrayList<>();
         for (AttributeMapping attributeMapping : allAttributes) {
@@ -63,17 +65,17 @@ public class AttributeService {
                 }
             }
         }
-        return attributeForCollections;
+        return Result.success(attributeForCollections);
     }
 
 
     @ApiOperation(value = "find attributes for a collection and property")
     @GetMapping("/api/attributes/collection&property")
-    public List<AttributeValue> findAllAttributesForCollectionAndProperty(
+    public ResponseMessage findAllAttributesForCollectionAndProperty(
             @RequestParam(value = "collection") List<Integer> collection,
             @RequestParam(value = "property") List<Integer> property) {
 
-        return findAllAttributesWithValuesHelper(collection, property);
+        return Result.success(findAllAttributesWithValuesHelper(collection, property));
 
     }
 
@@ -112,7 +114,7 @@ public class AttributeService {
 
     @ApiOperation(value = "find attributes for a collection and property for specific states")
     @GetMapping("/api/attributes/collection&property&states")
-    public List<AttributeValue> findAllAttributesForCollectionAndPropertyAndStates(@RequestParam(value = "collection") List<Integer> collection,
+    public ResponseMessage findAllAttributesForCollectionAndPropertyAndStates(@RequestParam(value = "collection") List<Integer> collection,
                                                                                    @RequestParam(value = "property") List<Integer> property,
                                                                                    @RequestParam(value = "location") List<Integer> states) {
         List<AttributeValue> attributeValues = new ArrayList<>();
@@ -124,12 +126,12 @@ public class AttributeService {
                 }
             }
         }
-        return attributeValues;
+        return Result.success(attributeValues);
     }
 
     @ApiOperation(value = "find attributes by specified id")
     @GetMapping("/api/attributes/attributeIds")
-    public List<AttributeValue> findAllAttributesByAttributeIds(
+    public ResponseMessage findAllAttributesByAttributeIds(
             @RequestParam(value = "attributes") List<Integer> attributeIds) {
         List<AttributeValue> attributeValueList = new ArrayList<>();
         List<AttributeMapping> allAttributes = (List<AttributeMapping>) attributeMappingRepository.findAllById(attributeIds);
@@ -147,16 +149,16 @@ public class AttributeService {
 
             }
         }
-        return attributeValueList;
+        return Result.success(attributeValueList);
     }
 
     @ApiOperation(value = "find attributes by specified id for specific states")
     @GetMapping("/api/attributes/attributeIds&states")
-    public List<AttributeValue> findAllAttributesByAttributeIdsForStates(
+    public ResponseMessage findAllAttributesByAttributeIdsForStates(
             @RequestParam(value = "attributes") List<Integer> attributeIds,
             @RequestParam(value = "state") List<Integer> stateIds) {
 
-        return findAttributeByIdsForStateHelper(attributeIds, stateIds);
+        return Result.success(findAttributeByIdsForStateHelper(attributeIds, stateIds));
 
     }
 
@@ -180,7 +182,7 @@ public class AttributeService {
 
     @ApiOperation(value = "find attributes by specified id for specific states within year range")
     @GetMapping("/api/attributes/attributeIds&states&yearRange")
-    public List<AttributeValue> findAllAttributesByAttributeIdsForStatesInYears(
+    public ResponseMessage findAllAttributesByAttributeIdsForStatesInYears(
             @RequestParam(value = "attributes") List<Integer> attributeIds,
             @RequestParam(value = "state") List<Integer> stateIds,
             @RequestParam(value = "yearRange") List<Integer> yearRange) {
@@ -201,12 +203,12 @@ public class AttributeService {
                 }
             }
         }
-        return attributeValueList;
+        return Result.success(attributeValueList);
     }
 
     @ApiOperation(value = "find attributes by specified id for specific states within year range")
     @GetMapping("/api/attributes/attributeIds&states&yearList")
-    public List<AttributeValue> findAllAttributesByIdsForStatesAndYears(
+    public ResponseMessage findAllAttributesByIdsForStatesAndYears(
             @RequestParam(value = "attributes") List<Integer> attributeIds,
             @RequestParam(value = "state") List<Integer> stateIds,
             @RequestParam(value = "yearList") List<Integer> yearList) {
@@ -219,7 +221,7 @@ public class AttributeService {
                 }
             }
         }
-        return attributeValues;
+        return Result.success(attributeValues);
     }
 
 }

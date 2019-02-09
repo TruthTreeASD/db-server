@@ -38,26 +38,30 @@ public class CollectionService {
     BeanMapper beanMapper;
 
     @GetMapping("/api/collection/all")
-    public List<Collection> findAllCollections() {
-        return (List<Collection>) collectionRepository.findAll();
+    public ResponseMessage findAllCollections() {
+        return Result.success(collectionRepository.findAll());
     }
 
     @ApiOperation(value = "find Availbe Attr by location level")
     @GetMapping("/api/collections")
-    public ResponseMessage findAvailbeAttr(@RequestParam(value = "level") String level) {
+    public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level) {
         List<Integer> ids = null;
-        switch (level.toLowerCase()) {
-            case "state":
-                ids = collectionRepository.findStateAttrIds();
-                break;
-            case "county":
-                ids = collectionRepository.findCountyAttrIds();
-                break;
-            case "city":
-                ids = collectionRepository.findCityAttrIds();
-                break;
-            default:
-                return Result.error("Wrong location level: please choose from state/county/city");
+        if (level == null || level.isEmpty()) {
+            ids = collectionRepository.findAllAttrids();
+        } else {
+            switch (level.toLowerCase()) {
+                case "state":
+                    ids = collectionRepository.findStateAttrIds();
+                    break;
+                case "county":
+                    ids = collectionRepository.findCountyAttrIds();
+                    break;
+                case "city":
+                    ids = collectionRepository.findCityAttrIds();
+                    break;
+                default:
+                    ids = collectionRepository.findAllAttrids();
+            }
         }
 
         List<AttributeMapping> attributeMappings = (List)attributeMappingRepository.findAllById(ids);
