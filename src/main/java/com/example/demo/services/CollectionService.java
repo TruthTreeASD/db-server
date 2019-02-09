@@ -38,8 +38,8 @@ public class CollectionService {
     BeanMapper beanMapper;
 
     @GetMapping("/api/collection/all")
-    public List<Collection> findAllCollections() {
-        return (List<Collection>) collectionRepository.findAll();
+    public ResponseMessage findAllCollections() {
+        return Result.success(collectionRepository.findAll());
     }
 
     @ApiOperation(value = "find Availbe Attr by location level")
