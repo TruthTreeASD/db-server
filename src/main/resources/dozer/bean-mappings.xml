@@ -7,7 +7,7 @@
         <class-b>com.example.demo.dto.PropertyDTO</class-b>
         <field>
             <a>id</a>
-            <b>propertyId</b>
+            <b>property_id</b>
         </field>
     </mapping>
     <mapping>
@@ -15,7 +15,7 @@
         <class-b>com.example.demo.dto.CollectionsDTO</class-b>
         <field>
             <a>id</a>
-            <b>collectionId</b>
+            <b>collection_id</b>
         </field>
     </mapping>
     <mapping>
@@ -23,7 +23,7 @@
         <class-b>com.example.demo.dto.AttributeInfoDTO</class-b>
         <field>
             <a>id</a>
-            <b>attributeId</b>
+            <b>attribute_id</b>
         </field>
     </mapping>
 
@@ -32,7 +32,7 @@
         <class-b>com.example.demo.dto.CollectionTimeRangeDTO</class-b>
         <field>
             <a>id</a>
-            <b>collectionId</b>
+            <b>collection_id</b>
         </field>
     </mapping>
 
@@ -41,11 +41,11 @@
         <class-b>com.example.demo.dto.AttrTimeRangeDTO</class-b>
         <field>
             <a>name</a>
-            <b>attributeName</b>
+            <b>attribute_name</b>
         </field>
         <field>
             <a>id</a>
-            <b>attributeId</b>
+            <b>attribute_id</b>
         </field>
     </mapping>
 
@@ -54,16 +54,13 @@
         <class-b>com.example.demo.dto.CollectionInfoDTO</class-b>
         <field>
             <a>name</a>
-            <b>attributeName</b>
+            <b>attribute_name</b>
         </field>
         <field>
             <a>id</a>
-            <b>attributeId</b>
+            <b>attribute_id</b>
         </field>
-        <field>
-            <a>property_id</a>
-            <b>propertyId</b>
-        </field>
+
     </mapping>
 
 

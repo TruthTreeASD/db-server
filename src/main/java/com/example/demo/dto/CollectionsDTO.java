@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CollectionsDTO {
     private String name;
-    private Integer collectionId;
+    private Integer collection_id;
     private List<PropertyDTO> properties;
     private List<AttributeInfoDTO> attributes;
 
@@ -16,12 +16,12 @@ public class CollectionsDTO {
         this.name = name;
     }
 
-    public Integer getCollectionId() {
-        return collectionId;
+    public Integer getCollection_id() {
+        return collection_id;
     }
 
-    public void setCollectionId(Integer collectionId) {
-        this.collectionId = collectionId;
+    public void setCollection_id(Integer collection_id) {
+        this.collection_id = collection_id;
     }
 
     public List<PropertyDTO> getProperties() {

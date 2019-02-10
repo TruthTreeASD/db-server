@@ -1,35 +1,27 @@
 package com.example.demo.dto;
 
 public class AttrTimeRangeDTO {
-    private String attributeName;
-    private Integer attributeId;
+    private String attribute_name;
+    private Integer attribute_id;
     private String startYear;
     private String endYear;
-    private String propertyName;
-    private int propertyId;
+    private String property_name;
+    private int property_id;
 
-    public String getAttributeName() {
-        return attributeName;
+    public String getAttribute_name() {
+        return attribute_name;
     }
 
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
+    public void setAttribute_name(String attribute_name) {
+        this.attribute_name = attribute_name;
     }
 
-    public Integer getAttributeId() {
-        return attributeId;
+    public Integer getAttribute_id() {
+        return attribute_id;
     }
 
-    public void setAttributeId(Integer attributeId) {
-        this.attributeId = attributeId;
-    }
-
-    public String getEndYear() {
-        return endYear;
-    }
-
-    public void setEndYear(String endYear) {
-        this.endYear = endYear;
+    public void setAttribute_id(Integer attribute_id) {
+        this.attribute_id = attribute_id;
     }
 
     public String getStartYear() {
@@ -40,19 +32,27 @@ public class AttrTimeRangeDTO {
         this.startYear = startYear;
     }
 
-    public String getPropertyName() {
-        return propertyName;
+    public String getEndYear() {
+        return endYear;
     }
 
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
+    public void setEndYear(String endYear) {
+        this.endYear = endYear;
     }
 
-    public int getPropertyId() {
-        return propertyId;
+    public String getProperty_name() {
+        return property_name;
     }
 
-    public void setPropertyId(int propertyId) {
-        this.propertyId = propertyId;
+    public void setProperty_name(String property_name) {
+        this.property_name = property_name;
+    }
+
+    public int getProperty_id() {
+        return property_id;
+    }
+
+    public void setProperty_id(int property_id) {
+        this.property_id = property_id;
     }
 }

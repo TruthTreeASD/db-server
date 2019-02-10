@@ -3,7 +3,7 @@ package com.example.demo.dto;
 public class AttributeInfoDTO {
 
     private String name;
-    private Integer attributeId;
+    private Integer attribute_id;
 
 
     public String getName() {
@@ -14,11 +14,11 @@ public class AttributeInfoDTO {
         this.name = name;
     }
 
-    public Integer getAttributeId() {
-        return attributeId;
+    public Integer getAttribute_id() {
+        return attribute_id;
     }
 
-    public void setAttributeId(Integer attributeId) {
-        this.attributeId = attributeId;
+    public void setAttribute_id(Integer attribute_id) {
+        this.attribute_id = attribute_id;
     }
 }

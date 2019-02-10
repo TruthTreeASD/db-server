@@ -2,40 +2,40 @@ package com.example.demo.dto;
 
 public class CollectionInfoDTO {
 
-    String attributeName;
-    String attributeId;
-    Integer propertyId;
-    String propertyName;
+    String attribute_name;
+    String attribute_id;
+    Integer property_id;
+    String property_name;
 
-    public String getAttributeName() {
-        return attributeName;
+    public String getAttribute_name() {
+        return attribute_name;
     }
 
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
+    public void setAttribute_name(String attribute_name) {
+        this.attribute_name = attribute_name;
     }
 
-    public String getAttributeId() {
-        return attributeId;
+    public String getAttribute_id() {
+        return attribute_id;
     }
 
-    public void setAttributeId(String attributeId) {
-        this.attributeId = attributeId;
+    public void setAttribute_id(String attribute_id) {
+        this.attribute_id = attribute_id;
     }
 
-    public Integer getPropertyId() {
-        return propertyId;
+    public Integer getProperty_id() {
+        return property_id;
     }
 
-    public void setPropertyId(Integer propertyId) {
-        this.propertyId = propertyId;
+    public void setProperty_id(Integer property_id) {
+        this.property_id = property_id;
     }
 
-    public String getPropertyName() {
-        return propertyName;
+    public String getProperty_name() {
+        return property_name;
     }
 
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
+    public void setProperty_name(String property_name) {
+        this.property_name = property_name;
     }
 }

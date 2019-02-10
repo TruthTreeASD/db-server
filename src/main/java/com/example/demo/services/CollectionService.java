@@ -124,8 +124,8 @@ public class CollectionService {
                 String[] strings = maxMinVal.split(",");
                 attrTimeRangeDTO.setStartYear(strings[1]);
                 attrTimeRangeDTO.setEndYear(strings[0]);
-                attrTimeRangeDTO.setPropertyName(property.get().getName());
-                attrTimeRangeDTO.setPropertyId(property.get().getId());
+                attrTimeRangeDTO.setProperty_name(property.get().getName());
+                attrTimeRangeDTO.setProperty_id(property.get().getId());
                 attrDtos.add(attrTimeRangeDTO);
             }
             collectionTimeRangeDTO.setAttributes(attrDtos);
@@ -141,7 +141,7 @@ public class CollectionService {
         List<CollectionInfoDTO> collectionsDTOS = new ArrayList<>();
         for (AttributeMapping mapping : attributeMappings) {
             CollectionInfoDTO collectionInfoDTO = beanMapper.map(mapping, CollectionInfoDTO.class);
-            collectionInfoDTO.setPropertyName(propertyRepository.findById(mapping.getProperty_id()).get().getName());
+            collectionInfoDTO.setProperty_name(propertyRepository.findById(mapping.getProperty_id()).get().getName());
             collectionsDTOS.add(collectionInfoDTO);
         }
         return Result.success(collectionsDTOS);

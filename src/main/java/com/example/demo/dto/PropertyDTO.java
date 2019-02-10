@@ -3,7 +3,7 @@ package com.example.demo.dto;
 public class PropertyDTO {
 
     private String name;
-    private Integer propertyId;
+    private Integer property_id;
 
     public String getName() {
         return name;
@@ -13,11 +13,11 @@ public class PropertyDTO {
         this.name = name;
     }
 
-    public Integer getPropertyId() {
-        return propertyId;
+    public Integer getProperty_id() {
+        return property_id;
     }
 
-    public void setPropertyId(Integer propertyId) {
-        this.propertyId = propertyId;
+    public void setProperty_id(Integer property_id) {
+        this.property_id = property_id;
     }
 }
