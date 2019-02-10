@@ -147,5 +147,16 @@ public class CollectionService {
         return Result.success(collectionsDTOS);
     }
 
+    @ApiOperation(value = "find Availbe Attr by collection and property pairs")
+    @GetMapping("/api/queryAttriIdByCombineation")
+    public ResponseMessage findAvailbeAttr(@RequestParam(value = "collection_ids") List<Integer> collection_ids,
+                                           @RequestParam(value = "property_ids") List<Integer> property_ids) {
+        List<AttributeMapping> mappings  = new ArrayList<>();
+        for (Integer cId : collection_ids) {
+            mappings.addAll(attributeMappingRepository.findByCollectionIdAndProperties(cId, property_ids));
+        }
+        return Result.success(mappings);
+    }
+
 
 }
