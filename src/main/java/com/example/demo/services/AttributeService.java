@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +66,7 @@ public class AttributeService {
                 }
             }
         }
+
         return Result.success(attributeForCollections);
     }
 
@@ -108,6 +110,7 @@ public class AttributeService {
                 attributeValueList.add(attributeValue);
             }
         }
+        attributeValueList.sort((a,b) -> b.getLookUpPK().getYear() - a.getLookUpPK().getYear());
         return attributeValueList;
     }
 
@@ -126,6 +129,7 @@ public class AttributeService {
                 }
             }
         }
+        attributeValues.sort((a,b) -> b.getLookUpPK().getYear() - a.getLookUpPK().getYear());
         return Result.success(attributeValues);
     }
 
@@ -149,6 +153,7 @@ public class AttributeService {
 
             }
         }
+        attributeValueList.sort((a,b) -> b.getLookUpPK().getYear() - a.getLookUpPK().getYear());
         return Result.success(attributeValueList);
     }
 
@@ -177,6 +182,7 @@ public class AttributeService {
                 }
             }
         }
+        attributeValueList.sort((a,b) -> b.getLookUpPK().getYear() - a.getLookUpPK().getYear());
         return attributeValueList;
     }
 
@@ -201,8 +207,10 @@ public class AttributeService {
                         attributeValueList.add(attributeValue);
                     }
                 }
+
             }
         }
+        attributeValueList.sort((a,b) -> b.getLookUpPK().getYear() - a.getLookUpPK().getYear());
         return Result.success(attributeValueList);
     }
 
@@ -221,6 +229,7 @@ public class AttributeService {
                 }
             }
         }
+        //attributeValues.sort((a,b) -> b.getLookUpPK().getYear() - a.getLookUpPK().getYear());
         return Result.success(attributeValues);
     }
 
