@@ -42,4 +42,9 @@ public interface CollectionRepository extends CrudRepository<Collection, Integer
             "LEFT JOIN ( SELECT * FROM gov_fin_location_info WHERE type_code not in (0, 1)) b " +
             "ON A.location_id = b.ID ", nativeQuery = true)
     public String findCityTimeRangeByAttrId(@Param("id") Integer id);
+
+    @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
+            "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_location_info.id = ?1 " +
+            "group by attribute_mapping_id ", nativeQuery = true)
+    public List<Integer> findAttriIDsByLocId(@Param("id") Integer id);
 }

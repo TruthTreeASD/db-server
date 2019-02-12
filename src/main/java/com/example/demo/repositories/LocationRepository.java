@@ -22,8 +22,7 @@ public interface LocationRepository extends CrudRepository<Location, Long> {
   @Query(value = "select * from gov_fin_location_info where type_code not in (0 ,1)", nativeQuery = true)
   public List<Location> findAllCities();
 
-  @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
-          "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_location_info.type", nativeQuery = true)
+  @Query(value = "select * from gov_fin_location_info where type_code = 1", nativeQuery = true)
   public List<Location> findAllCounties();
 
 

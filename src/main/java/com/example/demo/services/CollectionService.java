@@ -44,11 +44,12 @@ public class CollectionService {
 
     @ApiOperation(value = "find Availbe Attr by location level")
     @GetMapping("/api/collections")
-    public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level) {
+    public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level,
+                                           @RequestParam(value = "id", required = false) Integer id) {
         List<Integer> ids = null;
-        if (level == null || level.isEmpty()) {
+        if ((level == null || level.isEmpty()) && id == null) {
             ids = collectionRepository.findAllAttrids();
-        } else {
+        } else if (id == null){
             switch (level.toLowerCase()) {
                 case "state":
                     ids = collectionRepository.findStateAttrIds();
@@ -62,8 +63,9 @@ public class CollectionService {
                 default:
                     ids = collectionRepository.findAllAttrids();
             }
+        } else {
+            ids = collectionRepository.findAttriIDsByLocId(id);
         }
-
         List<AttributeMapping> attributeMappings = (List)attributeMappingRepository.findAllById(ids);
         Map<Integer, List<AttributeMapping>> map = attributeMappings.stream()
                 .collect(Collectors.groupingBy(AttributeMapping::getCollection_id));
