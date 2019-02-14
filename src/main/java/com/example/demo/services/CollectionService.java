@@ -9,6 +9,7 @@ import com.example.demo.repositories.CollectionRepository;
 import com.example.demo.repositories.LocationRepository;
 import com.example.demo.repositories.PropertyRepository;
 import com.example.demo.util.BeanMapper;
+import com.example.demo.util.cache.CacheService;
 import com.example.demo.util.http.ResponseMessage;
 import com.example.demo.util.http.Result;
 import io.swagger.annotations.ApiOperation;
@@ -45,46 +46,55 @@ public class CollectionService {
     @ApiOperation(value = "find Availbe Attr by location level")
     @GetMapping("/api/collections")
     public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level,
+                                           @RequestParam(value = "year", required = false) Integer year,
                                            @RequestParam(value = "id", required = false) Integer id) {
         List<Integer> ids = null;
-        if ((level == null || level.isEmpty()) && id == null) {
+        long start = System.currentTimeMillis();
+        if ((level == null || level.isEmpty()) && id == null && year == null) {
             ids = collectionRepository.findAllAttrids();
         } else if (id == null){
             switch (level.toLowerCase()) {
                 case "state":
-                    ids = collectionRepository.findStateAttrIds();
+                    ids = (year == null) ? collectionRepository.findStateAttrIds() : collectionRepository.findStateAttrIds(year);
                     break;
                 case "county":
-                    ids = collectionRepository.findCountyAttrIds();
+                    ids = (year == null) ?collectionRepository.findCountyAttrIds(): collectionRepository.findCountyAttrIds(year);
                     break;
                 case "city":
-                    ids = collectionRepository.findCityAttrIds();
+                    ids = (year == null) ?collectionRepository.findCityAttrIds(): collectionRepository.findCityAttrIds(year);
                     break;
                 default:
-                    ids = collectionRepository.findAllAttrids();
+                    ids = (year == null) ? collectionRepository.findAllAttrids(): collectionRepository.findAllAttrids(year);
             }
         } else {
-            ids = collectionRepository.findAttriIDsByLocId(id);
+            ids =(year == null) ? collectionRepository.findAttriIDsByLocId(id) : collectionRepository.findAttriIDsByLocId(id, year);
         }
-        List<AttributeMapping> attributeMappings = (List)attributeMappingRepository.findAllById(ids);
+        System.out.println(System.currentTimeMillis() - start);
+        start = System.currentTimeMillis();
+        List<AttributeMapping> attributeMappings = new ArrayList<>();
+        for (Integer attributeId : ids) {
+            attributeMappings.add(CacheService.attributeMappingMap.get(attributeId));
+        }
         Map<Integer, List<AttributeMapping>> map = attributeMappings.stream()
                 .collect(Collectors.groupingBy(AttributeMapping::getCollection_id));
         List<CollectionsDTO> collectionsDTOS = new ArrayList<>();
+        System.out.println(System.currentTimeMillis() - start);
+        start = System.currentTimeMillis();
         for (Map.Entry<Integer, List<AttributeMapping>> entry : map.entrySet()) {
-            Optional<Collection> optional = collectionRepository.findById(entry.getKey());
-            if (!optional.isPresent()) {
-                continue;
-            }
-            CollectionsDTO collectionsDTO = beanMapper.map(optional.get(), CollectionsDTO.class);
+            CollectionsDTO collectionsDTO = beanMapper.map(CacheService.collectionMap.get(entry.getKey()), CollectionsDTO.class);
             List<AttributeInfoDTO> attributeInfoDTOS = beanMapper.mapList(entry.getValue(), AttributeInfoDTO.class);
-            List<Integer> properyIds = entry.getValue().stream()
+            List<Integer> propertyIds = entry.getValue().stream()
                     .map(AttributeMapping::getProperty_id)
                     .collect(Collectors.toList());
-            List<Property> properties = (List)propertyRepository.findAllById(properyIds);
+            List<Property> properties = new ArrayList<>();
+            for (Integer propertyId : propertyIds) {
+                properties.add(CacheService.propertyMap.get(propertyId));
+            }
             collectionsDTO.setProperties(beanMapper.mapList(properties, PropertyDTO.class));
             collectionsDTO.setAttributes(attributeInfoDTOS);
             collectionsDTOS.add(collectionsDTO);
         }
+        System.out.println(System.currentTimeMillis() - start);
         return Result.success(collectionsDTOS);
 
     }
@@ -99,11 +109,7 @@ public class CollectionService {
         Map<Integer, List<AttributeMapping>> map = attributeMappings.stream().collect(Collectors.groupingBy(AttributeMapping::getCollection_id));
         for (Map.Entry<Integer, List<AttributeMapping>> entry : map.entrySet()) {
             int id = entry.getKey();
-            Optional<Collection> collection = collectionRepository.findById(id);
-            if (!collection.isPresent()) {
-                continue;
-            }
-            CollectionTimeRangeDTO collectionTimeRangeDTO = beanMapper.map(collection.get(), CollectionTimeRangeDTO.class);
+            CollectionTimeRangeDTO collectionTimeRangeDTO = beanMapper.map(CacheService.attributeMappingMap.get(id), CollectionTimeRangeDTO.class);
             List<AttributeMapping> mappings = entry.getValue();
             List<AttrTimeRangeDTO> attrDtos = new ArrayList<>();
             for (AttributeMapping attributeMapping : mappings) {
@@ -119,15 +125,12 @@ public class CollectionService {
                         maxMinVal = collectionRepository.findCityTimeRangeByAttrId(attributeMapping.getId());
                 }
                 System.out.println(maxMinVal);
-                Optional<Property> property = propertyRepository.findById(id);
-                if (!property.isPresent()) {
-                    continue;
-                }
+                Property property = CacheService.propertyMap.get(attributeMapping.getProperty_id());
                 String[] strings = maxMinVal.split(",");
                 attrTimeRangeDTO.setStartYear(strings[1]);
                 attrTimeRangeDTO.setEndYear(strings[0]);
-                attrTimeRangeDTO.setProperty_name(property.get().getName());
-                attrTimeRangeDTO.setProperty_id(property.get().getId());
+                attrTimeRangeDTO.setProperty_name(property.getName());
+                attrTimeRangeDTO.setProperty_id(property.getId());
                 attrDtos.add(attrTimeRangeDTO);
             }
             collectionTimeRangeDTO.setAttributes(attrDtos);

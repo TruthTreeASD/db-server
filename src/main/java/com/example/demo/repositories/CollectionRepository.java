@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CollectionRepository extends CrudRepository<Collection, Integer> {
 
@@ -14,16 +15,36 @@ public interface CollectionRepository extends CrudRepository<Collection, Integer
             "group by attribute_mapping_id ", nativeQuery = true)
     public List<Integer> findStateAttrIds();
 
+    @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
+            "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_lookup.year = ?1 and gov_fin_location_info.type_code = 0 " +
+            "group by attribute_mapping_id ", nativeQuery = true)
+    public List<Integer> findStateAttrIds(Integer year);
+
     @Query(value = "select attribute_mapping_id from gov_fin_lookup group by attribute_mapping_id ", nativeQuery = true)
     public List<Integer> findAllAttrids();
 
-    @Query(value = "select attribute_mapping_id from gov_fin_lookup  ", nativeQuery = true)
+    @Query(value = "select attribute_mapping_id from gov_fin_lookup where year = ?1 group by attribute_mapping_id ", nativeQuery = true)
+    public List<Integer> findAllAttrids(Integer year);
+
+    @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
+            "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_location_info.type_code = 1 " +
+            "group by attribute_mapping_id ", nativeQuery = true)
     public List<Integer> findCountyAttrIds();
+
+    @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
+            "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_lookup.year = ?1 and gov_fin_location_info.type_code = 1 " +
+            "group by attribute_mapping_id ", nativeQuery = true)
+    public List<Integer> findCountyAttrIds(Integer year);
 
     @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
             "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_location_info.type_code not in (0,1) " +
             "group by attribute_mapping_id ", nativeQuery = true)
     public List<Integer> findCityAttrIds();
+
+    @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
+            "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_lookup.year = ?1 and gov_fin_location_info.type_code not in (0,1) " +
+            "group by attribute_mapping_id ", nativeQuery = true)
+    public List<Integer> findCityAttrIds(Integer year);
 
     @Query(value = "SELECT max(a.year),min(a.year) FROM " +
             "( SELECT * FROM gov_fin_lookup WHERE attribute_mapping_id = ?1 ) A " +
@@ -47,4 +68,9 @@ public interface CollectionRepository extends CrudRepository<Collection, Integer
             "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_location_info.id = ?1 " +
             "group by attribute_mapping_id ", nativeQuery = true)
     public List<Integer> findAttriIDsByLocId(@Param("id") Integer id);
+
+    @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
+            "gov_fin_lookup.location_id = gov_fin_location_info.id where gov_fin_lookup.year = ?2 and gov_fin_location_info.id = ?1 " +
+            "group by attribute_mapping_id ", nativeQuery = true)
+    public List<Integer> findAttriIDsByLocId(@Param("id") Integer id, @Param("year") Integer year);
 }
