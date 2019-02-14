@@ -3,24 +3,24 @@
           xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
     <mapping>
-        <class-a>com.example.demo.model.Property</class-a>
-        <class-b>com.example.demo.dto.PropertyDTO</class-b>
+        <class-a>edu.neu.cs6510.model.Property</class-a>
+        <class-b>edu.neu.cs6510.dto.PropertyDTO</class-b>
         <field>
             <a>id</a>
             <b>property_id</b>
         </field>
     </mapping>
     <mapping>
-        <class-a>com.example.demo.model.Collection</class-a>
-        <class-b>com.example.demo.dto.CollectionsDTO</class-b>
+        <class-a>edu.neu.cs6510.model.Collection</class-a>
+        <class-b>edu.neu.cs6510.dto.CollectionsDTO</class-b>
         <field>
             <a>id</a>
             <b>collection_id</b>
         </field>
     </mapping>
     <mapping>
-        <class-a>com.example.demo.model.AttributeMapping</class-a>
-        <class-b>com.example.demo.dto.AttributeInfoDTO</class-b>
+        <class-a>edu.neu.cs6510.model.AttributeMapping</class-a>
+        <class-b>edu.neu.cs6510.dto.AttributeInfoDTO</class-b>
         <field>
             <a>id</a>
             <b>attribute_id</b>
@@ -28,8 +28,8 @@
     </mapping>
 
     <mapping>
-        <class-a>com.example.demo.model.Collection</class-a>
-        <class-b>com.example.demo.dto.CollectionTimeRangeDTO</class-b>
+        <class-a>edu.neu.cs6510.model.Collection</class-a>
+        <class-b>edu.neu.cs6510.dto.CollectionTimeRangeDTO</class-b>
         <field>
             <a>id</a>
             <b>collection_id</b>
@@ -37,8 +37,8 @@
     </mapping>
 
     <mapping>
-        <class-a>com.example.demo.model.AttributeMapping</class-a>
-        <class-b>com.example.demo.dto.AttrTimeRangeDTO</class-b>
+        <class-a>edu.neu.cs6510.model.AttributeMapping</class-a>
+        <class-b>edu.neu.cs6510.dto.AttrTimeRangeDTO</class-b>
         <field>
             <a>name</a>
             <b>attribute_name</b>
@@ -50,8 +50,8 @@
     </mapping>
 
     <mapping>
-        <class-a>com.example.demo.model.AttributeMapping</class-a>
-        <class-b>com.example.demo.dto.CollectionInfoDTO</class-b>
+        <class-a>edu.neu.cs6510.model.AttributeMapping</class-a>
+        <class-b>edu.neu.cs6510.dto.CollectionInfoDTO</class-b>
         <field>
             <a>name</a>
             <b>attribute_name</b>

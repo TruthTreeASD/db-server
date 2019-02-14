@@ -8,11 +8,11 @@
         <version>2.1.2.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>demo</artifactId>
+    <groupId>edu.neu.ccis.cs6510</groupId>
+    <artifactId>db-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>Demo project for Spring Boot</description>
+    <name>db-server</name>
+    <description>Database service for government finance</description>
 
 
 
