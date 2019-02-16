@@ -12,6 +12,7 @@ import edu.neu.cs6510.util.cache.CacheService;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,6 +70,15 @@ public class CollectionController {
         return Result.success(collectionService.findCollectionByIds(ids));
     }
 
+    @ApiOperation(value = "find Availbe Attr by location/ location level/ given year")
+    @GetMapping("/api/collections2")
+    public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level,
+                                           @RequestParam(value = "year", required = false) Integer year,
+                                           @RequestParam(value = "id", required = false) Integer id,
+                                           @RequestParam(value = "orderBy", defaultValue = "year") String orderBy,
+                                           @RequestParam(value = "order", defaultValue = "DESC") String order) {
+        return collectionService.findAvailbeAttr(level, year, id, orderBy, order);
+    }
 
 
 }

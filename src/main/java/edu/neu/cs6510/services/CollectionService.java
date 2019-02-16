@@ -11,7 +11,9 @@ import edu.neu.cs6510.util.cache.CacheService;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -155,4 +157,16 @@ public class CollectionService {
         return Result.success(collectionRepository.findAllById(ids));
     }
 
+    public ResponseMessage findAvailbeAttr(String level, Integer year, Integer id, String orderBy, String order) {
+        Sort sort = new Sort(order.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC, orderBy);
+        if (id != null) {
+            return Result.success(collectionRepository.findAvailableAttriById(id, year, sort));
+        } else if (StringUtils.isNotEmpty(level)){
+            int code = level.equalsIgnoreCase("state") ? 0
+                    : level.equalsIgnoreCase("county") ? 1 : 2;
+            return Result.success(collectionRepository.findAvailableAttriByLevel(code, year, sort));
+        } else {
+            return Result.success(collectionRepository.findAllAvailableAttri(year, sort));
+        }
+    }
 }
