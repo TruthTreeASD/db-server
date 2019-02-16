@@ -40,9 +40,7 @@ public class CollectionService {
         return Result.success(collectionRepository.findAll());
     }
 
-    public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level,
-                                           @RequestParam(value = "year", required = false) Integer year,
-                                           @RequestParam(value = "id", required = false) Integer id) {
+    public ResponseMessage findAvailbeAttr(String level, Integer year, Integer id) {
         List<Integer> ids = null;
         long start = System.currentTimeMillis();
         if ((level == null || level.isEmpty()) && id == null && year == null) {
@@ -93,7 +91,7 @@ public class CollectionService {
         return Result.success(collectionsDTOS);
 
     }
-    public ResponseMessage<List<CollectionTimeRangeDTO>> findAvailbeAttr(@RequestParam(value = "level") String level, @RequestParam("attributes") List<Integer> attributes) {
+    public ResponseMessage<List<CollectionTimeRangeDTO>> findAvailbeAttr(String level, List<Integer> attributes) {
         String maxMinVal = null;
         List<CollectionTimeRangeDTO> res = new ArrayList<>();
         level = level.toLowerCase();
@@ -132,7 +130,7 @@ public class CollectionService {
         return Result.success(res);
     }
 
-    public ResponseMessage findAvailbeAttr(@RequestParam(value = "id") Integer id) {
+    public ResponseMessage findAvailbeAttr(Integer id) {
         List<AttributeMapping> attributeMappings = attributeMappingRepository.findByCollectionId(id);
         List<CollectionInfoDTO> collectionsDTOS = new ArrayList<>();
         for (AttributeMapping mapping : attributeMappings) {
@@ -143,8 +141,7 @@ public class CollectionService {
         return Result.success(collectionsDTOS);
     }
 
-    public ResponseMessage findAvailbeAttr(@RequestParam(value = "collection_ids") List<Integer> collection_ids,
-                                           @RequestParam(value = "property_ids") List<Integer> property_ids) {
+    public ResponseMessage findAvailbeAttr(List<Integer> collection_ids, List<Integer> property_ids) {
         List<AttributeMapping> mappings  = new ArrayList<>();
         for (Integer cId : collection_ids) {
             mappings.addAll(attributeMappingRepository.findByCollectionIdAndProperties(cId, property_ids));
@@ -152,5 +149,10 @@ public class CollectionService {
         return Result.success(mappings);
     }
 
+
+
+    public ResponseMessage findCollectionByIds(List<Integer> ids) {
+        return Result.success(collectionRepository.findAllById(ids));
+    }
 
 }

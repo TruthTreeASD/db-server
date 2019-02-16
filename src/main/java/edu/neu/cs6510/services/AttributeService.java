@@ -224,5 +224,9 @@ public class AttributeService {
         return Result.success(attributeValues);
     }
 
+
+    public ResponseMessage findAttriByIds(List<Integer> ids) {
+        return Result.success(attributeMappingRepository.findAllById(ids));
+    }
 }
 

@@ -35,13 +35,12 @@ public class CollectionController {
         return collectionService.findAllCollections();
     }
 
-    @ApiOperation(value = "find Availbe Attr by location level")
+    @ApiOperation(value = "find Availbe Attr by location/ location level/ given year")
     @GetMapping("/api/collections")
     public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level,
                                            @RequestParam(value = "year", required = false) Integer year,
                                            @RequestParam(value = "id", required = false) Integer id) {
         return collectionService.findAvailbeAttr(level, year, id);
-
     }
     @ApiOperation(value = "find time-range for given location level and attr id")
     @GetMapping("/api/time_range")
@@ -63,6 +62,13 @@ public class CollectionController {
 
         return collectionService.findAvailbeAttr(collection_ids, property_ids);
     }
+
+    @ApiOperation(value = "find collection information by ids")
+    @GetMapping("/api/queryCollectionById")
+    public ResponseMessage findCollectionByIds(@RequestParam("id") List<Integer> ids) {
+        return Result.success(collectionService.findCollectionByIds(ids));
+    }
+
 
 
 }

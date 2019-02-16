@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Service
 public class PropertyService {
 
@@ -17,5 +19,9 @@ public class PropertyService {
 
     public ResponseMessage findAllProperties() {
         return Result.success(propertyRepository.findAll());
+    }
+
+    public ResponseMessage findPropertyById(List<Integer> ids) {
+        return Result.success(propertyRepository.findAllById(ids));
     }
 }

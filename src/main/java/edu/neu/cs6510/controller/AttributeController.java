@@ -89,5 +89,13 @@ public class AttributeController {
         return attributeService.findAllAttributesByIdsForStatesAndYears(attributeIds, stateIds, yearList);
     }
 
+
+    @ApiOperation(value = "find attribute information by ids")
+    @GetMapping("/api/queryAttriById")
+    public ResponseMessage queryAttriById(@RequestParam(value = "ids") List<Integer> ids) {
+
+        return attributeService.findAttriByIds(ids);
+    }
+
 }
 

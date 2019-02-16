@@ -24,14 +24,11 @@ public class SwaggerConfig {
   public Docket createRestApi() {
     return (new Docket(DocumentationType.SWAGGER_2)).apiInfo(apiInfo()).select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
   }
-  //构建 api文档的详细信息函数,注意这里的注解引用的是哪个
+
   private ApiInfo apiInfo() {
     return new ApiInfoBuilder()
-            //页面标题
             .title("Spring Boot Database APIs")
-            //版本号
             .version("1.0")
-            //描述
             .build();
   }
 
