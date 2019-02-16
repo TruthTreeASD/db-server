@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -158,15 +159,15 @@ public class CollectionService {
     }
 
     public ResponseMessage findAvailbeAttr(String level, Integer year, Integer id, String orderBy, String order) {
-        Sort sort = new Sort(order.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC, orderBy);
+        String sort = orderBy + " " + order;
         if (id != null) {
             return Result.success(collectionRepository.findAvailableAttriById(id, year, sort));
         } else if (StringUtils.isNotEmpty(level)){
-            int code = level.equalsIgnoreCase("state") ? 0
-                    : level.equalsIgnoreCase("county") ? 1 : 2;
+            List<Integer> code = level.equalsIgnoreCase("state") ? Arrays.asList(0)
+                    : level.equalsIgnoreCase("county") ? Arrays.asList(1) : Arrays.asList(2,3,4,5,6);
             return Result.success(collectionRepository.findAvailableAttriByLevel(code, year, sort));
         } else {
-            return Result.success(collectionRepository.findAllAvailableAttri(year, sort));
+            return Result.success(collectionRepository.findAllAvailableAttri(year, "year desc"));
         }
     }
 }

@@ -76,18 +76,18 @@ public interface CollectionRepository extends CrudRepository<Collection, Integer
 
 
 
-    @Query(value = "select attribute_mapping_id from gov_fin_lookup where location_id = ?1 and " +
-                "IF(?2  is not null, year = ?2, 1 = 1) group by attribute_mapping_id ORDER BY #sort", nativeQuery = true)
-    public List<Integer> findAvailableAttriById(@Param("id") Integer id, @Param("year") Integer year, Sort sort);
+    @Query(value = "select a.id from ( select attribute_mapping_id as id from gov_fin_lookup where" +
+            "(COALESCE( null, ?1) is null or year = ?2) and location_id = ?1 ORDER BY ?3) a " +
+            "group by a.id", nativeQuery = true)
+    public List<Integer> findAvailableAttriById(@Param("id") Integer id, @Param("year") Integer year, @Param("sort") String sort);
 
-    @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
-            "gov_fin_lookup.location_id = gov_fin_location_info.id where " +
-            "IF(?1 = 0, gov_fin_location_info.type_code = 0, IF (?1 = 1, gov_fin_location_info.type_code = 1" +
-            ", gov_fin_location_info.type_code not in ( 0 ,1))) and IF(?2 is not null, year = ?2, 1 = 1)" +
-            "group by attribute_mapping_id ORDER BY #sort", nativeQuery = true)
-    public List<Integer> findAvailableAttriByLevel(@Param("level") Integer level, @Param("year") Integer year, Sort sort);
+    @Query(value = "select a.id from( select attribute_mapping_id as id from gov_fin_lookup join gov_fin_location_info on " +
+                            "gov_fin_lookup.location_id = gov_fin_location_info.id where " +
+                       "(COALESCE( null, ?2) is null or year = ?2) and type_code in ?1 ORDER BY ?3) a " +
+                       "group by a.id", nativeQuery = true)
+    public List<Integer> findAvailableAttriByLevel(@Param("level") List<Integer> level, @Param("year") Integer year, @Param("sort") String sort);
 
-    @Query(value = "select attribute_mapping_id from gov_fin_lookup where" +
-            " IF(?1  is not null, year = ?1, 1 = 1) group by attribute_mapping_id ORDER BY #sort", nativeQuery = true)
-    public List<Integer> findAllAvailableAttri(@Param("year") Integer year, Sort sort);
+    @Query(value = "select a.id from ( select attribute_mapping_id as id from gov_fin_lookup where" +
+            " (COALESCE( null, ?1) is null or year = ?1) ORDER BY ?2) a group by a.id", nativeQuery = true)
+    public List<Integer> findAllAvailableAttri(@Param("year") Integer year,@Param("sort") String sort);
 }
