@@ -47,7 +47,7 @@ public class CollectionService {
         List<Integer> ids = null;
         long start = System.currentTimeMillis();
         if ((level == null || level.isEmpty()) && id == null && year == null) {
-            ids = collectionRepository.findAllAttrids();
+            ids = ((List<AttributeMapping>)attributeMappingRepository.findAll()).stream().map(AttributeMapping::getId).collect(Collectors.toList());
         } else if (id == null){
             switch (level.toLowerCase()) {
                 case "state":

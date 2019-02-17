@@ -39,5 +39,8 @@ public interface AttributeMappingRepository extends CrudRepository<AttributeMapp
             "from gov_fin_attribute_mapping where collection_id = ?1 and property_id in (?2)", nativeQuery = true)
     public List<AttributeMapping> findByCollectionIdAndProperties(@Param("id") Integer id, @Param("pids") List<Integer> pids);
 
+    @Query(value = "select id,name,collection_id,property_id " +
+            "from gov_fin_attribute_mapping where collection_id = ?1 and property_id in (?2)", nativeQuery = true)
+    public List<AttributeMapping> findByAttriAndLocation(@Param("id") Integer id, @Param("pids") List<Integer> pids);
 }
 

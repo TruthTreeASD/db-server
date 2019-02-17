@@ -74,7 +74,7 @@ public interface CollectionRepository extends CrudRepository<Collection, Integer
             "group by attribute_mapping_id ", nativeQuery = true)
     public List<Integer> findAttriIDsByLocId(@Param("id") Integer id, @Param("year") Integer year);
 
-
+    /***************************************************************************************************************************************/
 
     @Query(value = "select a.id from ( select attribute_mapping_id as id from gov_fin_lookup where" +
             "(COALESCE( null, ?1) is null or year = ?2) and location_id = ?1 ORDER BY ?3) a " +
