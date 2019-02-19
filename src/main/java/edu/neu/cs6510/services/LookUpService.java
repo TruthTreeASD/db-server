@@ -68,4 +68,44 @@ public class LookUpService {
 		
 		return Result.success(results);
 	}
+	
+	public ResponseMessage findRecordsForSameParent(
+			@RequestParam(value = "location") int locationId,
+			@RequestParam(value = "year") int year, 
+			@RequestParam(value = "attributes") List<Integer> attributeIds) {
+
+		int parentCode = locationRepository.findParentId(locationId);
+		
+		int typeCode = locationRepository.findTypeCode(locationId);
+		
+		
+		List<Location> locations = locationRepository.findAllLocationsWithGivenParent(parentCode, typeCode);
+		
+		List<Integer> locationsIds = new ArrayList<Integer>();
+		
+		for(Location l : locations) {
+			locationsIds.add(l.getId());
+		}
+		
+		List<LookUpData> attributeData=  lookUpRepository.findByAttributeIdAndLocAndTime(attributeIds, locationsIds, year);
+		
+		List<LocationInfoDTO> results = new ArrayList<>();
+		
+		for(Location l : locations) {
+			LocationInfoDTO temp = new LocationInfoDTO(l);
+			
+			
+			for(LookUpData d : attributeData) {
+				if(d.getLookUpPK().getLocation_id() == l.getId()) {
+					temp.getAttributeValues().add(d);
+				}
+				
+			}
+			
+			results.add(temp);
+			
+		}
+		
+		return Result.success(results);
+	}
 }

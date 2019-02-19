@@ -39,6 +39,16 @@ public class LookUpController {
     	
     	return lookUpService.findRecordsAtSameLevel(locationId, year, attributeIds);
     }
+    
+    @ApiOperation(value = "Find values for specified attributes and year for all locations with same parent")
+    @GetMapping("/api/lookup/location&year&attributeId")
+    public ResponseMessage findRecordsForSameParent(
+    		@RequestParam(value = "attributes") List<Integer> attributeIds,
+    		@RequestParam(value = "location") int locationId,
+    		@RequestParam(value = "year") int year){
+    	
+    	return lookUpService.findRecordsForSameParent(locationId, year, attributeIds);
+    }
 
     public List<LookUpData> findAllRecordsWithAttributeIds() {
         return null;
