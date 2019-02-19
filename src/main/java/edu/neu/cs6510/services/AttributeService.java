@@ -1,5 +1,13 @@
 package edu.neu.cs6510.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import edu.neu.cs6510.model.AttributeMapping;
 import edu.neu.cs6510.model.AttributeValue;
 import edu.neu.cs6510.model.LookUpData;
@@ -8,14 +16,6 @@ import edu.neu.cs6510.repositories.LookUpRepository;
 import edu.neu.cs6510.util.cache.CacheService;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AttributeService {

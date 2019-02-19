@@ -1,22 +1,16 @@
 package edu.neu.cs6510.controller;
 
-import edu.neu.cs6510.model.AttributeMapping;
-import edu.neu.cs6510.model.AttributeValue;
-import edu.neu.cs6510.model.LookUpData;
-import edu.neu.cs6510.repositories.AttributeMappingRepository;
-import edu.neu.cs6510.repositories.LookUpRepository;
-import edu.neu.cs6510.services.AttributeService;
-import edu.neu.cs6510.util.http.ResponseMessage;
-import edu.neu.cs6510.util.http.Result;
-import io.swagger.annotations.ApiOperation;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import edu.neu.cs6510.services.AttributeService;
+import edu.neu.cs6510.util.http.ResponseMessage;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @CrossOrigin(origins = "*")
