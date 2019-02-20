@@ -1,6 +1,7 @@
 package edu.neu.cs6510.repositories;
 
 import edu.neu.cs6510.model.Collection;
+import edu.neu.cs6510.model.LookUpData;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -83,11 +84,14 @@ public interface CollectionRepository extends CrudRepository<Collection, Integer
 
     @Query(value = "select a.id from( select attribute_mapping_id as id from gov_fin_lookup join gov_fin_location_info on " +
                             "gov_fin_lookup.location_id = gov_fin_location_info.id where " +
-                       "(COALESCE( null, ?2) is null or year = ?2) and type_code in ?1 ORDER BY ?3) a " +
+                       "(COALESCE( null, ?2) is null or year = ?2) and type_code = ?1 ORDER BY ?3) a " +
                        "group by a.id", nativeQuery = true)
-    public List<Integer> findAvailableAttriByLevel(@Param("level") List<Integer> level, @Param("year") Integer year, @Param("sort") String sort);
+    public List<Integer> findAvailableAttriByLevel(@Param("level") Integer level, @Param("year") Integer year, @Param("sort") String sort);
 
     @Query(value = "select a.id from ( select attribute_mapping_id as id from gov_fin_lookup where" +
             " (COALESCE( null, ?1) is null or year = ?1) ORDER BY ?2) a group by a.id", nativeQuery = true)
     public List<Integer> findAllAvailableAttri(@Param("year") Integer year,@Param("sort") String sort);
+
+
+
 }

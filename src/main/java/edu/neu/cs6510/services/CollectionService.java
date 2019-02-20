@@ -163,11 +163,13 @@ public class CollectionService {
         if (id != null) {
             return Result.success(collectionRepository.findAvailableAttriById(id, year, sort));
         } else if (StringUtils.isNotEmpty(level)){
-            List<Integer> code = level.equalsIgnoreCase("state") ? Arrays.asList(0)
-                    : level.equalsIgnoreCase("county") ? Arrays.asList(1) : Arrays.asList(2,3,4,5,6);
+            int code = level.equalsIgnoreCase("state") ? 0
+                    : level.equalsIgnoreCase("county") ? 1 :2;
             return Result.success(collectionRepository.findAvailableAttriByLevel(code, year, sort));
         } else {
             return Result.success(collectionRepository.findAllAvailableAttri(year, "year desc"));
         }
     }
+
+
 }

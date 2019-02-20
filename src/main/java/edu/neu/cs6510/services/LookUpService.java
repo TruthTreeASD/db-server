@@ -2,6 +2,7 @@ package edu.neu.cs6510.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,4 +69,16 @@ public class LookUpService {
 		
 		return Result.success(results);
 	}
+
+
+    public ResponseMessage findAvailbeAttr(List<Integer> attributeId, List<Integer> year, List<Integer> locationId, Integer typeCode, String orderBy, String order, Integer from, Integer to) {
+        String sort = orderBy + " " + order;
+        if (typeCode != null) {
+			return Result.success(lookUpRepository.queryLookUpData(attributeId, year, typeCode, from, to, sort));
+		} else if (locationId != null && !locationId.isEmpty()){
+			return Result.success(lookUpRepository.queryLookUpData(attributeId, year,locationId,from, to, sort));
+		} else {
+        	return Result.error("Please provide locationId or type code");
+		}
+    }
 }
