@@ -26,16 +26,15 @@ public interface LocationRepository extends CrudRepository<Location, Long> {
   public List<Location> findAllCounties();
   
   @Query(value = "select type_code from gov_fin_location_info where id = ?1", nativeQuery = true)
-  
   public int findTypeCode(@Param("id") Integer id);
   
-  @Query(value = "select parent_id from gov_fin_location_info where where id = ?1", nativeQuery = true)
-  public String findParentId(@Param("id") Integer id);
+  @Query(value = "select parent_id from gov_fin_location_info where id = ?1", nativeQuery = true)
+  public int findParentId(@Param("id") Integer id);
 
   @Query(value = "select * from gov_fin_location_info where type_code = ?1 order by name", nativeQuery = true)
   public List<Location> findAllLocationsAtGivenLevel(@Param("id") Integer id);
 
-  @Query(value = "select id from gov_fin_location_info where parent_id = ?1", nativeQuery = true)
-  public List<Location> findAllLocationsWithGivenParent(@Param("id") Integer id);  
+  @Query(value = "select * from gov_fin_location_info where type_code = ?2 and parent_id = ?1  order by name", nativeQuery = true)
+  public List<Location> findAllLocationsWithGivenParent(@Param("parentCode") Integer parentCode, @Param("typeCode") Integer typeCode);  
 
 }
