@@ -24,16 +24,22 @@ public interface LookUpRepository extends CrudRepository<LookUpData, Integer> {
     @Query(value = "select * from gov_fin_lookup where year = ?3 and attribute_mapping_id in ?1 and location_id in ?2 order by year desc", nativeQuery = true)
     List<LookUpData> findByAttributeIdAndLocAndTime(@Param("id") List<Integer> attrId, @Param("id") List<Integer> locId, int year);
 
-    @Query(value = "select * from gov_fin_lookup " +
+    @Query(value = "select a.* from (select * from gov_fin_lookup " +
             "where attribute_mapping_id in ?1 and (COALESCE( null, ?2) is null or year in ?2) " +
-            "and (COALESCE( null, ?3) is null or location_id in ?3) and value between ?4 and ?5 " +
-            "order by ?6 ", nativeQuery = true)
+            "and (COALESCE( null, ?3) is null or location_id in ?3) and value between ?4 and ?5) as a "  +
+            "join gov_fin_location_info on a.location_id = gov_fin_location_info.id ORDER by ?6", nativeQuery = true)
     List<LookUpData> queryLookUpData(List<Integer> attributeId, List<Integer> year, List<Integer> locationId, Integer from, Integer to, String sort);
 
-    @Query(value = "select * from gov_fin_lookup " +
+    @Query(value = "select a.* from (select * from gov_fin_lookup " +
             "where attribute_mapping_id in ?1 and (COALESCE( null, ?2) is null or year in ?2) " +
-            " and value between ?4 and ?5 and (COALESCE( null, ?3) is null or location_id in (select id from gov_fin_location_info where type_code = ?3)) " +
-            "order by ?6 ", nativeQuery = true)
+            "and value between ?4 and ?5 and (COALESCE( null, ?3) is null or location_id in (select id from gov_fin_location_info where type_code = ?3))) as a " +
+            "join gov_fin_location_info on a.location_id = gov_fin_location_info.id ORDER by ?6", nativeQuery = true)
     List<LookUpData> queryLookUpData(List<Integer> attributeId, List<Integer> year, Integer typeCode, Integer from, Integer to, String sort);
+
+    @Query(value = "select a.* from (select * from gov_fin_lookup " +
+            "where attribute_mapping_id in ?1 and (COALESCE( null, ?2) is null or year in ?2) " +
+            "and value between ?4 and ?5 and (COALESCE( null, ?3) is null or location_id in (select id from gov_fin_location_info where parent_id = ?3))) as a " +
+            "join gov_fin_location_info on a.location_id = gov_fin_location_info.id ORDER by ?6", nativeQuery = true)
+    List<LookUpData> queryLookUpDataParentId(List<Integer> attributeId, List<Integer> year, Integer parentId, Integer from, Integer to, String sort);
 
 }

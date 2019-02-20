@@ -109,11 +109,14 @@ public class LookUpService {
         return Result.success(results);
     }
 
-    public ResponseMessage findAvailbeAttr(List<Integer> attributeId, List<Integer> year, List<Integer> locationId, Integer typeCode, String orderBy, String order, Integer from, Integer to) {
+    public ResponseMessage findAvailbeAttr(List<Integer> attributeId, List<Integer> year, List<Integer> locationId
+            , Integer typeCode, Integer parentId, String orderBy, String order, Integer from, Integer to) {
         String sort = orderBy + " " + order;
         if (typeCode != null) {
             return Result.success(lookUpRepository.queryLookUpData(attributeId, year, typeCode, from, to, sort));
-        } else if (locationId != null && !locationId.isEmpty()){
+        }else if (parentId != null) {
+            return Result.success(lookUpRepository.queryLookUpDataParentId(attributeId, year, parentId, from, to, sort));
+        }else if (locationId != null && !locationId.isEmpty()){
             return Result.success(lookUpRepository.queryLookUpData(attributeId, year,locationId,from, to, sort));
         } else {
             return Result.error("Please provide locationId or type code");

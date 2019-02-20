@@ -43,7 +43,7 @@ public class CollectionService {
         return Result.success(collectionRepository.findAll());
     }
 
-    public ResponseMessage findAvailbeAttr(String level, Integer year, Integer id) {
+    public ResponseMessage findAvailbeAttr1(String level, Integer year, Integer id) {
         List<Integer> ids = null;
         long start = System.currentTimeMillis();
         if ((level == null || level.isEmpty()) && id == null && year == null) {
@@ -158,16 +158,15 @@ public class CollectionService {
         return Result.success(collectionRepository.findAllById(ids));
     }
 
-    public ResponseMessage findAvailbeAttr(String level, Integer year, Integer id, String orderBy, String order) {
-        String sort = orderBy + " " + order;
+    public ResponseMessage findAvailbeAttr(String level, Integer year, Integer id) {
         if (id != null) {
-            return Result.success(collectionRepository.findAvailableAttriById(id, year, sort));
+            return Result.success(collectionRepository.findAvailableAttriById(id, year));
         } else if (StringUtils.isNotEmpty(level)){
             int code = level.equalsIgnoreCase("state") ? 0
                     : level.equalsIgnoreCase("county") ? 1 :2;
-            return Result.success(collectionRepository.findAvailableAttriByLevel(code, year, sort));
+            return Result.success(collectionRepository.findAvailableAttriByLevel(code, year));
         } else {
-            return Result.success(collectionRepository.findAllAvailableAttri(year, "year desc"));
+            return Result.success(collectionRepository.findAllAvailableAttri(year));
         }
     }
 

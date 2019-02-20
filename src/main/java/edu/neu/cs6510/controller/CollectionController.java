@@ -38,10 +38,10 @@ public class CollectionController {
 
     @ApiOperation(value = "find Availbe Attr by location/ location level/ given year")
     @GetMapping("/api/collections")
-    public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level,
+    public ResponseMessage findAvailbeAttr1(@RequestParam(value = "level", required = false) String level,
                                            @RequestParam(value = "year", required = false) Integer year,
                                            @RequestParam(value = "id", required = false) Integer id) {
-        return collectionService.findAvailbeAttr(level, year, id);
+        return collectionService.findAvailbeAttr1(level, year, id);
     }
     @ApiOperation(value = "find time-range for given location level and attr id")
     @GetMapping("/api/time_range")
@@ -70,14 +70,12 @@ public class CollectionController {
         return Result.success(collectionService.findCollectionByIds(ids));
     }
 
-    @ApiOperation(value = "find Availbe Attr by location/ location level/ given year")
-    @GetMapping("/api/collections2")
+    @ApiOperation(value = "find Available Attr by location/ location level/ given year")
+    @GetMapping("/api/queryAvailableAttributes")
     public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level,
                                            @RequestParam(value = "year", required = false) Integer year,
-                                           @RequestParam(value = "id", required = false) Integer id,
-                                           @RequestParam(value = "orderBy", defaultValue = "year") String orderBy,
-                                           @RequestParam(value = "order", defaultValue = "DESC") String order) {
-        return collectionService.findAvailbeAttr(level, year, id, orderBy, order);
+                                           @RequestParam(value = "locationId", required = false) Integer id) {
+        return collectionService.findAvailbeAttr(level, year, id);
     }
 
 
