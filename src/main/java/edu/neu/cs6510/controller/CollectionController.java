@@ -45,7 +45,7 @@ public class CollectionController {
     }
     @ApiOperation(value = "find time-range for given location level and attr id")
     @GetMapping("/api/time_range")
-    public ResponseMessage<List<CollectionTimeRangeDTO>> findAvailbeAttr(@RequestParam(value = "level") String level, @RequestParam("attributes") List<Integer> attributes) {
+    public ResponseMessage<List<CollectionTimeRangeDTO>> findAvailbeAttr1(@RequestParam(value = "level") String level, @RequestParam("attributes") List<Integer> attributes) {
 
         return collectionService.findAvailbeAttr(level, attributes);
     }
@@ -78,5 +78,11 @@ public class CollectionController {
         return collectionService.findAvailbeAttr(level, year, id);
     }
 
+    @ApiOperation(value = "find time-range for given location level and attr id")
+    @GetMapping("/api/time_range_new")
+    public ResponseMessage findAvailbeAttr(@RequestParam(value = "level") String level, @RequestParam("attributes") List<Integer> attributes) {
+
+        return collectionService.attriTimeRange(level, attributes);
+    }
 
 }

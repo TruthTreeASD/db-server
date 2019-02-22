@@ -19,7 +19,7 @@ public interface LocationRepository extends CrudRepository<Location, Long> {
   @Query(value = "select * from gov_fin_location_info where type_code = 0", nativeQuery = true)
   public List<Location> findStates();
 
-  @Query(value = "select * from gov_fin_location_info where type_code not in (0 ,1)", nativeQuery = true)
+  @Query(value = "select * from gov_fin_location_info where type_code = 2", nativeQuery = true)
   public List<Location> findAllCities();
 
   @Query(value = "select * from gov_fin_location_info where type_code = 1", nativeQuery = true)

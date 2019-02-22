@@ -171,4 +171,9 @@ public class CollectionService {
     }
 
 
+    public ResponseMessage attriTimeRange(String level, List<Integer> attributes) {
+        int code = level.equalsIgnoreCase("state") ? 0
+                : level.equalsIgnoreCase("county") ? 1 :2;
+        return Result.success(collectionRepository.attriTimeRange(code, attributes));
+    }
 }
