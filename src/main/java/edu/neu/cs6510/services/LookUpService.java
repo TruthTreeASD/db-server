@@ -1,6 +1,8 @@
 package edu.neu.cs6510.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,12 +114,14 @@ public class LookUpService {
     public ResponseMessage findAvailbeAttr(List<Integer> attributeId, List<Integer> year, List<Integer> locationId
             , Integer typeCode, Integer parentId, String orderBy, String order, Integer from, Integer to) {
         String sort = orderBy + " " + order;
+        int flag = year == null ? -1 : 0;
+        year = year == null ? Arrays.asList(-1) : year;
         if (typeCode != null) {
-            return Result.success(lookUpRepository.queryLookUpData(attributeId, year, typeCode, from, to, sort));
+            return Result.success(lookUpRepository.queryLookUpData(attributeId, year,typeCode, from, to, sort, flag));
         }else if (parentId != null) {
-            return Result.success(lookUpRepository.queryLookUpDataParentId(attributeId, year, parentId, from, to, sort));
+            return Result.success(lookUpRepository.queryLookUpDataParentId(attributeId, year, parentId, from, to, sort, flag));
         }else if (locationId != null && !locationId.isEmpty()){
-            return Result.success(lookUpRepository.queryLookUpData(attributeId, year,locationId,from, to, sort));
+            return Result.success(lookUpRepository.queryLookUpData(attributeId, year,locationId,from, to, sort, flag));
         } else {
             return Result.error("Please provide locationId or type code");
         }

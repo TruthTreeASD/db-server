@@ -73,7 +73,7 @@ public class CollectionController {
     @ApiOperation(value = "find Available Attr by location/ location level/ given year")
     @GetMapping("/api/queryAvailableAttributes")
     public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level,
-                                           @RequestParam(value = "year", required = false) Integer year,
+                                           @RequestParam(value = "year", required = false, defaultValue = "-1") Integer year,
                                            @RequestParam(value = "locationId", required = false) Integer id) {
         return collectionService.findAvailbeAttr(level, year, id);
     }

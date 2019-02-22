@@ -77,18 +77,18 @@ public interface CollectionRepository extends CrudRepository<Collection, Integer
     /***************************************************************************************************************************************/
 
     @Query(value = "select a.id from ( select attribute_mapping_id as id from gov_fin_lookup where" +
-            "(COALESCE( null, ?1) is null or year = ?2) and location_id = ?1) a " +
+            "(-1 = ?2 is null or year = ?2) and location_id = ?1) a " +
             "group by a.id", nativeQuery = true)
     public List<Integer> findAvailableAttriById(@Param("id") Integer id, @Param("year") Integer year);
 
     @Query(value = "select a.id from( select attribute_mapping_id as id from gov_fin_lookup join gov_fin_location_info on " +
                             "gov_fin_lookup.location_id = gov_fin_location_info.id where " +
-                       "(COALESCE( null, ?2) is null or year = ?2) and type_code = ?1) a " +
+                       "(-1 = ?2 or year = ?2) and type_code = ?1) a " +
                        "group by a.id", nativeQuery = true)
     public List<Integer> findAvailableAttriByLevel(@Param("level") Integer level, @Param("year") Integer year);
 
     @Query(value = "select a.id from ( select attribute_mapping_id as id from gov_fin_lookup where" +
-            " (COALESCE( null, ?1) is null or year = ?1) ORDER BY ?2) a group by a.id", nativeQuery = true)
+            " ( -1 = ?1 or year = ?1)) a group by a.id", nativeQuery = true)
     public List<Integer> findAllAvailableAttri(@Param("year") Integer year);
 
     @Query(value = "select start_year, end_year, attribute_mapping_id as attribute_id from time_range where type_code = ?1 and attribute_mapping_id in ?2", nativeQuery = true)
