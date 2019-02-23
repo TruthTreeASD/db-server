@@ -47,6 +47,11 @@ public class LocationController {
     return locationService.findCounties(id);
   }
 
+  @ApiOperation(value = "find all parents")
+  @GetMapping("/api/location/queryParents")
+  public ResponseMessage<List<Location>> findParents(@RequestParam(value = "id") Integer id) {
+    return locationService.findParents(id);
+  }
 
 
 }

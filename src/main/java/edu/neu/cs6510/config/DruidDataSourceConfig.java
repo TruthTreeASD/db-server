@@ -1,5 +1,8 @@
 package edu.neu.cs6510.config;
 
+import com.alibaba.druid.filter.logging.Log4jFilter;
+import com.alibaba.druid.filter.logging.Slf4jLogFilter;
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +10,7 @@ import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 @ConfigurationProperties(prefix = "spring.datasource.druid")
 public class DruidDataSourceConfig {
@@ -29,6 +33,11 @@ public class DruidDataSourceConfig {
     private String filters;
     private String connectionProperties;
 
+    private boolean logSlowSql;
+    private boolean mergeSql;
+    private long slowSqlMill;
+
+
 
     @Bean
     @Primary
@@ -38,7 +47,6 @@ public class DruidDataSourceConfig {
         datasource.setUsername(username);
         datasource.setPassword(password);
         datasource.setDriverClassName(driverClassName);
-
         // configuration
         datasource.setInitialSize(initialSize);
         datasource.setMinIdle(minIdle);
@@ -57,9 +65,28 @@ public class DruidDataSourceConfig {
         } catch (SQLException e) {
             System.err.println("druid configuration initialization filter: " + e);
         }
+        datasource.setProxyFilters(Arrays.asList(statFilter(),logFilter()));
         datasource.setConnectionProperties(connectionProperties);
         return datasource;
     }
+
+    @Bean
+    @Primary
+    public StatFilter statFilter(){
+        StatFilter statFilter = new StatFilter();
+        statFilter.setSlowSqlMillis(slowSqlMill);
+        statFilter.setLogSlowSql(logSlowSql);
+        statFilter.setMergeSql(mergeSql);
+        return statFilter;
+    }
+
+    @Bean
+    public Log4jFilter logFilter() {
+        Log4jFilter filter = new Log4jFilter();
+        return filter;
+    }
+
+
 
     public String getUrl() {
         return url;

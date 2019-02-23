@@ -10,18 +10,11 @@ import edu.neu.cs6510.util.BeanMapper;
 import edu.neu.cs6510.util.cache.CacheService;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,6 +36,7 @@ public class CollectionService {
         return Result.success(collectionRepository.findAll());
     }
 
+    @Deprecated
     public ResponseMessage findAvailbeAttr1(String level, Integer year, Integer id) {
         List<Integer> ids = null;
         long start = System.currentTimeMillis();
@@ -65,8 +59,6 @@ public class CollectionService {
         } else {
             ids =(year == null) ? collectionRepository.findAttriIDsByLocId(id) : collectionRepository.findAttriIDsByLocId(id, year);
         }
-        System.out.println(System.currentTimeMillis() - start);
-        start = System.currentTimeMillis();
         List<AttributeMapping> attributeMappings = new ArrayList<>();
         for (Integer attributeId : ids) {
             attributeMappings.add(CacheService.attributeMappingMap.get(attributeId));
@@ -74,8 +66,6 @@ public class CollectionService {
         Map<Integer, List<AttributeMapping>> map = attributeMappings.stream()
                 .collect(Collectors.groupingBy(AttributeMapping::getCollection_id));
         List<CollectionsDTO> collectionsDTOS = new ArrayList<>();
-        System.out.println(System.currentTimeMillis() - start);
-        start = System.currentTimeMillis();
         for (Map.Entry<Integer, List<AttributeMapping>> entry : map.entrySet()) {
             CollectionsDTO collectionsDTO = beanMapper.map(CacheService.collectionMap.get(entry.getKey()), CollectionsDTO.class);
             List<AttributeInfoDTO> attributeInfoDTOS = beanMapper.mapList(entry.getValue(), AttributeInfoDTO.class);
@@ -90,10 +80,10 @@ public class CollectionService {
             collectionsDTO.setAttributes(attributeInfoDTOS);
             collectionsDTOS.add(collectionsDTO);
         }
-        System.out.println(System.currentTimeMillis() - start);
         return Result.success(collectionsDTOS);
 
     }
+    @Deprecated
     public ResponseMessage<List<CollectionTimeRangeDTO>> findAvailbeAttr(String level, List<Integer> attributes) {
         String maxMinVal = null;
         List<CollectionTimeRangeDTO> res = new ArrayList<>();

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import edu.neu.cs6510.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -111,19 +112,26 @@ public class LookUpService {
         return Result.success(results);
     }
 
-    public ResponseMessage findAvailbeAttr(List<Integer> attributeId, List<Integer> year, List<Integer> locationId
-            , Integer typeCode, Integer parentId, String orderBy, String order, Integer from, Integer to) {
+    public ResponseMessage<Page> findAvailbeAttr(List<Integer> attributeId, List<Integer> year, List<Integer> locationId
+            , Integer typeCode, Integer parentId, String orderBy, String order, Integer from, Integer to, Integer pageSize, Integer currentPage) {
+	    List data;
+	    Integer total;
+
         String sort = orderBy + " " + order;
         int flag = year == null ? -1 : 0;
         year = year == null ? Arrays.asList(-1) : year;
         if (typeCode != null) {
-            return Result.success(lookUpRepository.queryLookUpData(attributeId, year,typeCode, from, to, sort, flag));
+            total = lookUpRepository.queryLookUpDataTotal(attributeId, year,typeCode, from, to, flag);
+            data = lookUpRepository.queryLookUpData(attributeId, year,typeCode, from, to, sort, flag, pageSize, pageSize * (currentPage - 1));
         }else if (parentId != null) {
-            return Result.success(lookUpRepository.queryLookUpDataParentId(attributeId, year, parentId, from, to, sort, flag));
+            total =lookUpRepository.queryLookUpDataParentIdTotal(attributeId, year, parentId, from, to, flag);
+            data = lookUpRepository.queryLookUpDataParentId(attributeId, year, parentId, from, to, sort, flag, pageSize, pageSize * (currentPage - 1));
         }else if (locationId != null && !locationId.isEmpty()){
-            return Result.success(lookUpRepository.queryLookUpData(attributeId, year,locationId,from, to, sort, flag));
+            total = lookUpRepository.queryLookUpDataTotal(attributeId, year,locationId,from, to, flag);
+            data = lookUpRepository.queryLookUpData(attributeId, year,locationId,from, to, sort, flag, pageSize, pageSize * (currentPage - 1));
         } else {
             return Result.error("Please provide locationId or type code");
         }
+        return Result.success(new Page(data, total, currentPage, pageSize));
     }
 }

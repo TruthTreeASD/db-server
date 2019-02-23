@@ -4,6 +4,7 @@ import edu.neu.cs6510.model.LookUpData;
 import edu.neu.cs6510.repositories.LookUpRepository;
 import edu.neu.cs6510.services.LocationService;
 import edu.neu.cs6510.services.LookUpService;
+import edu.neu.cs6510.util.Page;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
 import io.swagger.annotations.ApiImplicitParam;
@@ -58,16 +59,18 @@ public class LookUpController {
             @ApiImplicitParam(name = "orderBy", value = "order by key word: name for location name, year for current year, value for current value"),
             @ApiImplicitParam(name = "from", value = "range begin, default: Integer.MIN_VALUE"),
             @ApiImplicitParam(name = "to", value = "range end, default: Integer.MAX_VALUE")})
-    public ResponseMessage findRecords(@RequestParam(value = "attributeId") List<Integer> attributeId,
-                                           @RequestParam(value = "year", required = false) List<Integer> year,
-                                           @RequestParam(value = "locationId", required = false) List<Integer> locationId,
-                                           @RequestParam(value = "typeCode", required = false) Integer typeCode,
-                                       @RequestParam(value = "parentId", required = false) Integer parentId,
-                                           @RequestParam(value = "orderBy", defaultValue = "year") String orderBy,
-                                           @RequestParam(value = "order", defaultValue = "DESC") String order,
-                                           @RequestParam(value = "from", defaultValue = "-2147483648") Integer from,
-                                           @RequestParam(value = "to", defaultValue = "2147483647") Integer to) {
-        return lookUpService.findAvailbeAttr(attributeId, year, locationId, typeCode, parentId,orderBy, order, from, to);
+    public ResponseMessage<Page> findRecords(@RequestParam(value = "attributeId") List<Integer> attributeId,
+                                             @RequestParam(value = "year", required = false) List<Integer> year,
+                                             @RequestParam(value = "locationId", required = false) List<Integer> locationId,
+                                             @RequestParam(value = "typeCode", required = false) Integer typeCode,
+                                             @RequestParam(value = "parentId", required = false) Integer parentId,
+                                             @RequestParam(value = "orderBy", defaultValue = "year") String orderBy,
+                                             @RequestParam(value = "order", defaultValue = "DESC") String order,
+                                             @RequestParam(value = "from", defaultValue = "-2147483648") Integer from,
+                                             @RequestParam(value = "to", defaultValue = "2147483647") Integer to,
+                                             @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+                                             @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage) {
+        return lookUpService.findAvailbeAttr(attributeId, year, locationId, typeCode, parentId,orderBy, order, from, to, pageSize, currentPage);
     }
 
 

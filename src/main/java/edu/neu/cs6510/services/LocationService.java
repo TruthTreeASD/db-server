@@ -26,8 +26,12 @@ public class LocationService {
     return Result.success((List < Location >) locationRepository.findAll());
   }
 
+  public ResponseMessage<List<Location>> findParents(Integer id) {
+    return Result.success(locationRepository.findParents(id));
+  }
 
-  public ResponseMessage<List<Location>> findCities(@RequestParam(value = "id", required = false) Integer id) {
+
+  public ResponseMessage<List<Location>> findCities(Integer id) {
     return id == null ? Result.success(locationRepository.findAllCities()) : Result.success(locationRepository.findCities(id));
   }
 
