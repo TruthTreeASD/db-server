@@ -57,7 +57,7 @@ public class CollectionController {
     }
 
     @ApiOperation(value = "find Availbe Attr by collection and property pairs")
-    @GetMapping("/api/queryAttriIdByCombineation")
+    @GetMapping("/api/queryAttriIdByCombination")
     public ResponseMessage findAvailbeAttr(@RequestParam(value = "collection_ids") List<Integer> collection_ids,
                                            @RequestParam(value = "property_ids") List<Integer> property_ids) {
 
