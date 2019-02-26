@@ -2,6 +2,7 @@ package edu.neu.cs6510.services;
 
 import edu.neu.cs6510.model.Location;
 import edu.neu.cs6510.repositories.LocationRepository;
+import edu.neu.cs6510.util.Page;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
 import io.swagger.annotations.Api;
@@ -45,6 +46,28 @@ public class LocationService {
     return id == null ? Result.success(locationRepository.findAllCounties()) :Result.success(locationRepository.findCounties(id));
   }
 
+  public ResponseMessage<Location> queryById(Integer id) {
+    Optional<Location> optionalLocation = locationRepository.findById(id);
+    return Result.success(optionalLocation.isPresent() ? optionalLocation.get() : null);
+  }
 
 
+  public ResponseMessage<Page<Location>> findLocPagination(Integer id, Integer typeCode, Integer parentId, String orderBy, String order, Integer pageSize, Integer currentPage) {
+    String sort = orderBy + " " + order;
+    int total;
+    List<Location> data;
+    if (id != null) {
+      total = locationRepository.countLocationsById(id, typeCode);
+      data = locationRepository.queryLocationsByIdPage(id, typeCode, sort, pageSize, pageSize * (currentPage - 1));
+    }else if (parentId != null) {
+      total =locationRepository.countLocationByuParentId(parentId, typeCode);
+      data = locationRepository.findParentIdPage(parentId, typeCode, sort, pageSize, pageSize * (currentPage - 1));
+    }else if (typeCode != -1){
+      total = locationRepository.countByType(typeCode);
+      data = locationRepository.queryByTypePage(typeCode, sort, pageSize, pageSize * (currentPage - 1));
+    } else {
+      return Result.error("Please provide locationId / parentId /type code");
+    }
+    return Result.success(new Page(data, total, currentPage, pageSize));
+  }
 }
