@@ -56,10 +56,10 @@ public interface LocationRepository extends CrudRepository<Location, Integer> {
   List<Location> queryLocationsByIdPage(@Param("id")Integer id,@Param("myType") Integer myType, @Param("sort")String sort
           ,@Param("pageSize") Integer pageSize, @Param("offset") Integer offset);
 
-  @Query(value = "select count(1) from gov_fin_location_info where  (?1 = -1 or Type_code = ?1))", nativeQuery = true)
+  @Query(value = "select count(1) from gov_fin_location_info where  (?1 = -1 or Type_code = ?1)", nativeQuery = true)
   public int countByType(@Param("type")Integer type);
 
-  @Query(value = "select a.* FROM (select * from gov_fin_location_info where  (?1 = -1 or Type_code = ?1))) a ORDER by ?2 limit ?3 offset ?4", nativeQuery = true)
+  @Query(value = "select a.* FROM (select * from gov_fin_location_info where  (?1 = -1 or Type_code = ?1)) a ORDER by ?2 limit ?3 offset ?4", nativeQuery = true)
   public List<Location> queryByTypePage(@Param("type")Integer type, @Param("sort")String sort,@Param("pageSize") Integer pageSize, @Param("offset")Integer offset);
 
 }
