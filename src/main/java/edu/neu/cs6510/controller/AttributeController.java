@@ -22,7 +22,7 @@ public class AttributeController {
 
     @ApiOperation(value = "find Availbe Attr by location level")
     @GetMapping("/api/attributes")
-    public ResponseMessage findAllAttributesForSpecificStates(@RequestParam(value = "level") String level) {
+    public ResponseMessage findAllAttributesForSpecificStates(@RequestParam(value = "level", required = false) String level) {
         return attributeService.findAllAttributesForSpecificStates(level);
     }
 
