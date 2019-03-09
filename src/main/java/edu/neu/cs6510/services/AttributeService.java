@@ -22,11 +22,12 @@ public class AttributeService {
 
     @Autowired
     AttributeMappingRepository attributeMappingRepository;
+    
     @Autowired
     LookUpService lookUpService;
+    
     @Autowired
-    LookUpRepository lookUpRepository;
-
+	LookUpRepository lookUpRepository;
 
 
     public ResponseMessage findAllAttributesForSpecificStates(@RequestParam(value = "level") String level) {
