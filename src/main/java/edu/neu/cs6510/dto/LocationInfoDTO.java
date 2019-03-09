@@ -33,4 +33,11 @@ public class LocationInfoDTO {
 		this.attributeValues = new ArrayList<>();
 	}
 
+	@Override
+	public String toString() {
+		return "LocationInfoDTO{" +
+				"location=" + location +
+				", attributeValues=" + attributeValues +
+				'}';
+	}
 }

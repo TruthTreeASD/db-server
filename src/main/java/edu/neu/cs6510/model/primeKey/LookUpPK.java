@@ -50,4 +50,13 @@ public class LookUpPK implements Serializable {
     public int hashCode() {
         return Objects.hash(attribute_mapping_id, location_id, year);
     }
+
+    @Override
+    public String toString() {
+        return "LookUpPK{" +
+                "attribute_mapping_id=" + attribute_mapping_id +
+                ", location_id=" + location_id +
+                ", year=" + year +
+                '}';
+    }
 }

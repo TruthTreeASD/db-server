@@ -40,8 +40,7 @@ public class LookUpService {
 			@RequestParam(value = "attributes") List<Integer> attributeIds) {
 
 		int typeCode = locationRepository.findTypeCode(locationId);
-		
-		
+
 		List<Location> locations = locationRepository.findAllLocationsAtGivenLevel(typeCode);
 		
 		List<Integer> locationsIds = new ArrayList<Integer>();
