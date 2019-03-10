@@ -37,6 +37,7 @@ public class AttributeService {
 
     private List<AttributeMapping> findAllAttributesAtLevels(String level) {
         List<Integer> ids = null;
+        if (level == null || level.isEmpty()) return (List) attributeMappingRepository.findAll();
         switch (level.toLowerCase()) {
             case "state":
                 ids = attributeMappingRepository.findStateAttrIds();
@@ -44,11 +45,8 @@ public class AttributeService {
             case "county":
                 ids = attributeMappingRepository.findCountyAttrIds();
                 break;
-            case "city":
-                ids = attributeMappingRepository.findCityAttrIds();
-                break;
             default:
-                return new ArrayList<>();
+                ids = attributeMappingRepository.findCityAttrIds();
         }
         List<AttributeMapping> attributeMappings = (List<AttributeMapping>) attributeMappingRepository.findAllById(ids);
         return attributeMappings;

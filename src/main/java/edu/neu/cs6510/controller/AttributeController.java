@@ -22,7 +22,7 @@ public class AttributeController {
 
     @ApiOperation(value = "find Availbe Attr by location level")
     @GetMapping("/api/attributes")
-    public ResponseMessage findAllAttributesForSpecificStates(@RequestParam(value = "level") String level) {
+    public ResponseMessage findAllAttributesForSpecificStates(@RequestParam(value = "level", required = false) String level) {
         return attributeService.findAllAttributesForSpecificStates(level);
     }
 
@@ -33,7 +33,7 @@ public class AttributeController {
         return attributeService.findAllAttributesForACollection(collection);
     }
 
-    @ApiOperation(value = "find attributes for a collection and property")
+    @ApiOperation(value = "find attributes for a collection and property [not in used]")
     @GetMapping("/api/attributes/collection&property")
     public ResponseMessage findAllAttributesForCollectionAndProperty(
             @RequestParam(value = "collection") List<Integer> collection,

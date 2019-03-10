@@ -55,10 +55,10 @@ public class LookUpController {
 
     @ApiOperation(value = "query values for given attribute and year/locationId/typeCode", notes = "")
     @GetMapping("/api/findValue")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "orderBy", value = "order by key word: name for location name, year for current year, value for current value"),
-            @ApiImplicitParam(name = "from", value = "range begin, default: 0"),
-            @ApiImplicitParam(name = "to", value = "range end, default: Integer.MAX_VALUE")})
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "orderBy", value = "order by key word: name for location name, year for current year, value for current value"),
+//            @ApiImplicitParam(name = "from", value = "range begin, default: Integer.MIN_VALUE"),
+//            @ApiImplicitParam(name = "to", value = "range end, default: Integer.MAX_VALUE")})
     public ResponseMessage<Page> findRecords(@RequestParam(value = "attributeId") List<Integer> attributeId,
                                              @RequestParam(value = "year", required = false) List<Integer> year,
                                              @RequestParam(value = "locationId", required = false) List<Integer> locationId,
@@ -66,7 +66,7 @@ public class LookUpController {
                                              @RequestParam(value = "parentId", required = false) Integer parentId,
                                              @RequestParam(value = "orderBy", defaultValue = "year") String orderBy,
                                              @RequestParam(value = "order", defaultValue = "DESC") String order,
-                                             @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                             @RequestParam(value = "from", defaultValue = "-2147483648") Integer from,
                                              @RequestParam(value = "to", defaultValue = "2147483647") Integer to,
                                              @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
                                              @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage) {
