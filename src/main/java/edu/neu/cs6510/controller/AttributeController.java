@@ -33,7 +33,7 @@ public class AttributeController {
         return attributeService.findAllAttributesForACollection(collection);
     }
 
-    @ApiOperation(value = "find attributes for a collection and property")
+    @ApiOperation(value = "find attributes for a collection and property [not in used]")
     @GetMapping("/api/attributes/collection&property")
     public ResponseMessage findAllAttributesForCollectionAndProperty(
             @RequestParam(value = "collection") List<Integer> collection,

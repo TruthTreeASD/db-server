@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.List;
 
 import edu.neu.cs6510.util.Page;
+import edu.neu.cs6510.util.cache.CacheEnum;
+import edu.neu.cs6510.util.cache.EHCacheUtils;
+import edu.neu.cs6510.util.cache.ValuePagePojo;
+import net.sf.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +24,10 @@ import edu.neu.cs6510.util.http.Result;
 
 @Service
 public class LookUpService {
+
+
+    @Autowired
+    CacheManager cacheManager;
 	@Autowired
 	LookUpRepository lookUpRepository;
 
@@ -117,17 +125,31 @@ public class LookUpService {
 	    List data;
 	    Integer total;
 
+        ValuePagePojo valuePagePojo = new ValuePagePojo(attributeId, year, locationId, typeCode, parentId, orderBy, order, from, to, pageSize, currentPage);
+        boolean exist = EHCacheUtils.isExsit(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString());
         String sort = orderBy + " " + order;
         int flag = year == null ? -1 : 0;
         year = year == null ? Arrays.asList(-1) : year;
         if (typeCode != null) {
-            total = lookUpRepository.queryLookUpDataTotal(attributeId, year,typeCode, from, to, flag);
+            if (!exist) {
+                total = lookUpRepository.queryLookUpDataTotal(attributeId, year,typeCode, from, to, flag);
+                EHCacheUtils.setCache(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString(), total);
+            }
+            total = (Integer) EHCacheUtils.getCache(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString());
             data = lookUpRepository.queryLookUpData(attributeId, year,typeCode, from, to, sort, flag, pageSize, pageSize * (currentPage - 1));
         }else if (parentId != null) {
-            total =lookUpRepository.queryLookUpDataParentIdTotal(attributeId, year, parentId, from, to, flag);
+            if (!exist) {
+                total =lookUpRepository.queryLookUpDataParentIdTotal(attributeId, year, parentId, from, to, flag);
+                EHCacheUtils.setCache(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString(), total);
+            }
+            total = (Integer) EHCacheUtils.getCache(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString());
             data = lookUpRepository.queryLookUpDataParentId(attributeId, year, parentId, from, to, sort, flag, pageSize, pageSize * (currentPage - 1));
         }else if (locationId != null && !locationId.isEmpty()){
-            total = lookUpRepository.queryLookUpDataTotal(attributeId, year,locationId,from, to, flag);
+            if (!exist) {
+                total = lookUpRepository.queryLookUpDataTotal(attributeId, year,locationId,from, to, flag);
+                EHCacheUtils.setCache(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString(), total);
+            }
+            total = (Integer) EHCacheUtils.getCache(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString());
             data = lookUpRepository.queryLookUpData(attributeId, year,locationId,from, to, sort, flag, pageSize, pageSize * (currentPage - 1));
         } else {
             return Result.error("Please provide locationId or type code");

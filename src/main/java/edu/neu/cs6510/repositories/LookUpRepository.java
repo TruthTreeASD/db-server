@@ -27,7 +27,7 @@ public interface LookUpRepository extends CrudRepository<LookUpData, Integer> {
 
     /*******************************************************************************************************************************************************************************/
 
-    @Query(value = "select a.* from (select attribute_mapping_id as attribute_id, location_id, year, value  from gov_fin_lookup " +
+    @Query(value = "select  a.attribute_id, a.location_id, a.year, a.value from (select attribute_mapping_id as attribute_id, location_id, year, value  from gov_fin_lookup " +
             "where attribute_mapping_id in ?1 and (-1 = ?7 or year in ?2) " +
             "and (COALESCE( null, ?3) is null or location_id in ?3) and value between ?4 and ?5) as a "  +
             "join gov_fin_location_info on a.location_id = gov_fin_location_info.id ORDER by ?6 limit ?8 offset ?9", nativeQuery = true)
@@ -44,7 +44,7 @@ public interface LookUpRepository extends CrudRepository<LookUpData, Integer> {
                                  @Param("locationId") List<Integer> locationId,
                                  @Param("from")Integer from, @Param("to")Integer to, @Param("yearSize") Integer yearSize);
 
-    @Query(value = "select  a.* from (select attribute_mapping_id as attribute_id, location_id, year, value from gov_fin_lookup " +
+    @Query(value = "select   a.attribute_id, a.location_id, a.year, a.value from (select attribute_mapping_id as attribute_id, location_id, year, value from gov_fin_lookup " +
             "where attribute_mapping_id in ?1 and (-1 = ?7 or year in ?2) " +
             "and value between ?4 and ?5 and (COALESCE( null, ?3) is null or location_id in (select id from gov_fin_location_info where type_code = ?3))) as a " +
             "join gov_fin_location_info on a.location_id = gov_fin_location_info.id ORDER by ?6 limit ?8 offset ?9", nativeQuery = true)
@@ -60,7 +60,7 @@ public interface LookUpRepository extends CrudRepository<LookUpData, Integer> {
                                  @Param("typeCode") Integer typeCode, @Param("from") Integer from,
                                  @Param("to")Integer to,@Param("yearSize") Integer yearSize);
 
-    @Query(value = "select a.* from (select attribute_mapping_id as attribute_id, location_id, year, value from gov_fin_lookup " +
+    @Query(value = "select  a.attribute_id, a.location_id, a.year, a.value from (select attribute_mapping_id as attribute_id, location_id, year, value from gov_fin_lookup " +
             "where attribute_mapping_id in ?1 and (-1 = ?7 or year in ?2) " +
             "and value between ?4 and ?5 and (COALESCE( null, ?3) is null or location_id in (select id from gov_fin_location_info where parent_id = ?3))) as a " +
             "join gov_fin_location_info on a.location_id = gov_fin_location_info.id ORDER by ?6 limit ?8 offset ?9", nativeQuery = true)
