@@ -2,6 +2,12 @@ package edu.neu.cs6510.model;
 
 import javax.persistence.*;
 
+/**
+ * Property represents 'gov_fin_property' table as Property object
+ * Its attributes are:
+ * 1. id    : unique id of a property
+ * 2. name  : name of property
+ */
 @Entity
 @Table(name = "gov_fin_property")
 public class Property {
