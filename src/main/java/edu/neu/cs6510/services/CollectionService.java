@@ -37,7 +37,6 @@ public class CollectionService {
     @Autowired
     CacheManager cacheManager;
 
-
     public ResponseMessage findAllCollections() {
         return Result.success(collectionRepository.findAll());
     }
@@ -148,8 +147,6 @@ public class CollectionService {
         return Result.success(mappings);
     }
 
-
-
     public ResponseMessage findCollectionByIds(List<Integer> ids) {
         return Result.success(collectionRepository.findAllById(ids));
     }
@@ -170,7 +167,6 @@ public class CollectionService {
             return Result.success(collectionRepository.findAllAvailableAttri(year));
         }
     }
-
 
     public ResponseMessage attriTimeRange(String level, List<Integer> attributes) {
         int code = level.equalsIgnoreCase("state") ? 0

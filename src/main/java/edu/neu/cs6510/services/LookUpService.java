@@ -2,7 +2,6 @@ package edu.neu.cs6510.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import edu.neu.cs6510.util.Page;
@@ -25,9 +24,9 @@ import edu.neu.cs6510.util.http.Result;
 @Service
 public class LookUpService {
 
-
     @Autowired
     CacheManager cacheManager;
+
 	@Autowired
 	LookUpRepository lookUpRepository;
 
