@@ -6,6 +6,13 @@ import java.util.List;
 import edu.neu.cs6510.model.Location;
 import edu.neu.cs6510.model.LookUpData;
 
+/**
+ * LocationInfoDTO represents a date-time object.
+ * This date-time object represents a part of Location class information and has:
+ * 1. location          : Location object having parameters like latitude, longitude, id, type_code, etc
+ * 2. attributeValues   : list of LookUpData objects containing values for attributes as per locations
+ * 						  for specified years
+ */
 public class LocationInfoDTO {
 
 	Location location;

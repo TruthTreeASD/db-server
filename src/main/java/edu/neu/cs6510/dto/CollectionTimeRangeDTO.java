@@ -1,7 +1,13 @@
 package edu.neu.cs6510.dto;
 
 import java.util.List;
-
+/**
+ * CollectionTimeRangeDTO represents a date-time object.
+ * This date-time object represents a part of Collection class information and has:
+ * 1. name              : name of the collection
+ * 2. collection_id     : id of the collection
+ * 3. attributes        : list of attribute time-range date-time objects
+ */
 public class CollectionTimeRangeDTO {
     private String name;
     private Integer collection_id;

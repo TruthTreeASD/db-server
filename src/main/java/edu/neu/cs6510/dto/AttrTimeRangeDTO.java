@@ -1,5 +1,14 @@
 package edu.neu.cs6510.dto;
-
+/**
+ * AttrTimeRangeDTO represents a date-time object.
+ * This date-time object represents a part of AttributeMapping information and has:
+ * 1. attribute_name    : name of the attribute
+ * 2. attribute_id      : id of the attribute
+ * 3. startYear         : start year of the range for this attribute
+ * 4. endYear           : end year of the range for this attribute
+ * 5. property_name     : name of property for this attribute
+ * 6. property_id       : id of property for this attribute
+ */
 public class AttrTimeRangeDTO {
     private String attribute_name;
     private Integer attribute_id;

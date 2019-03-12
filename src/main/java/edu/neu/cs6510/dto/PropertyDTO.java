@@ -1,5 +1,11 @@
 package edu.neu.cs6510.dto;
 
+/**
+ * PropertyDTO represents a date-time object.
+ * This date-time object represents a part of Property class information and has:
+ * 1. name          : name of property
+ * 2. property_id   : id of property
+ */
 public class PropertyDTO {
 
     private String name;

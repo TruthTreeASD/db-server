@@ -1,5 +1,13 @@
 package edu.neu.cs6510.dto;
 
+/**
+ * CollectionInfoDTO represents a date-time object.
+ * This date-time object represents a part of Collection class information and has:
+ * 1. attribute_name    : name of the attribute
+ * 2. attribute_id      : id of the attribute
+ * 3. property_name     : name of property
+ * 4. property_id       : id of property
+ */
 public class CollectionInfoDTO {
 
     String attribute_name;
