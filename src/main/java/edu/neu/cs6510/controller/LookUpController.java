@@ -28,10 +28,10 @@ public class LookUpController {
     @Autowired
     LocationService locationService;
 
-    @GetMapping("/api/lookup/all")
-    public ResponseMessage findAllRecords() {
-        return lookUpService.findAllRecords();
-    }
+//    @GetMapping("/api/lookup/all")
+//    public ResponseMessage findAllRecords() {
+//        return lookUpService.findAllRecords();
+//    }
     
     @ApiOperation(value = "Find values for specified attributes and year for all locations at same level")
     @GetMapping("/api/lookup/location&year&attributeIds")

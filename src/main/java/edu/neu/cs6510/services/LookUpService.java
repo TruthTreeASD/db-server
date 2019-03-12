@@ -125,7 +125,7 @@ public class LookUpService {
 	    List data;
 	    Integer total;
 
-        ValuePagePojo valuePagePojo = new ValuePagePojo(attributeId, year, locationId, typeCode, parentId, orderBy, order, from, to, pageSize, currentPage);
+        ValuePagePojo valuePagePojo = new ValuePagePojo(attributeId, year, locationId, typeCode, parentId, orderBy, order, from, to);
         boolean exist = EHCacheUtils.isExsit(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString());
         String sort = orderBy + " " + order;
         int flag = year == null ? -1 : 0;
