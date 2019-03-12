@@ -100,7 +100,12 @@ public class AttributeService {
 
 	}
 
-	
+	/**
+	 * Helper method to find All attributes for the given collections and properties.
+	 * @param collection list of collection ids
+	 * @param property list of property ids
+	 * @return Attribute List
+	 */
 	private List<AttributeValue> findAllAttributesWithValuesHelper(List<Integer> collection, List<Integer> property) {
 		List<AttributeMapping> allAttributes = (List<AttributeMapping>) attributeMappingRepository.findAll();
 		List<AttributeMapping> attributeForCollections = new ArrayList<>();
@@ -210,6 +215,12 @@ public class AttributeService {
 
 	}
 
+	/**
+	 * Helper method to return Values for given attributes and states along with attribute, property and collection information.
+	 * @param attributeIds
+	 * @param stateIds
+	 * @return attribute value information
+	 */
 	private List<AttributeValue> findAttributeByIdsForStateHelper(List<Integer> attributeIds, List<Integer> stateIds) {
 		List<AttributeValue> attributeValueList = new ArrayList<>();
 		// List<AttributeMapping> allAttributes = (List<AttributeMapping>)
