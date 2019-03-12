@@ -20,17 +20,24 @@ public class LookUpDataTest {
     lookUpPK.setAttribute_mapping_id(1);
     lookUpPK.setLocation_id(1);
     lookUpPK.setYear(2019);
+
+    lookUpData.setLookUpPK(lookUpPK);
+    lookUpData.setValue(1.0);
   }
 
   @Test
   public void getLookUpPK() {
-    lookUpData.setLookUpPK(lookUpPK);
     Assert.assertEquals(lookUpPK, lookUpData.getLookUpPK());
   }
 
   @Test
   public void getValue() {
-    lookUpData.setValue(1.0);
     Assert.assertEquals(new Double(1.0), lookUpData.getValue());
+  }
+
+  @Test
+  public void testToString() {
+    Assert.assertEquals("LookUpData{lookUpPK=LookUpPK{attribute_mapping_id=1, " +
+        "location_id=1, year=2019}, value=1.0}", lookUpData.toString());
   }
 }
