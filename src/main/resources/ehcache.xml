@@ -10,6 +10,7 @@
             timeToIdleSeconds="0"
             timeToLiveSeconds="600"
             memoryStoreEvictionPolicy="LRU" />
+
     <cache
             name="VALUE_PAIGINATION"
             eternal="false"
@@ -18,15 +19,5 @@
             diskPersistent="false"
             timeToIdleSeconds="0"
             timeToLiveSeconds="300"
-            memoryStoreEvictionPolicy="LRU" />
-
-    <cache
-            name="AVAILABLE_ATTRIBUTE"
-            eternal="false"
-            maxElementsInMemory="500"
-            overflowToDisk="false"
-            diskPersistent="false"
-            timeToIdleSeconds="0"
-            timeToLiveSeconds="3600"
             memoryStoreEvictionPolicy="LRU" />
 </ehcache>

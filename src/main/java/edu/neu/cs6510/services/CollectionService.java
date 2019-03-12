@@ -7,13 +7,9 @@ import edu.neu.cs6510.repositories.AttributeMappingRepository;
 import edu.neu.cs6510.repositories.CollectionRepository;
 import edu.neu.cs6510.repositories.PropertyRepository;
 import edu.neu.cs6510.util.BeanMapper;
-import edu.neu.cs6510.util.cache.AvailableAttriPojo;
-import edu.neu.cs6510.util.cache.CacheEnum;
 import edu.neu.cs6510.util.cache.CacheService;
-import edu.neu.cs6510.util.cache.EHCacheUtils;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
-import net.sf.ehcache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,8 +30,6 @@ public class CollectionService {
     PropertyRepository propertyRepository;
     @Autowired
     BeanMapper beanMapper;
-    @Autowired
-    CacheManager cacheManager;
 
 
     public ResponseMessage findAllCollections() {
@@ -155,17 +149,12 @@ public class CollectionService {
     }
 
     public ResponseMessage findAvailbeAttr(String level, Integer year, Integer id) {
-        AvailableAttriPojo availableAttriPojo = new AvailableAttriPojo(level, year, id);
         if (id != null) {
             return Result.success(collectionRepository.findAvailableAttriById(id, year));
         } else if (StringUtils.isNotEmpty(level)){
             int code = level.equalsIgnoreCase("state") ? 0
                     : level.equalsIgnoreCase("county") ? 1 :2;
-            if (!EHCacheUtils.isExsit(cacheManager, CacheEnum.AVAILABLE_ATTRIBUTE, availableAttriPojo.toString())) {
-                List<Integer> res = collectionRepository.findAvailableAttriByLevel(code, year);
-                EHCacheUtils.setCache(cacheManager, CacheEnum.AVAILABLE_ATTRIBUTE, availableAttriPojo.toString(), res);
-            }
-            return Result.success(EHCacheUtils.getCache(cacheManager, CacheEnum.AVAILABLE_ATTRIBUTE, availableAttriPojo.toString()));
+            return Result.success(collectionRepository.findAvailableAttriByLevel(code, year));
         } else {
             return Result.success(collectionRepository.findAllAvailableAttri(year));
         }
