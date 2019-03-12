@@ -1,6 +1,7 @@
 package edu.neu.cs6510.util.cache;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ValuePagePojo {
     private List<Integer> attributeId;
@@ -12,10 +13,8 @@ public class ValuePagePojo {
     private String order;
     private Integer from;
     private Integer to;
-    private Integer pageSize;
-    private Integer currentPage;
 
-    public ValuePagePojo(List<Integer> attributeId, List<Integer> year, List<Integer> locationId, Integer typeCode, Integer parentId, String orderBy, String order, Integer from, Integer to, Integer pageSize, Integer currentPage) {
+    public ValuePagePojo(List<Integer> attributeId, List<Integer> year, List<Integer> locationId, Integer typeCode, Integer parentId, String orderBy, String order, Integer from, Integer to) {
         this.attributeId = attributeId;
         this.year = year;
         this.locationId = locationId;
@@ -25,8 +24,6 @@ public class ValuePagePojo {
         this.order = order;
         this.from = from;
         this.to = to;
-        this.pageSize = pageSize;
-        this.currentPage = currentPage;
     }
 
     public List<Integer> getAttributeId() {
@@ -101,36 +98,25 @@ public class ValuePagePojo {
         this.to = to;
     }
 
-    public Integer getPageSize() {
-        return pageSize;
-    }
 
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public Integer getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ValuePagePojo that = (ValuePagePojo) o;
+        return Objects.equals(attributeId, that.attributeId) &&
+                Objects.equals(year, that.year) &&
+                Objects.equals(locationId, that.locationId) &&
+                Objects.equals(typeCode, that.typeCode) &&
+                Objects.equals(parentId, that.parentId) &&
+                Objects.equals(orderBy, that.orderBy) &&
+                Objects.equals(order, that.order) &&
+                Objects.equals(from, that.from) &&
+                Objects.equals(to, that.to);
     }
 
     @Override
-    public String toString() {
-        return "ValuePagePojo{" +
-                "attributeId=" + attributeId +
-                ", year=" + year +
-                ", locationId=" + locationId +
-                ", typeCode=" + typeCode +
-                ", parentId=" + parentId +
-                ", orderBy='" + orderBy + '\'' +
-                ", order='" + order + '\'' +
-                ", from=" + from +
-                ", to=" + to +
-                ", pageSize=" + pageSize +
-                ", currentPage=" + currentPage +
-                '}';
+    public int hashCode() {
+        return Objects.hash(attributeId, year, locationId, typeCode, parentId, orderBy, order, from, to);
     }
 }
