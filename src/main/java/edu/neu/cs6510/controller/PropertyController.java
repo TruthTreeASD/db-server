@@ -14,20 +14,32 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*")
 public class PropertyController {
 
-    @Autowired
-    PropertyService propertyService;
+	@Autowired
+	PropertyService propertyService;
 
-    @GetMapping("/api/property/all")
-    public ResponseMessage findAllProperties() {
-        return propertyService.findAllProperties();
-    }
+	/**
+	 * Method to get all the properties.
+	 * 
+	 * @return List of all properties in the response.
+	 */
+	@GetMapping("/api/property/all")
+	public ResponseMessage findAllProperties() {
+		return propertyService.findAllProperties();
+	}
 
-    @ApiOperation(value = "find property information by ids")
-    @GetMapping("/api/queryPropertyById")
-    public ResponseMessage findPropertyById(@RequestParam("id") List<Integer> ids) {
-        return Result.success(propertyService.findPropertyById(ids));
-    }
+	/**
+	 * Method to give information about a property by property id.
+	 * 
+	 * @param ids
+	 *            list of properties
+	 * @return List of Property DTO in the response which has property information
+	 */
+	@ApiOperation(value = "find property information by ids")
+	@GetMapping("/api/queryPropertyById")
+	public ResponseMessage findPropertyById(@RequestParam("id") List<Integer> ids) {
+		return Result.success(propertyService.findPropertyById(ids));
+	}
 }
