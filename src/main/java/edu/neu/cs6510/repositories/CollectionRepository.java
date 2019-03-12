@@ -7,7 +7,10 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
-
+/**
+ * CollectionRepository is implemented as an interface that allows to do CRUD operations
+ * for Collection class which is mapped to 'gov_fin_collection' table.
+ */
 public interface CollectionRepository extends CrudRepository<Collection, Integer> {
 
     @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +
