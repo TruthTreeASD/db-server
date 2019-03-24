@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -23,7 +24,14 @@ public class StoryService {
     private static String TYPE = "story";
 
     public Story createStory(Story story, JestClient client){
-        Index index = new Index.Builder(story).index(INDEX).type(TYPE).build();
+        Story storyToAdd = new Story();
+        storyToAdd.setId(story.getId());
+        storyToAdd.setBody(story.getBody());
+        storyToAdd.setTitle(story.getTitle());
+        storyToAdd.setTags(story.getTags());
+        storyToAdd.setAuthor(story.getAuthor());
+        storyToAdd.setVotes(story.getVotes());
+        Index index = new Index.Builder(storyToAdd).index(INDEX).type(TYPE).build();
         try {
             client.execute(index);
             return story;
@@ -63,7 +71,7 @@ public class StoryService {
 
     public List<Story> getById(String id, JestClient client) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.matchQuery("id", id));
+        searchSourceBuilder.query(QueryBuilders.idsQuery(TYPE).addIds(id));
         Search search = new Search.Builder(searchSourceBuilder.toString())
                 // multiple index or types can be added.
                 .addIndex(INDEX)
@@ -87,7 +95,7 @@ public class StoryService {
             story.setId(jsonObject1.get("id").toString());
             story.setAuthor(jsonObject1.get("author").toString());
             story.setBody(jsonObject1.get("body").toString());
-            story.setTags((List<String>) jsonObject1.get("tags"));
+            story.setTags(Arrays.asList(jsonObject1.get("tags").toString().split(",")));
             story.setTitle(jsonObject1.get("title").toString());
             story.setVotes(Integer.parseInt(jsonObject1.get("votes").toString()));
             stories.add(story);

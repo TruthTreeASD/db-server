@@ -1,8 +1,11 @@
 package edu.neu.cs6510.model;
 
+import io.searchbox.annotations.JestId;
+
 import java.util.List;
 
 public class Story {
+    @JestId
     private String id;
     private String author;
     private String title;
