@@ -6,6 +6,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * AttributeMapping class maps to 'gov_fin_attribute_mapping' table as AttributeMapping object
+ * Its attributes are:
+ * 1. id 			: unique id of attribute
+ * 2. name			: name of attribute
+ * 3. collection_id	: collection id of a collection to which attribute belongs
+ * 4. property_id	: property id of a property to which attribute belongs
+ */
 @Entity
 @Table(name = "gov_fin_attribute_mapping")
 public class AttributeMapping {

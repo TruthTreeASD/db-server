@@ -37,11 +37,21 @@ public class CollectionService {
     @Autowired
     CacheManager cacheManager;
 
-
+    /**
+     * Method that gives all the collectionns.
+     * @return collection list in the response
+     */
     public ResponseMessage findAllCollections() {
         return Result.success(collectionRepository.findAll());
     }
 
+    /**
+     * Method to return attributes by either level, year or id
+     * @param level state, city or county
+     * @param year 
+     * @param id attribute id
+     * @return
+     */
     @Deprecated
     public ResponseMessage findAvailbeAttr1(String level, Integer year, Integer id) {
         List<Integer> ids = null;
@@ -89,6 +99,13 @@ public class CollectionService {
         return Result.success(collectionsDTOS);
 
     }
+    
+    /**
+     * Method to return time-range for given location and attribute id
+     * @param level state, city or county
+     * @param attributes list of attributes
+     * @return Collections for the location and attribute id
+     */
     @Deprecated
     public ResponseMessage<List<CollectionTimeRangeDTO>> findAvailbeAttr(String level, List<Integer> attributes) {
         String maxMinVal = null;
@@ -129,6 +146,12 @@ public class CollectionService {
         return Result.success(res);
     }
 
+    /**
+     * Method to return time-range for given location and attribute id
+     * @param level state, city or county
+     * @param attributes list of attributes
+     * @return Collections for the location and attribute id
+     */
     public ResponseMessage findAvailbeAttr(Integer id) {
         List<AttributeMapping> attributeMappings = attributeMappingRepository.findByCollectionId(id);
         List<CollectionInfoDTO> collectionsDTOS = new ArrayList<>();
@@ -140,6 +163,12 @@ public class CollectionService {
         return Result.success(collectionsDTOS);
     }
 
+    /**
+     * Method to find Availbe Attr by collection and property pairs
+     * @param collection_ids 
+     * @param property_ids
+     * @return Matching attributes
+     */
     public ResponseMessage findAvailbeAttr(List<Integer> collection_ids, List<Integer> property_ids) {
         List<AttributeMapping> mappings  = new ArrayList<>();
         for (Integer cId : collection_ids) {
@@ -148,12 +177,22 @@ public class CollectionService {
         return Result.success(mappings);
     }
 
-
-
+    /**
+     * Information for collections for the given ids
+     * @param ids collection ids
+     * @return Collection Information
+     */
     public ResponseMessage findCollectionByIds(List<Integer> ids) {
         return Result.success(collectionRepository.findAllById(ids));
     }
 
+    /**
+     * Method to find Available Attr by location/ location level/ given year
+     * @param level either state, city or county
+     * @param year 
+     * @param id is the Location id
+     * @return available attribute list
+     */
     public ResponseMessage findAvailbeAttr(String level, Integer year, Integer id) {
         AvailableAttriPojo availableAttriPojo = new AvailableAttriPojo(level, year, id);
         if (id != null) {
@@ -171,7 +210,12 @@ public class CollectionService {
         }
     }
 
-
+    /**
+     * Method to find time-range for given location level and attr id
+     * @param level either state, city or county
+     * @param attributes
+     * @return available attribute list
+     */
     public ResponseMessage attriTimeRange(String level, List<Integer> attributes) {
         int code = level.equalsIgnoreCase("state") ? 0
                 : level.equalsIgnoreCase("county") ? 1 :2;

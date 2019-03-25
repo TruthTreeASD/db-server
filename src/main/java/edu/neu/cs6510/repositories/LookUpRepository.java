@@ -8,7 +8,14 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
-
+/**
+ * LookUpRepository is implemented as an interface that allows to do CRUD operations
+ * for LookUpData class which is mapped to 'gov_fin_lookup' table.
+ * Some of the CRUD operations are:
+ * 1. To find lookup data for a specific attribute id
+ * 2. To find lookup data for a specific attribute id and given location
+ * 3. To find lookup data for a specific attribute id and given location and a time range
+ */
 public interface LookUpRepository extends CrudRepository<LookUpData, Integer> {
     @Query(value = "select * from gov_fin_lookup where attribute_mapping_id = ?1", nativeQuery = true)
     List<LookUpData> findLookUpDataForAttributeId(@Param("id") Integer id);

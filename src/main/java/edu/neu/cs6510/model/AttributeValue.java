@@ -2,6 +2,16 @@ package edu.neu.cs6510.model;
 
 import edu.neu.cs6510.model.primeKey.LookUpPK;
 
+/**
+ * AttributeValue represents all the information related to an attribute
+ * It is represented as :
+ * 1. value         : value of attribute
+ * 2. lookUpPk      : lookUpPk consists : location_id, attribute_id, year where attribute_id is id of attribute
+ * 3. attributeName : name of attribute
+ * 4. attributeId   : id of attribute
+ * 5. propertyId    : property id of a property to which attribute belongs
+ * 6. collectionId  : collection id of a collection to which attribute belongs
+ */
 public class AttributeValue {
     private Double value;
     private LookUpPK lookUpPK;

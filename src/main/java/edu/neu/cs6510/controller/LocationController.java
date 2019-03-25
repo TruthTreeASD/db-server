@@ -24,42 +24,81 @@ public class LocationController {
   LocationService locationService;
 
 
+  /**
+   * Method that gives all the locations.
+   * @return location list in the response
+   */
   @ApiOperation(value = "find all locations")
   @GetMapping("/api/location/all")
   public ResponseMessage<List<Location>> findAllLocationBasedData() {
     return locationService.findAllLocationBasedData();
   }
 
+  /**
+   * Method that gives all the cities for a given county.
+   * @id county id
+   * @return city list in the response
+   */
   @ApiOperation(value = "find cities")
   @GetMapping("/api/location/city")
   public ResponseMessage<List<Location>> findCities(@RequestParam(value = "id", required = false) Integer id) {
     return locationService.findCities(id);
   }
 
+  /**
+   * Method that gives all the states.
+   * @return state list in the response
+   */
   @ApiOperation(value = "find all states")
   @GetMapping("/api/location/state")
   public ResponseMessage<List<Location>> findStates() {
     return locationService.findStates();
   }
 
+  /**
+   * Method that gives all the counties for a given state.
+   * @id state id
+   * @return county list in the response
+   */
   @ApiOperation(value = "find all counties")
   @GetMapping("/api/location/county")
   public ResponseMessage<List<Location>> findCounties(@RequestParam(value = "id", required = false) Integer id) {
     return locationService.findCounties(id);
   }
 
+  /**
+   * Method to find parent for a given location.
+   * @param id for the location we wish to find the parent for
+   * @return Parent which is state for a county and a county for a city
+   */
   @ApiOperation(value = "find all parents")
   @GetMapping("/api/location/queryParents")
   public ResponseMessage<List<Location>> findParents(@RequestParam(value = "id") Integer id) {
     return locationService.findParents(id);
   }
 
+  /**
+   * Information about a location using the location id.
+   * @param id for the location
+   * @return location info in the location dto
+   */
   @ApiOperation(value = "find by id")
   @GetMapping("/api/location/queryById")
   public ResponseMessage<Location> findById(@RequestParam(value = "id") Integer id) {
     return locationService.queryById(id);
   }
 
+  /**
+   * Find ids of all locations at same level by pagination by providing either location, typecode
+   * @param id of the location
+   * @param typeCode 
+   * @param parentId
+   * @param orderBy
+   * @param order
+   * @param pageSize
+   * @param currentPage
+   * @return list of locations in the response
+   */
   @ApiOperation(value = "find all counties")
   @GetMapping("/api/location")
   public ResponseMessage<Page<Location>> findLocPagination(@RequestParam(value = "id", required = false) Integer id,

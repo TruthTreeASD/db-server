@@ -6,7 +6,16 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-
+/**
+ * AttributeMappingRepository is implemented as an interface that allows to do CRUD operations
+ * for AttributeMapping class which is mapped to 'gov_fin_attribute_mapping' table.
+ * Some CRUD operations are:
+ * 1. find attribute mapping id for states only
+ * 2. find attribute mapping id for counties only
+ * 3. find attribute mapping id for cities only
+ * 4. find attribute mapping id for a specific collection
+ * 5. find attribute mappings for a specific collection and property
+ */
 public interface AttributeMappingRepository extends CrudRepository<AttributeMapping, Integer> {
 
     @Query(value = "select attribute_mapping_id from gov_fin_lookup join gov_fin_location_info on  " +

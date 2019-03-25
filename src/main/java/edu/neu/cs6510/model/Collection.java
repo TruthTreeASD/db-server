@@ -2,6 +2,12 @@ package edu.neu.cs6510.model;
 
 import javax.persistence.*;
 
+/**
+ * Class Collection represents the 'gov_fin_collection' table as Collection object
+ * Its attributes are:
+ * 1. id    : unique id of a collection
+ * 2. name  : name of the collection
+ */
 @Entity
 @Table(name = "gov_fin_collection")
 public class Collection {

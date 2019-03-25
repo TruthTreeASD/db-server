@@ -6,7 +6,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-
+/**
+ * LocationRepository is implemented as an interface that allows to do CRUD operations
+ * for Location class which is mapped to 'gov_fin_location_info' table.
+ * Some of the CRUD operations are:
+ * 1. To find all cities
+ * 2. To find all counties
+ * 3. To find all states
+ * 4. To find locations at a given level
+ */
 public interface LocationRepository extends CrudRepository<Location, Integer> {
 
 
