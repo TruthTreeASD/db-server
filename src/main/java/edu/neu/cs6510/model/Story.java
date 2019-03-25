@@ -9,9 +9,19 @@ public class Story {
     private String id;
     private String author;
     private String title;
-    private String body;
+    private String content;
     private int votes;
     private List<String> tags;
+    private Long timestamp;
+    private boolean isApproved;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAuthor() {
         return author;
@@ -29,12 +39,12 @@ public class Story {
         this.title = title;
     }
 
-    public String getBody() {
-        return body;
+    public String getContent() {
+        return content;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public int getVotes() {
@@ -53,11 +63,19 @@ public class Story {
         this.tags = tags;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public Long getTimestamp() {
+        return timestamp;
     }
 
-    public String getId() {
-        return id;
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public boolean isApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(boolean approved) {
+        isApproved = approved;
     }
 }

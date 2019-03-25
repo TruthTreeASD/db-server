@@ -30,6 +30,8 @@ public class StoryService {
     private static String TYPE = "story";
 
     public Story createStory(Story story){
+        story.setTimestamp(System.currentTimeMillis());
+        story.setApproved(false);
         Index index = new Index.Builder(story).index(INDEX).type(TYPE).build();
         try {
             client.execute(index);
