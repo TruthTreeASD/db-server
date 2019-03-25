@@ -5,13 +5,16 @@ import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
+@ConfigurationProperties(prefix = "elasticsearch")
 public class ElasticsearchConfig {
 
-    @Value("${elasticsearch.serverUrl}") private String serverUrl;
+    private String serverUrl;
 
     @Bean
     public JestClient Elasticsearchclient(){
@@ -24,4 +27,11 @@ public class ElasticsearchConfig {
 
     }
 
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
 }
