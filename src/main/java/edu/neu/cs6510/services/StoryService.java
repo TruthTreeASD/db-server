@@ -9,6 +9,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.core.Update;
 import io.searchbox.core.search.sort.Sort;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -115,6 +116,18 @@ public class StoryService {
             stories.add(story);
         }
         return stories;
+    }
+
+    public List<Story> updateVote(JestClient client, String id, String typeVote, int value){
+        String script = "{\n" +
+                "    \"script\" : \"ctx._source." + typeVote + " = " + value + "\""  + "\n" +
+                "}";
+        try {
+            client.execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return getById(id);
     }
 
 }

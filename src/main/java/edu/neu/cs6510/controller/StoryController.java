@@ -17,6 +17,9 @@ public class StoryController {
     @Autowired
     StoryService storyService;
 
+    @Autowired
+    JestClient client;
+
 
     @ApiOperation(value = "find all stories")
     @GetMapping("/stories/story/all")
@@ -28,7 +31,6 @@ public class StoryController {
     @ApiOperation(value = "find story by id")
     @GetMapping("/stories/story/{id}")
     public List<Story> findStoryById(@PathVariable(value = "id") String id) {
-
         return storyService.getById(id);
     }
 
@@ -51,4 +53,11 @@ public class StoryController {
     public List<Story> orderStoryByField(@PathVariable(value = "fieldName") String fieldName, @RequestParam(value = "orderType", required = false) String orderType) {
         return storyService.searchByFieldandOrder(fieldName, orderType);
     }
+
+    @ApiOperation(value = "update story upvote or downvote")
+    @PutMapping("/stories/story/{id}/update/vote")
+    public List<Story> updateStoryVotes(@PathVariable(value = "id") String id, @RequestParam(value = "voteType") String voteType, @RequestParam(value = "value") int value){
+        return storyService.updateVote(client, id, voteType, value);
+    }
+
 }
