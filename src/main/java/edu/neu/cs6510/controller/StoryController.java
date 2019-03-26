@@ -32,6 +32,7 @@ public class StoryController {
         return storyService.getById(id);
     }
 
+
     @ApiOperation(value = "add story")
     @PostMapping("/stories/story/add")
     public Story addStory(@RequestBody Story story) {
@@ -43,5 +44,11 @@ public class StoryController {
     public Story updateStory(@RequestBody Story story) {
         ElasticsearchConfig client = new ElasticsearchConfig();
         return storyService.updateStory(story);
+    }
+
+    @ApiOperation(value = "find story by id")
+    @GetMapping("/stories/story/all/sortBy={fieldName}")
+    public List<Story> orderStoryByField(@PathVariable(value = "fieldName") String fieldName, @RequestParam(value = "orderType", required = false) String orderType) {
+        return storyService.searchByFieldandOrder(fieldName, orderType);
     }
 }

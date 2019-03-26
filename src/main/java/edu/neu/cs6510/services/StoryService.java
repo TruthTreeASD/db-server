@@ -9,6 +9,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.core.search.sort.Sort;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -79,6 +79,32 @@ public class StoryService {
         }
         return getStoryFromJsonObject(result.getJsonObject());
     }
+
+    public List<Story> searchByFieldandOrder(String fieldname, String order) {
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        Sort sort = null;
+        if(order == null || order.toLowerCase().equals("asc")){
+            sort = new Sort(fieldname.toLowerCase(), Sort.Sorting.ASC);
+        }
+        else{
+            sort = new Sort(fieldname.toLowerCase(), Sort.Sorting.DESC);
+        }
+        Search search = new Search.Builder(searchSourceBuilder.toString())
+                // multiple index or types can be added.
+                .addIndex(INDEX)
+                .addType(TYPE)
+                .addSort(sort)
+                .build();
+        SearchResult result = null;
+        try {
+            result = client.execute(search);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return getStoryFromJsonObject(result.getJsonObject());
+
+    }
+
 
     public List<Story> getStoryFromJsonObject(JsonObject jsonObject) {
         List<Story> stories = new ArrayList<Story>();

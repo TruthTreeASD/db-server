@@ -10,7 +10,8 @@ public class Story {
     private String author;
     private String title;
     private String content;
-    private int votes;
+    private int upvote;
+    private int downvote;
     private List<String> tags;
     private Long timestamp;
     private boolean isApproved;
@@ -21,6 +22,22 @@ public class Story {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getUpvote() {
+        return upvote;
+    }
+
+    public void setUpvote(int upvote) {
+        this.upvote = upvote;
+    }
+
+    public int getDownvote() {
+        return downvote;
+    }
+
+    public void setDownvote(int downvote) {
+        this.downvote = downvote;
     }
 
     public String getAuthor() {
@@ -45,14 +62,6 @@ public class Story {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public int getVotes() {
-        return votes;
-    }
-
-    public void setVotes(int votes) {
-        this.votes = votes;
     }
 
     public List<String> getTags() {
