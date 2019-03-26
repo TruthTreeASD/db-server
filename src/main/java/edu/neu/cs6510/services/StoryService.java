@@ -43,7 +43,7 @@ public class StoryService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return getAll();
+        return getById(id);
     }
 
     public Story updateStory(Story story){
