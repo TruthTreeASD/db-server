@@ -11,6 +11,7 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 import io.searchbox.core.search.sort.Sort;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +129,26 @@ public class StoryService {
             e.printStackTrace();
         }
         return getById(id);
+    }
+
+    public List<Story> searchByKeyword(JestClient client, String keyword){
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders
+                .multiMatchQuery(keyword, "id", "content", "title", "author", "tags")
+                .type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX));
+        Search search = new Search.Builder(searchSourceBuilder.toString())
+                // multiple index or types can be added.
+                .addIndex(INDEX)
+                .addType(TYPE)
+                .build();
+
+        SearchResult result = null;
+        try {
+            result = client.execute(search);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return getStoryFromJsonObject(result.getJsonObject());
     }
 
 }

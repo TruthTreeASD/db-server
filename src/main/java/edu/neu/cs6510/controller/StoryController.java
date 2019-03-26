@@ -60,4 +60,10 @@ public class StoryController {
         return storyService.updateVote(client, id, voteType, value);
     }
 
+    @ApiOperation(value = "update story upvote or downvote")
+    @GetMapping("/stories/story/search/{keyword}")
+    public List<Story> updateStoryVotes(@PathVariable(value = "keyword") String keyword){
+        return storyService.searchByKeyword(client, keyword);
+    }
+
 }
