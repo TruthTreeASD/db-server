@@ -32,6 +32,9 @@ public class StoryService {
     private static String TYPE = "story";
 
     public Story createStory(Story story){
+        Long timeStamp = System.currentTimeMillis();
+        String id = story.getAuthor() + timeStamp.toString();
+        story.setId(id);
         story.setTimestamp(System.currentTimeMillis());
         story.setApproved(false);
         Index index = new Index.Builder(story).index(INDEX).type(TYPE).build();
