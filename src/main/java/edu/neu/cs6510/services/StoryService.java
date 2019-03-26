@@ -32,16 +32,18 @@ public class StoryService {
     private static String TYPE = "story";
 
     public Story createStory(Story story){
+        Long timestamp = System.currentTimeMillis();
+        String id = story.getAuthor() + timestamp.toString();
+        story.setId(id);
         story.setTimestamp(System.currentTimeMillis());
         story.setApproved(false);
         Index index = new Index.Builder(story).index(INDEX).type(TYPE).build();
         try {
             client.execute(index);
-            return story;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return getById(id);
     }
 
     public Story updateStory(Story story){
@@ -52,7 +54,7 @@ public class StoryService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return getById(story.getId());
     }
 
     public List<Story> getAll() {
@@ -61,10 +63,10 @@ public class StoryService {
         return search(searchSourceBuilder);
     }
 
-    public List<Story> getById(String id) {
+    public Story getById(String id) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.idsQuery(TYPE).addIds(id));
-        return search(searchSourceBuilder);
+        return search(searchSourceBuilder).get(0);
     }
 
     private List<Story> search(SearchSourceBuilder searchSourceBuilder) {
@@ -119,7 +121,7 @@ public class StoryService {
         return stories;
     }
 
-    public List<Story> updateVote(JestClient client, String id, String typeVote, int value){
+    public Story updateVote(JestClient client, String id, String typeVote, int value){
         String script = "{\n" +
                 "    \"script\" : \"ctx._source." + typeVote + " = " + value + "\""  + "\n" +
                 "}";
