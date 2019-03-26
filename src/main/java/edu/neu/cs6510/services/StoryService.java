@@ -31,7 +31,7 @@ public class StoryService {
     private static String INDEX = "stories";
     private static String TYPE = "story";
 
-    public Story createStory(Story story){
+    public List<Story> createStory(Story story){
         Long timeStamp = System.currentTimeMillis();
         String id = story.getAuthor() + timeStamp.toString();
         story.setId(id);
@@ -40,11 +40,10 @@ public class StoryService {
         Index index = new Index.Builder(story).index(INDEX).type(TYPE).build();
         try {
             client.execute(index);
-            return story;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return getAll();
     }
 
     public Story updateStory(Story story){

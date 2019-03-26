@@ -37,7 +37,7 @@ public class StoryController {
 
     @ApiOperation(value = "add story")
     @PostMapping("/stories/story/add")
-    public Story addStory(@RequestBody Story story) {
+    public List<Story> addStory(@RequestBody Story story) {
         return storyService.createStory(story);
     }
 
