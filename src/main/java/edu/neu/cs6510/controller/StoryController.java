@@ -50,7 +50,7 @@ public class StoryController {
         return Result.success(storyService.updateStory(story));
     }
 
-    @ApiOperation(value = "find story by id")
+    @ApiOperation(value = "find all and sort")
     @GetMapping("/api/stories/story/all/sortBy={fieldName}")
     public ResponseMessage<List<Story>> orderStoryByField(@PathVariable(value = "fieldName") String fieldName, @RequestParam(value = "orderType", required = false) String orderType) {
         return Result.success(storyService.searchByFieldandOrder(fieldName, orderType));
@@ -62,7 +62,7 @@ public class StoryController {
         return Result.success(storyService.updateVote(client, id, voteType, value));
     }
 
-    @ApiOperation(value = "update story upvote or downvote")
+    @ApiOperation(value = "search by key words")
     @GetMapping("/api/stories/story/search/{keyword}")
     public ResponseMessage<List<Story>> searchByKeyword(@PathVariable(value = "keyword") String keyword){
         return Result.success(storyService.searchByKeyword(client, keyword));
