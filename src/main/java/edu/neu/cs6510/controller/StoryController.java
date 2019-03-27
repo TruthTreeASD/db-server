@@ -39,19 +39,19 @@ public class StoryController {
 
 
     @ApiOperation(value = "add story")
-    @PostMapping("/api/stories/story/add")
+    @PostMapping("/api/stories/story")
     public ResponseMessage<List<Story>> addStory(@RequestBody Story story) {
         return Result.success(storyService.createStory(story));
     }
 
     @ApiOperation(value = "update story")
-    @PutMapping("/api/stories/story/update")
+    @PutMapping("/api/stories/story")
     public ResponseMessage<Story> updateStory(@RequestBody Story story) {
         return Result.success(storyService.updateStory(story));
     }
 
     @ApiOperation(value = "find all and sort")
-    @GetMapping("/api/stories/story/all/sortBy={fieldName}")
+    @GetMapping("/api/stories/story/all/{fieldName}")
     public ResponseMessage<List<Story>> orderStoryByField(@PathVariable(value = "fieldName") String fieldName, @RequestParam(value = "orderType", required = false) String orderType) {
         return Result.success(storyService.searchByFieldandOrder(fieldName, orderType));
     }
