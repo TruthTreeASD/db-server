@@ -33,14 +33,14 @@ public class StoryController {
 
     @ApiOperation(value = "find story by id")
     @GetMapping("/api/stories/story/{id}")
-    public ResponseMessage<Story> findStoryById(@PathVariable(value = "id") String id) {
+    public ResponseMessage<List<Story>> findStoryById(@PathVariable(value = "id") String id) {
         return Result.success(storyService.getById(id));
     }
 
 
     @ApiOperation(value = "add story")
     @PostMapping("/api/stories/story/add")
-    public ResponseMessage<Story> addStory(@RequestBody Story story) {
+    public ResponseMessage<List<Story>> addStory(@RequestBody Story story) {
         return Result.success(storyService.createStory(story));
     }
 
@@ -58,7 +58,7 @@ public class StoryController {
 
     @ApiOperation(value = "update story upvote or downvote")
     @PutMapping("/api/stories/story/{id}/update/vote")
-    public ResponseMessage<Story> updateStoryVotes(@PathVariable(value = "id") String id, @RequestParam(value = "voteType") String voteType, @RequestParam(value = "value") int value){
+    public ResponseMessage<List<Story>> updateStoryVotes(@PathVariable(value = "id") String id, @RequestParam(value = "voteType") String voteType, @RequestParam(value = "value") int value){
         return Result.success(storyService.updateVote(client, id, voteType, value));
     }
 

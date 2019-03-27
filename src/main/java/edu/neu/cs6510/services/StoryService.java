@@ -31,9 +31,9 @@ public class StoryService {
     private static String INDEX = "stories";
     private static String TYPE = "story";
 
-    public Story createStory(Story story){
-        Long timestamp = System.currentTimeMillis();
-        String id = story.getAuthor() + timestamp.toString();
+    public List<Story> createStory(Story story){
+        Long timeStamp = System.currentTimeMillis();
+        String id = story.getAuthor() + timeStamp.toString();
         story.setId(id);
         story.setTimestamp(System.currentTimeMillis());
         story.setApproved(false);
@@ -54,7 +54,7 @@ public class StoryService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return getById(story.getId());
+        return null;
     }
 
     public List<Story> getAll() {
@@ -63,10 +63,10 @@ public class StoryService {
         return search(searchSourceBuilder);
     }
 
-    public Story getById(String id) {
+    public List<Story> getById(String id) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.idsQuery(TYPE).addIds(id));
-        return search(searchSourceBuilder).get(0);
+        return search(searchSourceBuilder);
     }
 
     private List<Story> search(SearchSourceBuilder searchSourceBuilder) {
@@ -121,7 +121,7 @@ public class StoryService {
         return stories;
     }
 
-    public Story updateVote(JestClient client, String id, String typeVote, int value){
+    public List<Story> updateVote(JestClient client, String id, String typeVote, int value){
         String script = "{\n" +
                 "    \"script\" : \"ctx._source." + typeVote + " = " + value + "\""  + "\n" +
                 "}";
