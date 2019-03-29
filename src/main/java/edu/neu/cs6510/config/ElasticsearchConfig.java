@@ -18,6 +18,7 @@ public class ElasticsearchConfig {
         JestClientFactory factory = new JestClientFactory();
         factory.setHttpClientConfig(new HttpClientConfig
                 .Builder(serverUrl)
+                .readTimeout(10000)
                 .multiThreaded(true).build());
         JestClient client = factory.getObject();
         return client;
