@@ -11,8 +11,11 @@ import io.searchbox.client.JestResult;
 import io.searchbox.core.*;
 import io.searchbox.core.search.sort.Sort;
 import io.searchbox.indices.CreateIndex;
+<<<<<<< HEAD
 
 import org.elasticsearch.common.unit.Fuzziness;
+=======
+>>>>>>> branch 'daos' of https://github.com/TruthTreeASD/db-server.git
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
