@@ -5,18 +5,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import edu.neu.cs6510.model.Story;
 import edu.neu.cs6510.util.GsonUtil;
+import io.searchbox.action.Action;
 import io.searchbox.client.JestClient;
-import io.searchbox.core.Index;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
-import io.searchbox.core.Update;
+import io.searchbox.client.JestResult;
+import io.searchbox.core.*;
 import io.searchbox.core.search.sort.Sort;
+import io.searchbox.indices.CreateIndex;
 
 import org.elasticsearch.common.unit.Fuzziness;
-import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,9 +41,11 @@ public class StoryService {
         story.setTimestamp(System.currentTimeMillis());
         story.setApproved(false);
         Index index = new Index.Builder(story).index(INDEX).type(TYPE).build();
+        JestResult result = execute(index);
+
         try {
-            client.execute(index);
-        } catch (IOException e) {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return getById(id);
@@ -51,18 +53,14 @@ public class StoryService {
 
     public Story updateStory(Story story){
         Index index = new Index.Builder(story).index(INDEX).type(TYPE).build();
-        try {
-            client.execute(index);
-            return story;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        execute(index);
+        return story;
     }
 
     public List<Story> getAll() {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+        searchSourceBuilder.sort("timestamp", SortOrder.DESC);
         return search(searchSourceBuilder);
     }
 
@@ -79,11 +77,7 @@ public class StoryService {
                 .addType(TYPE)
                 .build();
         SearchResult result = null;
-        try {
-            result = client.execute(search);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        result = (SearchResult) execute(search);
         return getStoryFromJsonObject(result.getJsonObject());
     }
 
@@ -103,11 +97,7 @@ public class StoryService {
                 .addSort(sort)
                 .build();
         SearchResult result = null;
-        try {
-            result = client.execute(search);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        result = (SearchResult) execute(search);
         return getStoryFromJsonObject(result.getJsonObject());
 
     }
@@ -128,17 +118,12 @@ public class StoryService {
         String script = "{\n" +
                 "    \"script\" : \"ctx._source." + typeVote + " = " + value + "\""  + "\n" +
                 "}";
-        try {
-            client.execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
         return getById(id);
     }
 
     public List<Story> searchByKeyword(JestClient client, String keyword){
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-          
         searchSourceBuilder.query(QueryBuilders
                 .multiMatchQuery(keyword, "id", "content", "title", "author", "tags")
                 .fuzziness(Fuzziness.AUTO));
@@ -149,12 +134,23 @@ public class StoryService {
                 .build();
 
         SearchResult result = null;
+        result = (SearchResult) execute(search);
+        return getStoryFromJsonObject(result.getJsonObject());
+    }
+    
+    private JestResult execute(Action action) {
+        JestResult result = null;
         try {
-            result = client.execute(search);
+            result =  client.execute(action);
         } catch (IOException e) {
+            try {
+                result = client.execute(action);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
         }
-        return getStoryFromJsonObject(result.getJsonObject());
+        return result;
     }
 
 }
