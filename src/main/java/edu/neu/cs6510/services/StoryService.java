@@ -129,13 +129,18 @@ public class StoryService {
 		return stories;
 	}
 
-	public List<Story> updateVote(JestClient client, String id, String typeVote, int value) {
+    public List<Story> updateVote(JestClient client, String id, String typeVote){
+        //todo need to think a consisteny way to update vote
+        // 1. database 2. message queue
+        Story stroy = getById(id).get(0);
+        int value = typeVote.equals("upvote") ? stroy.getUpvote() + 1 : stroy.getDownvote() + 1;
         String script = "{\n" +
                 "    \"script\" : \"ctx._source." + typeVote + " = " + value + "\""  + "\n" +
                 "}";
-		execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
-		return getById(id);
-	}
+        execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
+        return getById(id);
+    }
+
 
 	public List<Story> searchByKeyword(JestClient client, String keyword) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
