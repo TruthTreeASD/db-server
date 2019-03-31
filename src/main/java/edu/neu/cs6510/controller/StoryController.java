@@ -29,6 +29,18 @@ public class StoryController {
     public ResponseMessage<List<Story>> findAllStories() {
         return Result.success(storyService.getAll());
     }
+    
+    @ApiOperation(value = "find all approved stories")
+    @GetMapping("/api/stories/story/approved")
+    public ResponseMessage<List<Story>> findAllApprovedStories() {
+        return Result.success(storyService.getAllApproved());
+    }
+
+    @ApiOperation(value = "find all stories pending approval")
+    @GetMapping("/api/stories/story/pending")
+    public ResponseMessage<List<Story>> findAllPendingStories() {
+        return Result.success(storyService.getAllPending());
+    }
 
 
     @ApiOperation(value = "find story by id")
