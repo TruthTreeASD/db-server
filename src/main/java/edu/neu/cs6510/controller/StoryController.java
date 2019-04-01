@@ -1,6 +1,7 @@
 package edu.neu.cs6510.controller;
 
 import edu.neu.cs6510.config.ElasticsearchConfig;
+import edu.neu.cs6510.enums.VoteType;
 import edu.neu.cs6510.model.Story;
 import edu.neu.cs6510.services.StoryService;
 import edu.neu.cs6510.util.http.ResponseMessage;
@@ -19,9 +20,6 @@ public class StoryController {
 
     @Autowired
     StoryService storyService;
-
-    @Autowired
-    JestClient client;
 
 
     @ApiOperation(value = "find all stories")
@@ -69,15 +67,15 @@ public class StoryController {
     }
 
     @ApiOperation(value = "update story upvote or downvote")
-    @PutMapping("/api/stories/story/{id}/update/vote")
-    public ResponseMessage<List<Story>> updateStoryVotes(@PathVariable(value = "id") String id, @RequestParam(value = "voteType") String voteType){
-        return Result.success(storyService.updateVote(client, id, voteType));
+    @PutMapping("/api/stories/story/{id}/{voteType}")
+    public ResponseMessage<List<Story>> updateStoryVotes(@PathVariable(value = "id") String id, @PathVariable(value = "voteType") VoteType voteType){
+        return Result.success(storyService.updateVote(id, voteType));
     }
 
     @ApiOperation(value = "search by key words")
     @GetMapping("/api/stories/story/search/{keyword}")
     public ResponseMessage<List<Story>> searchByKeyword(@PathVariable(value = "keyword") String keyword){
-        return Result.success(storyService.searchByKeyword(client, keyword));
+        return Result.success(storyService.searchByKeyword(keyword));
     }
 
 }

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.neu.cs6510.enums.VoteType;
+import edu.neu.cs6510.exception.NoSuchStoryException;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -129,20 +131,26 @@ public class StoryService {
 		return stories;
 	}
 
-    public List<Story> updateVote(JestClient client, String id, String typeVote){
+    public List<Story> updateVote(String id, VoteType voteType){
         //todo need to think a consisteny way to update vote
         // 1. database 2. message queue
-        Story stroy = getById(id).get(0);
-        int value = typeVote.equals("upvote") ? stroy.getUpvote() + 1 : stroy.getDownvote() + 1;
+		Story stroy = null;
+		try {
+			stroy = getById(id).get(0);
+		} catch (IndexOutOfBoundsException outofBoundsException) {
+			throw new NoSuchStoryException("Cannot find this story!");
+		}
+
+        int value = voteType == VoteType.UPVOTE ? stroy.getUpvote() + 1 : stroy.getDownvote() + 1;
         String script = "{\n" +
-                "    \"script\" : \"ctx._source." + typeVote + " = " + value + "\""  + "\n" +
+                "    \"script\" : \"ctx._source." + voteType.getField() + " = " + value + "\""  + "\n" +
                 "}";
         execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
         return getById(id);
     }
 
 
-	public List<Story> searchByKeyword(JestClient client, String keyword) {
+	public List<Story> searchByKeyword(String keyword) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders
                 .multiMatchQuery(keyword, "id", "content", "title", "author", "tags")
