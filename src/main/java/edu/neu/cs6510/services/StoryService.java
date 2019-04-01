@@ -149,6 +149,15 @@ public class StoryService {
         return getById(id);
     }
 
+	public List<Story> setApproved(String id){
+
+		String script = "{\n" +
+				"    \"script\" : \"ctx._source.isApproved = true \""  + "\n" +
+				"}";
+		execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
+		return getById(id);
+	}
+
 
 	public List<Story> searchByKeyword(String keyword) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();

@@ -34,6 +34,12 @@ public class StoryController {
         return Result.success(storyService.getAllApproved());
     }
 
+    @ApiOperation(value = "approve story")
+    @GetMapping("/api/stories/story/approve/{id}")
+    public ResponseMessage<List<Story>> approveStory(@PathVariable(value = "id") String id) {
+        return Result.success(storyService.setApproved(id));
+    }
+
     @ApiOperation(value = "find all stories pending approval")
     @GetMapping("/api/stories/story/pending")
     public ResponseMessage<List<Story>> findAllPendingStories() {
