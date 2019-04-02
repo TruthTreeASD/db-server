@@ -5,6 +5,14 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * LookUpPk represents 'gov_fin_lookup' table's primary key as LookUpPK object
+ * The primary key gives us the year and location for a specific attribute
+ * Its attributes are:
+ * 1. attribute_mapping_id  : id of a attribute
+ * 2. location_id           : id of a location
+ * 3. year                  : year
+ */
 @Embeddable
 public class LookUpPK implements Serializable {
 
@@ -49,5 +57,14 @@ public class LookUpPK implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(attribute_mapping_id, location_id, year);
+    }
+
+    @Override
+    public String toString() {
+        return "LookUpPK{" +
+                "attribute_mapping_id=" + attribute_mapping_id +
+                ", location_id=" + location_id +
+                ", year=" + year +
+                '}';
     }
 }

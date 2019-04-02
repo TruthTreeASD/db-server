@@ -8,7 +8,14 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
-
+/**
+ * LookUpRepository is implemented as an interface that allows to do CRUD operations
+ * for LookUpData class which is mapped to 'gov_fin_lookup' table.
+ * Some of the CRUD operations are:
+ * 1. To find lookup data for a specific attribute id
+ * 2. To find lookup data for a specific attribute id and given location
+ * 3. To find lookup data for a specific attribute id and given location and a time range
+ */
 public interface LookUpRepository extends CrudRepository<LookUpData, Integer> {
     @Query(value = "select * from gov_fin_lookup where attribute_mapping_id = ?1", nativeQuery = true)
     List<LookUpData> findLookUpDataForAttributeId(@Param("id") Integer id);
@@ -40,7 +47,7 @@ public interface LookUpRepository extends CrudRepository<LookUpData, Integer> {
             "where attribute_mapping_id in ?1 and (-1 = ?6 or year in ?2) " +
             "and (COALESCE( null, ?3) is null or location_id in ?3) and value between ?4 and ?5) as a "  +
             "join gov_fin_location_info on a.location_id = gov_fin_location_info.id", nativeQuery = true)
-    Integer queryLookUpDataTotal(@Param("attributeId")List<Integer> attributeId, @Param("year") List<Integer> year,
+    Long queryLookUpDataTotal(@Param("attributeId")List<Integer> attributeId, @Param("year") List<Integer> year,
                                  @Param("locationId") List<Integer> locationId,
                                  @Param("from")Integer from, @Param("to")Integer to, @Param("yearSize") Integer yearSize);
 
@@ -56,7 +63,7 @@ public interface LookUpRepository extends CrudRepository<LookUpData, Integer> {
             "where attribute_mapping_id in ?1 and (-1 = ?6 or year in ?2) " +
             "and value between ?4 and ?5 and (COALESCE( null, ?3) is null or location_id in (select id from gov_fin_location_info where type_code = ?3))) as a " +
             "join gov_fin_location_info on a.location_id = gov_fin_location_info.id", nativeQuery = true)
-    Integer queryLookUpDataTotal(@Param("attributeId") List<Integer> attributeId, @Param("year") List<Integer> year,
+    Long queryLookUpDataTotal(@Param("attributeId") List<Integer> attributeId, @Param("year") List<Integer> year,
                                  @Param("typeCode") Integer typeCode, @Param("from") Integer from,
                                  @Param("to")Integer to,@Param("yearSize") Integer yearSize);
 
@@ -74,7 +81,7 @@ public interface LookUpRepository extends CrudRepository<LookUpData, Integer> {
             "where attribute_mapping_id in ?1 and (-1 = ?6 or year in ?2) " +
             "and value between ?4 and ?5 and (COALESCE( null, ?3) is null or location_id in (select id from gov_fin_location_info where parent_id = ?3))) as a " +
             "join gov_fin_location_info on a.location_id = gov_fin_location_info.id", nativeQuery = true)
-    Integer queryLookUpDataParentIdTotal(@Param("attributeId") List<Integer> attributeId, @Param("year") List<Integer> year,
+    Long queryLookUpDataParentIdTotal(@Param("attributeId") List<Integer> attributeId, @Param("year") List<Integer> year,
                                          @Param("parentId") Integer parentId,@Param("from")  Integer from,@Param("to")  Integer to,
                                          @Param("yearSize") Integer yearSize);
 

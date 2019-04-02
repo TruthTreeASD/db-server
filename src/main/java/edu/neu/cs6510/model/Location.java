@@ -2,6 +2,20 @@ package edu.neu.cs6510.model;
 
 import javax.persistence.*;
 
+/**
+ * Location class represents 'gov_fin_location_info' table as a Location object
+ * Location object attributes are:
+ * 1. id                : id of location
+ * 2. name              : name of location
+ * 3. parent_id         : parent id of location (ex: state Mass will be parent of city Boston)
+ * 4. type_code         : type_code defines if it is a state/city/counties etc
+ * 5. fips_code_state   : represents fips state code
+ * 6. fips_county       : represents fips county code
+ * 7. fips_place        : represents fips place code
+ * 8. fyenddate         :
+ * 9. longitude         : represents the longitude of the location
+ * 10. latitude         : represents the latitude of the location
+ */
 @Entity
 @Table(name = "gov_fin_location_info")
 public class Location {

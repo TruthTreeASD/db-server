@@ -1,5 +1,11 @@
 package edu.neu.cs6510.dto;
 
+/**
+ * AttributeInfoDTO represents a date-time object.
+ * This date-time object represents a part of AttributeMapping information and has:
+ * 1. name          : name of the attribute
+ * 2. attribute_id  : id of the attribute
+ */
 public class AttributeInfoDTO {
 
     private String name;

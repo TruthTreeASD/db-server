@@ -31,11 +31,22 @@ public class CollectionController {
     @Autowired
     CollectionService collectionService;
 
+    /**
+     * Method that gives all the collectionns.
+     * @return collection list in the response
+     */
     @GetMapping("/api/collection/all")
     public ResponseMessage findAllCollections() {
         return collectionService.findAllCollections();
     }
 
+    /**
+     * Method to return attributes by either level, year or id
+     * @param level state, city or county
+     * @param year 
+     * @param id attribute id
+     * @return
+     */
     @ApiOperation(value = "find Availbe Attr by location/ location level/ given year")
     @GetMapping("/api/collections")
     public ResponseMessage findAvailbeAttr1(@RequestParam(value = "level", required = false) String level,
@@ -43,6 +54,13 @@ public class CollectionController {
                                            @RequestParam(value = "id", required = false) Integer id) {
         return collectionService.findAvailbeAttr1(level, year, id);
     }
+    
+    /**
+     * Method to return time-range for given location and attribute id
+     * @param level state, city or county
+     * @param attributes list of attributes
+     * @return Collections for the location and attribute id
+     */
     @ApiOperation(value = "find time-range for given location level and attr id")
     @GetMapping("/api/time_range")
     public ResponseMessage<List<CollectionTimeRangeDTO>> findAvailbeAttr1(@RequestParam(value = "level") String level, @RequestParam("attributes") List<Integer> attributes) {
@@ -50,12 +68,23 @@ public class CollectionController {
         return collectionService.findAvailbeAttr(level, attributes);
     }
 
-    @ApiOperation(value = "find Availbe Attr by location level")
+    /**
+     * Method to find attributes by collection id
+     * @param id the collection id
+     * @return matching Attributes
+     */
+    @ApiOperation(value = "find Availbe Attr by collection id")
     @GetMapping("/api/collectionSet")
     public ResponseMessage findAvailbeAttr(@RequestParam(value = "id") Integer id) {
         return collectionService.findAvailbeAttr(id);
     }
 
+    /**
+     * Method to find Availbe Attr by collection and property pairs
+     * @param collection_ids 
+     * @param property_ids
+     * @return Matching attributes
+     */
     @ApiOperation(value = "find Availbe Attr by collection and property pairs")
     @GetMapping("/api/queryAttriIdByCombination")
     public ResponseMessage findAvailbeAttr(@RequestParam(value = "collection_ids") List<Integer> collection_ids,
@@ -64,12 +93,25 @@ public class CollectionController {
         return collectionService.findAvailbeAttr(collection_ids, property_ids);
     }
 
+    
+    /**
+     * Information for collections for the given ids
+     * @param ids collection ids
+     * @return Collection Information
+     */
     @ApiOperation(value = "find collection information by ids")
     @GetMapping("/api/queryCollectionById")
     public ResponseMessage findCollectionByIds(@RequestParam("id") List<Integer> ids) {
         return Result.success(collectionService.findCollectionByIds(ids));
     }
 
+    /**
+     * Method to find Available Attr by location/ location level/ given year
+     * @param level either state, city or county
+     * @param year 
+     * @param id is the Location id
+     * @return available attribute list
+     */
     @ApiOperation(value = "find Available Attr by location/ location level/ given year")
     @GetMapping("/api/queryAvailableAttributes")
     public ResponseMessage findAvailbeAttr(@RequestParam(value = "level", required = false) String level,
@@ -78,6 +120,12 @@ public class CollectionController {
         return collectionService.findAvailbeAttr(level, year, id);
     }
 
+    /**
+     * Method to find time-range for given location level and attr id
+     * @param level either state, city or county
+     * @param attributes
+     * @return available attribute list
+     */
     @ApiOperation(value = "find time-range for given location level and attr id")
     @GetMapping("/api/time_range_new")
     public ResponseMessage findAvailbeAttr(@RequestParam(value = "level") String level, @RequestParam("attributes") List<Integer> attributes) {
