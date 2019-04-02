@@ -6,6 +6,8 @@ import java.util.List;
 
 import edu.neu.cs6510.enums.VoteType;
 import edu.neu.cs6510.exception.NoSuchStoryException;
+import edu.neu.cs6510.util.Page;
+import io.searchbox.core.*;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -23,10 +25,6 @@ import edu.neu.cs6510.util.GsonUtil;
 import io.searchbox.action.Action;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
-import io.searchbox.core.Index;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
-import io.searchbox.core.Update;
 import io.searchbox.core.search.sort.Sort;
 
 @Service
@@ -68,6 +66,14 @@ public class StoryService {
 		return search(searchSourceBuilder);
 	}
 
+	public Page<Story> getAllPage(Integer pageSize,Integer currentPage) {
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(QueryBuilders.matchAllQuery())
+				.from((currentPage - 1) * pageSize)
+				.size(pageSize);
+		return searchPage(searchSourceBuilder, pageSize, currentPage);
+	}
+
 	public List<Story> getAllApproved() {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", "true"));
@@ -75,11 +81,29 @@ public class StoryService {
 		return search(searchSourceBuilder);
 	}
 
+	public Page<Story> getAllApprovedPage(Integer pageSize,Integer currentPage) {
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", "true"))
+				.from((currentPage - 1) * pageSize)
+				.size(pageSize);;
+		searchSourceBuilder.sort("timestamp", SortOrder.DESC);
+		return searchPage(searchSourceBuilder, pageSize, currentPage);
+	}
+
 	public List<Story> getAllPending() {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", "false"));
 		searchSourceBuilder.sort("timestamp", SortOrder.DESC);
 		return search(searchSourceBuilder);
+	}
+
+	public Page<Story> getAllPendingPage(Integer pageSize,Integer currentPage) {
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", "false"))
+				.from((currentPage - 1) * pageSize)
+				.size(pageSize);
+		searchSourceBuilder.sort("timestamp", SortOrder.DESC);
+		return searchPage(searchSourceBuilder, pageSize, currentPage);
 	}
 
 	public List<Story> getById(String id) {
@@ -96,7 +120,21 @@ public class StoryService {
                 .build();
 		SearchResult result = null;
 		result = (SearchResult) execute(search);
+
+		System.out.println(search.toString());
 		return getStoryFromJsonObject(result.getJsonObject());
+	}
+
+	private Page<Story> searchPage(SearchSourceBuilder searchSourceBuilder, Integer pageSize, Integer currentPage) {
+		Search search = new Search.Builder(searchSourceBuilder.toString())
+				// multiple index or types can be added.
+				.addIndex(INDEX)
+				.addType(TYPE)
+				.build();
+		SearchResult result = null;
+		result = (SearchResult) execute(search);
+		Page<Story> page = new Page<Story>( getStoryFromJsonObject(result.getJsonObject()), result.getTotal(),currentPage, pageSize);
+		return page;
 	}
 
 	public List<Story> searchByFieldandOrder(String fieldname, String order) {
@@ -117,6 +155,30 @@ public class StoryService {
 		SearchResult result = null;
 		result = (SearchResult) execute(search);
 		return getStoryFromJsonObject(result.getJsonObject());
+
+	}
+
+	public Page<Story> searchByFieldandOrderPage(String fieldname, String order,Integer pageSize,Integer currentPage) {
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.from((currentPage - 1) * pageSize)
+				.size(pageSize);
+		Sort sort = null;
+		if (order == null || order.toLowerCase().equals("asc")) {
+			sort = new Sort(fieldname.toLowerCase(), Sort.Sorting.ASC);
+		}
+		else{
+			sort = new Sort(fieldname.toLowerCase(), Sort.Sorting.DESC);
+		}
+		Search search = new Search.Builder(searchSourceBuilder.toString())
+				// multiple index or types can be added.
+				.addIndex(INDEX)
+				.addType(TYPE)
+				.addSort(sort)
+				.build();
+		SearchResult result = null;
+		result = (SearchResult) execute(search);
+		Page<Story> page = new Page<Story>( getStoryFromJsonObject(result.getJsonObject()), result.getTotal(),currentPage, pageSize);
+		return page;
 
 	}
 
@@ -173,6 +235,23 @@ public class StoryService {
 		SearchResult result = null;
 		result = (SearchResult) execute(search);
 		return getStoryFromJsonObject(result.getJsonObject());
+	}
+
+	public Page<Story> searchByKeywordPage(String keyword,Integer pageSize,Integer currentPage) {
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(QueryBuilders
+				.multiMatchQuery(keyword, "id", "content", "title", "author", "tags")
+				.fuzziness(Fuzziness.AUTO));
+		Search search = new Search.Builder(searchSourceBuilder.toString())
+				// multiple index or types can be added.
+				.addIndex(INDEX)
+				.addType(TYPE)
+				.build();
+
+		SearchResult result = null;
+		result = (SearchResult) execute(search);
+		Page<Story> page = new Page<Story>( getStoryFromJsonObject(result.getJsonObject()), result.getTotal(),currentPage, pageSize);
+		return page;
 	}
 
 	private JestResult execute(Action action) {

@@ -101,7 +101,7 @@ public class LocationService {
 	public ResponseMessage<Page<Location>> findLocPagination(Integer id, Integer typeCode, Integer parentId,
 			String orderBy, String order, Integer pageSize, Integer currentPage) {
 		String sort = orderBy + " " + order;
-		int total;
+		long total;
 		List<Location> data;
 		if (id != null) {
 			total = locationRepository.countLocationsById(id, typeCode);

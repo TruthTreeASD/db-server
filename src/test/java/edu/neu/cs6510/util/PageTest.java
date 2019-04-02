@@ -23,7 +23,7 @@ public class PageTest {
     testList.add("5");
     testList.add("6");
 
-    page = new Page<String>(testList, 1, 1, 1);
+    page = new Page<String>(testList, 1l, 1, 1);
   }
 
   @Test
@@ -52,7 +52,7 @@ public class PageTest {
 
   @Test
   public void setTotal() {
-    page.setTotal(2);
+    page.setTotal(2l);
     Assert.assertEquals(new Integer(2), page.getTotal());
   }
 
@@ -63,7 +63,7 @@ public class PageTest {
 
   @Test
   public void setTotalPage() {
-    page.setTotalPage(2);
+    page.setTotalPage(2l);
     Assert.assertEquals(new Integer(2), page.getTotalPage());
   }
 

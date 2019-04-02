@@ -161,7 +161,7 @@ public class LookUpService {
 												 List<Integer> locationId, Integer typeCode, Integer parentId, String orderBy, String order, Integer from,
 												 Integer to, Integer pageSize, Integer currentPage) {
 		List data;
-		Integer total;
+		Long total;
 
 		ValuePagePojo valuePagePojo = new ValuePagePojo(attributeId, year, locationId, typeCode, parentId, orderBy,
 				order, from, to);
@@ -174,7 +174,7 @@ public class LookUpService {
 				total = lookUpRepository.queryLookUpDataTotal(attributeId, year, typeCode, from, to, flag);
 				EHCacheUtils.setCache(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString(), total);
 			}
-			total = (Integer) EHCacheUtils.getCache(cacheManager, CacheEnum.VALUE_PAIGINATION,
+			total =(Long) EHCacheUtils.getCache(cacheManager, CacheEnum.VALUE_PAIGINATION,
 					valuePagePojo.toString());
 			data = lookUpRepository.queryLookUpData(attributeId, year, typeCode, from, to, sort, flag, pageSize,
 					pageSize * (currentPage - 1));
@@ -183,7 +183,7 @@ public class LookUpService {
 				total = lookUpRepository.queryLookUpDataParentIdTotal(attributeId, year, parentId, from, to, flag);
 				EHCacheUtils.setCache(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString(), total);
 			}
-			total = (Integer) EHCacheUtils.getCache(cacheManager, CacheEnum.VALUE_PAIGINATION,
+			total = (Long) EHCacheUtils.getCache(cacheManager, CacheEnum.VALUE_PAIGINATION,
 					valuePagePojo.toString());
 			data = lookUpRepository.queryLookUpDataParentId(attributeId, year, parentId, from, to, sort, flag, pageSize,
 					pageSize * (currentPage - 1));
@@ -192,7 +192,7 @@ public class LookUpService {
 				total = lookUpRepository.queryLookUpDataTotal(attributeId, year, locationId, from, to, flag);
 				EHCacheUtils.setCache(cacheManager, CacheEnum.VALUE_PAIGINATION, valuePagePojo.toString(), total);
 			}
-			total = (Integer) EHCacheUtils.getCache(cacheManager, CacheEnum.VALUE_PAIGINATION,
+			total = (Long) EHCacheUtils.getCache(cacheManager, CacheEnum.VALUE_PAIGINATION,
 					valuePagePojo.toString());
 			data = lookUpRepository.queryLookUpData(attributeId, year, locationId, from, to, sort, flag, pageSize,
 					pageSize * (currentPage - 1));

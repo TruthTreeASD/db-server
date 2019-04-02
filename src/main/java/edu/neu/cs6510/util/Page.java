@@ -4,12 +4,12 @@ import java.util.List;
 
 public class Page<T> {
     private List<T> data;
-    private Integer total;
-    private Integer totalPage;
+    private Long total;
+    private Long totalPage;
     private Integer currentPage;
     private Integer pageSize;
 
-    public Page(List<T> data, Integer total, Integer currentPage, Integer pageSize) {
+    public Page(List<T> data, Long total, Integer currentPage, Integer pageSize) {
         this.data = data;
         this.total = total;
         this.pageSize = pageSize;
@@ -25,19 +25,19 @@ public class Page<T> {
         this.data = data;
     }
 
-    public Integer getTotal() {
+    public Long getTotal() {
         return total;
     }
 
-    public void setTotal(Integer total) {
+    public void setTotal(Long total) {
         this.total = total;
     }
 
-    public Integer getTotalPage() {
+    public Long getTotalPage() {
         return totalPage;
     }
 
-    public void setTotalPage(Integer totalPage) {
+    public void setTotalPage(Long totalPage) {
         this.totalPage = totalPage;
     }
 
