@@ -207,8 +207,6 @@ public class StoryService {
 	}
 
     public List<Story> updateVote(String id, VoteType voteType){
-        //todo need to think a consisteny way to update vote
-        // 1. database 2. message queue
 		Story stroy = null;
 		try {
 			stroy = getById(id).get(0);
@@ -221,7 +219,12 @@ public class StoryService {
                 "    \"script\" : \"ctx._source." + voteType.getField() + " = " + value + "\""  + "\n" +
                 "}";
         execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
-        return getById(id);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return getById(id);
     }
 
 	public List<Story> setApproved(String id){
