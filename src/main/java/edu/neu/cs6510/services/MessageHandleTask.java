@@ -24,9 +24,9 @@ public class MessageHandleTask {
     private StoryService storyService;
 
     /**
-     * every 1 min
+     * every 30 s
      */
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "*/30 * * * * ?")
     public void finishInspectionJob(){
         logger.info("<------------- Fetching messages from SQS ------------->");
         List<Message> messages = SQSUtil.receiveMessages();
@@ -37,7 +37,7 @@ public class MessageHandleTask {
 
     private static void messageHandler(MessageWapper wapper, StoryService storyService) {
         if (wapper.getMessageType() == EMessageType.DOWNVOTE || wapper.getMessageType() == EMessageType.UPVOTE ) {
-            System.out.println(storyService.updateVote(wapper.getId(), VoteType.valueOf(wapper.getMessageType().toString())));
+            System.out.println(storyService.updateVote(wapper.getId(), wapper.getMessageType()));
         } else if (wapper.getMessageType() == EMessageType.APPROVED) {
             storyService.setApproved(wapper.getId());
         }

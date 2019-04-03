@@ -26,7 +26,9 @@ public class SQSUtil {
 
     static {
         AWSCredentials credentials = new AnonymousAWSCredentials();
-        sqs = AmazonSQSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).withRegion(Regions.US_WEST_2).build();
+        sqs = AmazonSQSClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withRegion(Regions.US_WEST_2).build();
     }
 
     private SQSUtil() {
@@ -58,16 +60,6 @@ public class SQSUtil {
         receiveMessageRequest.setMessageAttributeNames(Arrays.asList("vote-opt"));
 
         return sqs.receiveMessage(receiveMessageRequest).getMessages();
-    }
-
-
-
-
-
-    public static void main(String[] args) {
-        MessageWapper messageWapper = new MessageWapper(EMessageType.DOWNVOTE, "abc");
-        SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
-        SQSUtil.receiveMessages();
     }
 
 }

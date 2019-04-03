@@ -114,6 +114,8 @@ public class StoryService {
 	}
 
 	public List<Story> getById(String id) {
+		MessageWapper messageWapper = new MessageWapper(EMessageType.FREQ_INC, id);
+		SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.idsQuery(TYPE).addIds(id));
 		return search(searchSourceBuilder);
@@ -206,26 +208,6 @@ public class StoryService {
 		return Result.success();
 	}
 
-    public List<Story> updateVote(String id, VoteType voteType){
-		Story stroy = null;
-		try {
-			stroy = getById(id).get(0);
-		} catch (IndexOutOfBoundsException outofBoundsException) {
-			throw new NoSuchStoryException("Cannot find this story!");
-		}
-
-        int value = voteType == VoteType.UPVOTE ? stroy.getUpvote() + 1 : stroy.getDownvote() + 1;
-        String script = "{\n" +
-                "    \"script\" : \"ctx._source." + voteType.getField() + " = " + value + "\""  + "\n" +
-                "}";
-        execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return getById(id);
-    }
 
 	public List<Story> setApproved(String id){
 
@@ -303,5 +285,30 @@ public class StoryService {
 		return result;
 	}
 
+
+
+	public List<Story> updateVote(String id, EMessageType eMessageType){
+		Story stroy = null;
+		try {
+			stroy = getById(id).get(0);
+		} catch (IndexOutOfBoundsException outofBoundsException) {
+			throw new NoSuchStoryException("Cannot find this story!");
+		}
+
+		long value = eMessageType == eMessageType.UPVOTE ?
+				stroy.getUpvote() + 1 :
+				(eMessageType == eMessageType.DOWNVOTE ? (stroy.getDownvote() + 1) : (stroy.getFreq() + 1));
+
+		String script = "{\n" +
+				"    \"script\" : \"ctx._source." + eMessageType.getField() + " = " + value + "\""  + "\n" +
+				"}";
+		execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return getById(id);
+	}
 
 }
