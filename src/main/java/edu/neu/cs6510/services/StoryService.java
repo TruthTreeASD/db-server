@@ -2,6 +2,7 @@ package edu.neu.cs6510.services;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.neu.cs6510.enums.VoteType;
@@ -236,6 +237,24 @@ public class StoryService {
 		result = (SearchResult) execute(search);
 		return getStoryFromJsonObject(result.getJsonObject());
 	}
+
+  public List<Story> searchByKeyword(String keyword, List<String> feilds) {
+    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+    if (feilds.isEmpty()) {
+      feilds.addAll(Arrays.asList("id", "content", "title", "author", "tags"));
+    }
+    searchSourceBuilder.query(QueryBuilders
+            .multiMatchQuery(keyword, (String[]) feilds.toArray())
+            .fuzziness(Fuzziness.AUTO));
+    Search search = new Search.Builder(searchSourceBuilder.toString())
+            // multiple index or types can be added.
+            .addIndex(INDEX)
+            .addType(TYPE)
+            .build();
+    SearchResult result = null;
+    result = (SearchResult) execute(search);
+    return getStoryFromJsonObject(result.getJsonObject());
+  }
 
 	public Page<Story> searchByKeywordPage(String keyword,Integer pageSize,Integer currentPage) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();

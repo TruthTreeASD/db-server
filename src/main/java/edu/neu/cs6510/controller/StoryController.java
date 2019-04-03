@@ -51,7 +51,7 @@ public class StoryController {
     }
 
     @ApiOperation(value = "approve story")
-    @GetMapping("/api/stories/story/approve/{id}")
+    @PostMapping("/api/stories/story/approve/{id}")
     public ResponseMessage<List<Story>> approveStory(@PathVariable(value = "id") String id) {
         return Result.success(storyService.setApproved(id));
     }
@@ -115,6 +115,14 @@ public class StoryController {
         return Result.success(storyService.searchByKeyword(keyword));
     }
 
+    @ApiOperation(value = "search by key words and selected fildes")
+    @GetMapping("/api/stories/story/search-fields/{keyword}")
+    public ResponseMessage<List<Story>> searchByKeyword(@PathVariable(value = "keyword") String keyword,
+                                                        @RequestParam(value = "fields", required = false) List<String> fields){
+        return Result.success(storyService.searchByKeyword(keyword, fields));
+    }
+
+
     @ApiOperation(value = "search by key words")
     @GetMapping("/api/stories/story/search/page/{keyword}")
     public ResponseMessage<Page<Story>> searchByKeyword(@PathVariable(value = "keyword") String keyword,
@@ -122,5 +130,4 @@ public class StoryController {
                                                         @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage){
         return Result.success(storyService.searchByKeywordPage(keyword, pageSize, currentPage));
     }
-
 }
