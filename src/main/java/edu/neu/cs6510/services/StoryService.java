@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.neu.cs6510.enums.EMessageType;
 import edu.neu.cs6510.enums.VoteType;
 import edu.neu.cs6510.exception.NoSuchStoryException;
 import edu.neu.cs6510.util.Page;
+import edu.neu.cs6510.util.http.ResponseMessage;
+import edu.neu.cs6510.util.http.Result;
+import edu.neu.cs6510.util.sqs.MessageWapper;
+import edu.neu.cs6510.util.sqs.SQSUtil;
 import io.searchbox.core.*;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
@@ -27,6 +32,7 @@ import io.searchbox.action.Action;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.search.sort.Sort;
+
 
 @Service
 public class StoryService {
@@ -194,6 +200,12 @@ public class StoryService {
 		return stories;
 	}
 
+	public ResponseMessage updateVoteToQueue(String id, VoteType voteType){
+		MessageWapper messageWapper = new MessageWapper(EMessageType.valueOf(voteType.toString()), id);
+		SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+		return Result.success();
+	}
+
     public List<Story> updateVote(String id, VoteType voteType){
         //todo need to think a consisteny way to update vote
         // 1. database 2. message queue
@@ -225,7 +237,7 @@ public class StoryService {
 	public List<Story> searchByKeyword(String keyword) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders
-                .multiMatchQuery(keyword, "id", "content", "title", "author", "tags")
+                .multiMatchQuery(keyword, "content", "title", "author", "tags")
                 .fuzziness(Fuzziness.AUTO));
 		Search search = new Search.Builder(searchSourceBuilder.toString())
 				// multiple index or types can be added.
@@ -241,10 +253,10 @@ public class StoryService {
   public List<Story> searchByKeyword(String keyword, List<String> feilds) {
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     if (feilds.isEmpty()) {
-      feilds.addAll(Arrays.asList("id", "content", "title", "author", "tags"));
+      feilds.addAll(Arrays.asList("content", "title", "author", "tags"));
     }
     searchSourceBuilder.query(QueryBuilders
-            .multiMatchQuery(keyword, (String[]) feilds.toArray())
+            .multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
             .fuzziness(Fuzziness.AUTO));
     Search search = new Search.Builder(searchSourceBuilder.toString())
             // multiple index or types can be added.
@@ -259,7 +271,7 @@ public class StoryService {
 	public Page<Story> searchByKeywordPage(String keyword,Integer pageSize,Integer currentPage) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders
-				.multiMatchQuery(keyword, "id", "content", "title", "author", "tags")
+				.multiMatchQuery(keyword, "content", "title", "author", "tags")
 				.fuzziness(Fuzziness.AUTO));
 		Search search = new Search.Builder(searchSourceBuilder.toString())
 				// multiple index or types can be added.
@@ -287,5 +299,6 @@ public class StoryService {
 		}
 		return result;
 	}
+
 
 }

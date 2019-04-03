@@ -105,8 +105,8 @@ public class StoryController {
 
     @ApiOperation(value = "update story upvote or downvote")
     @PutMapping("/api/stories/story/{id}/{voteType}")
-    public ResponseMessage<List<Story>> updateStoryVotes(@PathVariable(value = "id") String id, @PathVariable(value = "voteType") VoteType voteType){
-        return Result.success(storyService.updateVote(id, voteType));
+    public ResponseMessage updateStoryVotes(@PathVariable(value = "id") String id, @PathVariable(value = "voteType") VoteType voteType){
+        return storyService.updateVoteToQueue(id, voteType);
     }
 
     @ApiOperation(value = "search by key words")
