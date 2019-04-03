@@ -1,12 +1,16 @@
 package edu.neu.cs6510.controller;
 
 import edu.neu.cs6510.config.ElasticsearchConfig;
+import edu.neu.cs6510.enums.EMessageType;
 import edu.neu.cs6510.enums.VoteType;
 import edu.neu.cs6510.model.Story;
 import edu.neu.cs6510.services.StoryService;
+import edu.neu.cs6510.util.GsonUtil;
 import edu.neu.cs6510.util.Page;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
+import edu.neu.cs6510.util.sqs.MessageWapper;
+import edu.neu.cs6510.util.sqs.SQSUtil;
 import io.searchbox.client.JestClient;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +78,8 @@ public class StoryController {
     @ApiOperation(value = "find story by id")
     @GetMapping("/api/stories/story/{id}")
     public ResponseMessage<List<Story>> findStoryById(@PathVariable(value = "id") String id) {
+        MessageWapper messageWapper = new MessageWapper(EMessageType.FREQ_INC, id);
+        SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
         return Result.success(storyService.getById(id));
     }
 

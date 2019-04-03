@@ -114,8 +114,6 @@ public class StoryService {
 	}
 
 	public List<Story> getById(String id) {
-		MessageWapper messageWapper = new MessageWapper(EMessageType.FREQ_INC, id);
-		SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.idsQuery(TYPE).addIds(id));
 		return search(searchSourceBuilder);

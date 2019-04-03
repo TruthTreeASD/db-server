@@ -62,4 +62,7 @@ public class SQSUtil {
         return sqs.receiveMessage(receiveMessageRequest).getMessages();
     }
 
+    public static void deleteMessage(Message message) {
+        sqs.deleteMessage(SQSConfig.SQSUrl, message.getReceiptHandle());
+    }
 }

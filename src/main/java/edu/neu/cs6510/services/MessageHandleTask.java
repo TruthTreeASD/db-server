@@ -32,6 +32,7 @@ public class MessageHandleTask {
         List<Message> messages = SQSUtil.receiveMessages();
         for (Message message : messages) {
             messageHandler(GsonUtil.fromJson(message.getBody(), MessageWapper.class), storyService);
+            SQSUtil.deleteMessage(message);
         }
     }
 
