@@ -12,6 +12,7 @@ import edu.neu.cs6510.util.Page;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
 import edu.neu.cs6510.util.sqs.MessageWapper;
+import edu.neu.cs6510.util.sqs.QueueUtil;
 import edu.neu.cs6510.util.sqs.SQSUtil;
 import io.searchbox.core.*;
 import org.elasticsearch.common.unit.Fuzziness;
@@ -127,8 +128,6 @@ public class StoryService {
                 .build();
 		SearchResult result = null;
 		result = (SearchResult) execute(search);
-
-		System.out.println(search.toString());
 		return getStoryFromJsonObject(result.getJsonObject());
 	}
 
@@ -202,7 +201,8 @@ public class StoryService {
 
 	public ResponseMessage updateVoteToQueue(String id, VoteType voteType){
 		MessageWapper messageWapper = new MessageWapper(EMessageType.valueOf(voteType.toString()), id);
-		SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+		//SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+		QueueUtil.sendMessage(GsonUtil.t2Json(messageWapper));
 		return Result.success();
 	}
 

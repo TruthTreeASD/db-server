@@ -6,6 +6,7 @@ import edu.neu.cs6510.enums.EMessageType;
 import edu.neu.cs6510.enums.VoteType;
 import edu.neu.cs6510.util.GsonUtil;
 import edu.neu.cs6510.util.sqs.MessageWapper;
+import edu.neu.cs6510.util.sqs.QueueUtil;
 import edu.neu.cs6510.util.sqs.SQSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +30,14 @@ public class MessageHandleTask {
     @Scheduled(cron = "*/30 * * * * ?")
     public void finishInspectionJob(){
         logger.info("<------------- Fetching messages from SQS ------------->");
-        List<Message> messages = SQSUtil.receiveMessages();
-        for (Message message : messages) {
-            messageHandler(GsonUtil.fromJson(message.getBody(), MessageWapper.class), storyService);
-            SQSUtil.deleteMessage(message);
+//        List<Message> messages = SQSUtil.receiveMessages();
+//        for (Message message : messages) {
+//            messageHandler(GsonUtil.fromJson(message.getBody(), MessageWapper.class), storyService);
+//            SQSUtil.deleteMessage(message);
+//        }
+        List<String> messages = QueueUtil.receiveMessages();
+        for (String message : messages) {
+            messageHandler(GsonUtil.fromJson(message, MessageWapper.class), storyService);
         }
     }
 

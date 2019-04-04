@@ -10,6 +10,7 @@ import edu.neu.cs6510.util.Page;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
 import edu.neu.cs6510.util.sqs.MessageWapper;
+import edu.neu.cs6510.util.sqs.QueueUtil;
 import edu.neu.cs6510.util.sqs.SQSUtil;
 import io.searchbox.client.JestClient;
 import io.swagger.annotations.ApiOperation;
@@ -79,7 +80,8 @@ public class StoryController {
     @GetMapping("/api/stories/story/{id}")
     public ResponseMessage<List<Story>> findStoryById(@PathVariable(value = "id") String id) {
         MessageWapper messageWapper = new MessageWapper(EMessageType.FREQ_INC, id);
-        SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+        //SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+        QueueUtil.sendMessage(GsonUtil.t2Json(messageWapper));
         return Result.success(storyService.getById(id));
     }
 
