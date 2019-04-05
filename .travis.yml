@@ -43,4 +43,4 @@ deploy:
     docker push $IMAGE_REPO_URL:latest;
     ecs-deploy -c $CLUSTER_NAME -n $SERVICE_NAME -i $IMAGE_REPO_URL:latest -r us-west-2 --timeout 600;
   on:
-    branch: createPipline
+    branch: feature/createPipeline
