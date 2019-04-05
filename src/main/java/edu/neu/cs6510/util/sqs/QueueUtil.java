@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 public class QueueUtil {
 
-    private static Queue<String> messageQueue;
+    private static LinkedBlockingQueue<String> messageQueue;
 
     private static int BATCH_NUM = 50;
 
     static {
-        messageQueue = new LinkedList<>();
+        messageQueue = new LinkedBlockingQueue<>();
     }
 
     private QueueUtil() {

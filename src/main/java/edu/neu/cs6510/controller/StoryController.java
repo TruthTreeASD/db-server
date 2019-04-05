@@ -35,11 +35,13 @@ public class StoryController {
         return Result.success(storyService.getAll());
     }
 
-    @ApiOperation(value = "find all stories by page")
+    @ApiOperation(value = "find all stories by page [And order by filed in given order]")
     @GetMapping("/api/stories/story/all/page")
     public ResponseMessage<Page<Story>> findAllStoriesPage(@RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
-                                                           @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage) {
-        return Result.success(storyService.getAllPage(pageSize, currentPage));
+                                                           @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
+                                                           @RequestParam(value = "orderBy", required = false) String orderBy,
+                                                           @RequestParam(value = "order", defaultValue =  "DESC") String order) {
+        return Result.success(storyService.getAllPage(pageSize, currentPage, orderBy, order));
     }
     
     @ApiOperation(value = "find all approved stories")
@@ -117,14 +119,14 @@ public class StoryController {
         return storyService.updateVoteToQueue(id, voteType);
     }
 
-    @ApiOperation(value = "search by key words")
-    @GetMapping("/api/stories/story/search/{keyword}")
-    public ResponseMessage<List<Story>> searchByKeyword(@PathVariable(value = "keyword") String keyword){
-        return Result.success(storyService.searchByKeyword(keyword));
-    }
+//    @ApiOperation(value = "search by key words")
+//    @GetMapping("/api/stories/story/search/{keyword}")
+//    public ResponseMessage<List<Story>> searchByKeyword(@PathVariable(value = "keyword") String keyword){
+//        return Result.success(storyService.searchByKeyword(keyword));
+//    }
 
     @ApiOperation(value = "search by key words and selected fildes")
-    @GetMapping("/api/stories/story/search-fields/{keyword}")
+    @GetMapping("/api/stories/story/search/{keyword}")
     public ResponseMessage<List<Story>> searchByKeyword(@PathVariable(value = "keyword") String keyword,
                                                         @RequestParam(value = "fields", required = false) List<String> fields){
         return Result.success(storyService.searchByKeyword(keyword, fields));
@@ -135,7 +137,9 @@ public class StoryController {
     @GetMapping("/api/stories/story/search/page/{keyword}")
     public ResponseMessage<Page<Story>> searchByKeyword(@PathVariable(value = "keyword") String keyword,
                                                         @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
-                                                        @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage){
-        return Result.success(storyService.searchByKeywordPage(keyword, pageSize, currentPage));
+                                                        @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
+                                                        @RequestParam(value = "orderBy", required = false) String orderBy,
+                                                        @RequestParam(value = "order", defaultValue =  "DESC") String order){
+        return Result.success(storyService.searchByKeywordPage(keyword, pageSize, currentPage, orderBy, order));
     }
 }

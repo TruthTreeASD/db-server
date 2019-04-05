@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class MessageHandleTask {
@@ -27,7 +29,7 @@ public class MessageHandleTask {
     /**
      * every 30 s
      */
-    @Scheduled(cron = "*/30 * * * * ?")
+    @Scheduled(cron = "*/15 * * * * ?")
     public void finishInspectionJob(){
         logger.info("<------------- Fetching messages from SQS ------------->");
 //        List<Message> messages = SQSUtil.receiveMessages();
@@ -36,17 +38,24 @@ public class MessageHandleTask {
 //            SQSUtil.deleteMessage(message);
 //        }
         List<String> messages = QueueUtil.receiveMessages();
+        HashMap<MessageWapper, Integer> cnt = new HashMap<>();
         for (String message : messages) {
-            messageHandler(GsonUtil.fromJson(message, MessageWapper.class), storyService);
+            MessageWapper messageWapper = GsonUtil.fromJson(message, MessageWapper.class);
+            cnt.put(messageWapper, cnt.getOrDefault(messageWapper, 0) + 1);
         }
+        for (Map.Entry<MessageWapper, Integer> entry : cnt.entrySet()) {
+            entry.getKey().setValue(entry.getValue());
+            messageHandler(entry.getKey(), storyService);
+        }
+        logger.info("<------------- Processed "+ messages.size() +" messages, updated "+ cnt.size() +" stories------------->");
     }
 
     private static void messageHandler(MessageWapper wapper, StoryService storyService) {
-        if (wapper.getMessageType() == EMessageType.DOWNVOTE || wapper.getMessageType() == EMessageType.UPVOTE ) {
-            System.out.println(storyService.updateVote(wapper.getId(), wapper.getMessageType()));
-        } else if (wapper.getMessageType() == EMessageType.APPROVED) {
+       if (wapper.getMessageType() == EMessageType.APPROVED) {
             storyService.setApproved(wapper.getId());
-        }
+        } else {
+           storyService.updateField(wapper.getId(), wapper);
+       }
     }
 }
 

@@ -6,7 +6,16 @@ public class MessageWapper {
 
     EMessageType messageType;
     String id;
+    Integer value;
     Long timestamp;
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
 
     public MessageWapper(EMessageType messageType, String id) {
         this.messageType = messageType;
