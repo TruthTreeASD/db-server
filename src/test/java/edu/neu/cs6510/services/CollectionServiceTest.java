@@ -54,8 +54,8 @@ public class CollectionServiceTest {
 
 		l = new ArrayList<>();
 		l.add(1);
-		l.add(2);
-		l.add(3);
+		l.add(4);
+		l.add(5);
 
 		att = new ArrayList<>();
 		AttributeMapping temp = new AttributeMapping();
@@ -100,7 +100,7 @@ public class CollectionServiceTest {
 	@Test
 	public void findAvailbeAttr1Test() {
 		Mockito.when(collectionRepository.findAll()).thenReturn((List<Collection>) c);
-		ResponseMessage r = collectionService.findAvailbeAttr1("state", 1, 1);
+		ResponseMessage r = collectionService.findAvailbeAttr1("state", 2016, 10000000);
 		assertEquals(r.getData(), new ArrayList<>());
 
 	}
@@ -126,7 +126,7 @@ public class CollectionServiceTest {
 	
 	@Test
 	public void findAvailbeAttr4Test() {
-		ResponseMessage r = collectionService.findAvailbeAttr("state",1,1);
+		ResponseMessage r = collectionService.findAvailbeAttr("state",2016,10000000);
 		assertEquals(r.getData(), new ArrayList<>());
 	}
 	
