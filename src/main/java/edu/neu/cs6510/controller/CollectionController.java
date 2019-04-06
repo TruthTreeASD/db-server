@@ -133,8 +133,8 @@ public class CollectionController {
         return collectionService.attriTimeRange(level, attributes);
     }
 
-    public static void main(String[] args) {
-        System.out.println(1 << 5);
-    }
+//    public static void main(String[] args) {
+//        System.out.println(1 << 5);
+//    }
 
 }

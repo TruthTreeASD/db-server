@@ -10,6 +10,7 @@
             timeToIdleSeconds="0"
             timeToLiveSeconds="600"
             memoryStoreEvictionPolicy="LRU" />
+
     <cache
             name="VALUE_PAIGINATION"
             eternal="false"
@@ -19,6 +20,11 @@
             timeToIdleSeconds="0"
             timeToLiveSeconds="300"
             memoryStoreEvictionPolicy="LRU" />
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 0c46af0af9a69676e8b6f362b567e24430f89618
 
     <cache
             name="AVAILABLE_ATTRIBUTE"
@@ -39,4 +45,9 @@
             timeToIdleSeconds="0"
             timeToLiveSeconds="3600"
             memoryStoreEvictionPolicy="LRU" />
+<<<<<<< HEAD
+>>>>>>> 01dc999903d77e51fa4066035887ea8970a9cd9b
+=======
+
+>>>>>>> 0c46af0af9a69676e8b6f362b567e24430f89618
 </ehcache>
