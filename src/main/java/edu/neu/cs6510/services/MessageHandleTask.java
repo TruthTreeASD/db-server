@@ -51,8 +51,8 @@ public class MessageHandleTask {
     }
 
     private static void messageHandler(MessageWapper wapper, StoryService storyService) {
-       if (wapper.getMessageType() == EMessageType.APPROVED) {
-            storyService.setApproved(wapper.getId());
+       if (wapper.getMessageType() == EMessageType.APPROVED || wapper.getMessageType() == EMessageType.DISAPPROVED || wapper.getMessageType() == EMessageType.PENDING ) {
+            storyService.changeStatus(wapper);
         } else {
            storyService.updateField(wapper.getId(), wapper);
        }

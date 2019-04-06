@@ -1,5 +1,6 @@
 package edu.neu.cs6510.model;
 
+import edu.neu.cs6510.enums.EStoryStatus;
 import io.searchbox.annotations.JestId;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class Story {
     private long freq;
     private List<String> tags;
     private Long timestamp;
-    private boolean isApproved;
+    private EStoryStatus isApproved;
 
     public String getId() {
         return id;
@@ -89,11 +90,11 @@ public class Story {
         this.timestamp = timestamp;
     }
 
-    public boolean isApproved() {
+    public EStoryStatus getIsApproved() {
         return isApproved;
     }
 
-    public void setApproved(boolean approved) {
-        isApproved = approved;
+    public void setIsApproved(EStoryStatus isApproved) {
+        this.isApproved = isApproved;
     }
 }

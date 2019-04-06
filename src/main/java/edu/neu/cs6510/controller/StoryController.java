@@ -2,6 +2,7 @@ package edu.neu.cs6510.controller;
 
 import edu.neu.cs6510.config.ElasticsearchConfig;
 import edu.neu.cs6510.enums.EMessageType;
+import edu.neu.cs6510.enums.EStoryStatus;
 import edu.neu.cs6510.enums.VoteType;
 import edu.neu.cs6510.model.Story;
 import edu.neu.cs6510.services.StoryService;
@@ -51,16 +52,21 @@ public class StoryController {
     }
 
     @ApiOperation(value = "find all approved stories")
-    @GetMapping("/api/stories/story/approved/page")
-    public ResponseMessage<Page<Story>> findAllApprovedStoriesPage(@RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
-                                                                   @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage) {
-        return Result.success(storyService.getAllApprovedPage(pageSize, currentPage));
+    @GetMapping("/api/stories/story/{status}/page")
+    public ResponseMessage<Page<Story>> findAllApprovedStoriesPage(@PathVariable("status") EStoryStatus storyStatus, @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+                                                                   @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
+                                                                   @RequestParam(value = "orderBy", defaultValue = "timestamp") String orderBy,
+                                                                   @RequestParam(value = "order", defaultValue =  "DESC") String order) {
+        return Result.success(storyService.getByStatusPage(storyStatus, pageSize, currentPage ,orderBy, order));
     }
 
-    @ApiOperation(value = "approve story")
-    @PostMapping("/api/stories/story/approve/{id}")
-    public ResponseMessage<List<Story>> approveStory(@PathVariable(value = "id") String id) {
-        return Result.success(storyService.setApproved(id));
+    @ApiOperation(value = "change the stataus story")
+    @PutMapping("/api/stories/story/{status}/{id}")
+    public ResponseMessage<List<Story>> approveStory(@PathVariable("status") EStoryStatus storyStatus, @PathVariable(value = "id") String id) {
+        MessageWapper messageWapper = new MessageWapper(EMessageType.valueOf(storyStatus.toString()), id);
+        //SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+        QueueUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+        return Result.success();
     }
 
     @ApiOperation(value = "find all stories pending approval")
@@ -69,12 +75,14 @@ public class StoryController {
         return Result.success(storyService.getAllPending());
     }
 
-    @ApiOperation(value = "find all stories pending approval")
-    @GetMapping("/api/stories/story/pending/page")
-    public ResponseMessage<Page<Story>> findAllPendingStoriesPage(@RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
-                                                              @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage) {
-        return Result.success(storyService.getAllPendingPage(pageSize, currentPage));
-    }
+//    @ApiOperation(value = "find all stories pending approval")
+//    @GetMapping("/api/stories/story/pending/page")
+//    public ResponseMessage<Page<Story>> findAllPendingStoriesPage(@RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+//                                                              @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
+//                                                                  @RequestParam(value = "orderBy", defaultValue = "timestamp") String orderBy,
+//                                                                  @RequestParam(value = "order", defaultValue =  "DESC") String order) {
+//        return Result.success(storyService.getAllPendingPage(pageSize, currentPage,orderBy, order));
+//    }
 
 
 
@@ -85,6 +93,15 @@ public class StoryController {
         //SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
         QueueUtil.sendMessage(GsonUtil.t2Json(messageWapper));
         return Result.success(storyService.getById(id));
+    }
+
+    @ApiOperation(value = "find story by id")
+    @DeleteMapping("/api/stories/story/{id}")
+    public ResponseMessage<List<Story>> deleteStory(@PathVariable(value = "id") String id) {
+        MessageWapper messageWapper = new MessageWapper(EMessageType.FREQ_INC, id);
+        //SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+        storyService.delete(id);
+        return Result.success();
     }
 
 

@@ -1,12 +1,15 @@
 package edu.neu.cs6510.services;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import edu.neu.cs6510.enums.EMessageType;
+import edu.neu.cs6510.enums.EStoryStatus;
 import edu.neu.cs6510.enums.VoteType;
+import edu.neu.cs6510.exception.FailedToDeleteStoryException;
 import edu.neu.cs6510.exception.NoSuchStoryException;
 import edu.neu.cs6510.util.Page;
 import edu.neu.cs6510.util.http.ResponseMessage;
@@ -51,7 +54,7 @@ public class StoryService {
 		String id = story.getAuthor() + timeStamp.toString();
 		story.setId(id);
 		story.setTimestamp(System.currentTimeMillis());
-		story.setApproved(false);
+		story.setIsApproved(EStoryStatus.PENDING);
 		Index index = new Index.Builder(story).index(INDEX).type(TYPE).build();
 		JestResult result = execute(index);
 
@@ -89,33 +92,37 @@ public class StoryService {
 
 	public List<Story> getAllApproved() {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", "true"));
+		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
 		searchSourceBuilder.sort("timestamp", SortOrder.DESC);
 		return search(searchSourceBuilder);
 	}
 
-	public Page<Story> getAllApprovedPage(Integer pageSize,Integer currentPage) {
+	public Page<Story> getByStatusPage(EStoryStatus eStoryStatus, Integer pageSize,Integer currentPage, String orderBy, String order) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", "true"))
+		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", eStoryStatus))
 				.from((currentPage - 1) * pageSize)
-				.size(pageSize);;
-		searchSourceBuilder.sort("timestamp", SortOrder.DESC);
+				.size(pageSize);
+		if (!StringUtils.isEmpty(orderBy)) {
+			searchSourceBuilder.sort(orderBy, SortOrder.valueOf(order.toUpperCase()));
+		}
 		return searchPage(searchSourceBuilder, pageSize, currentPage);
 	}
 
 	public List<Story> getAllPending() {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", "false"));
+		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", EStoryStatus.PENDING));
 		searchSourceBuilder.sort("timestamp", SortOrder.DESC);
 		return search(searchSourceBuilder);
 	}
 
-	public Page<Story> getAllPendingPage(Integer pageSize,Integer currentPage) {
+	public Page<Story> getAllPendingPage(Integer pageSize,Integer currentPage, String orderBy, String order) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", "false"))
+		searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", EStoryStatus.PENDING))
 				.from((currentPage - 1) * pageSize)
 				.size(pageSize);
-		searchSourceBuilder.sort("timestamp", SortOrder.DESC);
+		if (!StringUtils.isEmpty(orderBy)) {
+			searchSourceBuilder.sort(orderBy, SortOrder.valueOf(order.toUpperCase()));
+		}
 		return searchPage(searchSourceBuilder, pageSize, currentPage);
 	}
 
@@ -212,13 +219,19 @@ public class StoryService {
 	}
 
 
-	public List<Story> setApproved(String id){
-
+	public void changeStatus(MessageWapper wapper){
 		String script = "{\n" +
-				"    \"script\" : \"ctx._source.isApproved = true \""  + "\n" +
+				"    \"script\" : \"ctx._source.isApproved = " + wapper.getMessageType().toString() +  "\""  + "\n" +
 				"}";
-		execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
-		return getById(id);
+		execute(new Update.Builder(script).index(INDEX).type(TYPE).id(wapper.getId()).build());
+	}
+
+	public void delete(String id) {
+		try {
+			client.execute(new Delete.Builder(id).index(INDEX).type(TYPE).id(id).build());
+		} catch (IOException e) {
+			throw new FailedToDeleteStoryException("Cannot delete story id: " + id);
+		}
 	}
 
 
@@ -312,5 +325,6 @@ public class StoryService {
 		}
 		return getById(id);
 	}
+
 
 }
