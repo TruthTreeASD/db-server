@@ -12,12 +12,21 @@ public class Story {
     private String content;
     private int upvote;
     private int downvote;
+    private long freq;
     private List<String> tags;
     private Long timestamp;
     private boolean isApproved;
 
     public String getId() {
         return id;
+    }
+
+    public long getFreq() {
+        return freq;
+    }
+
+    public void setFreq(long freq) {
+        this.freq = freq;
     }
 
     public void setId(String id) {

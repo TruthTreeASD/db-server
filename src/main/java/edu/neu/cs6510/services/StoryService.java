@@ -2,12 +2,20 @@ package edu.neu.cs6510.services;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import edu.neu.cs6510.enums.EMessageType;
 import edu.neu.cs6510.enums.VoteType;
 import edu.neu.cs6510.exception.NoSuchStoryException;
 import edu.neu.cs6510.util.Page;
+import edu.neu.cs6510.util.http.ResponseMessage;
+import edu.neu.cs6510.util.http.Result;
+import edu.neu.cs6510.util.sqs.MessageWapper;
+import edu.neu.cs6510.util.sqs.QueueUtil;
+import edu.neu.cs6510.util.sqs.SQSUtil;
 import io.searchbox.core.*;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -26,6 +34,8 @@ import io.searchbox.action.Action;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.search.sort.Sort;
+import sun.swing.StringUIClientPropertyKey;
+
 
 @Service
 public class StoryService {
@@ -66,11 +76,14 @@ public class StoryService {
 		return search(searchSourceBuilder);
 	}
 
-	public Page<Story> getAllPage(Integer pageSize,Integer currentPage) {
+	public Page<Story> getAllPage(Integer pageSize,Integer currentPage, String orderBy, String order) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchAllQuery())
 				.from((currentPage - 1) * pageSize)
 				.size(pageSize);
+		if (!StringUtils.isEmpty(orderBy)) {
+			searchSourceBuilder.sort(orderBy, SortOrder.valueOf(order.toUpperCase()));
+		}
 		return searchPage(searchSourceBuilder, pageSize, currentPage);
 	}
 
@@ -120,8 +133,6 @@ public class StoryService {
                 .build();
 		SearchResult result = null;
 		result = (SearchResult) execute(search);
-
-		System.out.println(search.toString());
 		return getStoryFromJsonObject(result.getJsonObject());
 	}
 
@@ -193,23 +204,13 @@ public class StoryService {
 		return stories;
 	}
 
-    public List<Story> updateVote(String id, VoteType voteType){
-        //todo need to think a consisteny way to update vote
-        // 1. database 2. message queue
-		Story stroy = null;
-		try {
-			stroy = getById(id).get(0);
-		} catch (IndexOutOfBoundsException outofBoundsException) {
-			throw new NoSuchStoryException("Cannot find this story!");
-		}
+	public ResponseMessage updateVoteToQueue(String id, VoteType voteType){
+		MessageWapper messageWapper = new MessageWapper(EMessageType.valueOf(voteType.toString()), id);
+		//SQSUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+		QueueUtil.sendMessage(GsonUtil.t2Json(messageWapper));
+		return Result.success();
+	}
 
-        int value = voteType == VoteType.UPVOTE ? stroy.getUpvote() + 1 : stroy.getDownvote() + 1;
-        String script = "{\n" +
-                "    \"script\" : \"ctx._source." + voteType.getField() + " = " + value + "\""  + "\n" +
-                "}";
-        execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
-        return getById(id);
-    }
 
 	public List<Story> setApproved(String id){
 
@@ -221,37 +222,53 @@ public class StoryService {
 	}
 
 
-	public List<Story> searchByKeyword(String keyword) {
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders
-                .multiMatchQuery(keyword, "id", "content", "title", "author", "tags")
-                .fuzziness(Fuzziness.AUTO));
-		Search search = new Search.Builder(searchSourceBuilder.toString())
-				// multiple index or types can be added.
-                .addIndex(INDEX)
-                .addType(TYPE)
-                .build();
+//	public List<Story> searchByKeyword(String keyword) {
+//		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+//        searchSourceBuilder.query(QueryBuilders
+//                .multiMatchQuery(keyword, "content", "title", "author", "tags")
+//                .fuzziness(Fuzziness.AUTO));
+//		Search search = new Search.Builder(searchSourceBuilder.toString())
+//				// multiple index or types can be added.
+//                .addIndex(INDEX)
+//                .addType(TYPE)
+//                .build();
+//
+//		SearchResult result = (SearchResult) execute(search);
+//		return getStoryFromJsonObject(result.getJsonObject());
+//	}
 
-		SearchResult result = null;
-		result = (SearchResult) execute(search);
-		return getStoryFromJsonObject(result.getJsonObject());
-	}
+  public List<Story> searchByKeyword(String keyword, List<String> feilds) {
+    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+    if (feilds == null || feilds.isEmpty()) {
+      feilds = Arrays.asList("content", "title", "author", "tags");
+    }
+    searchSourceBuilder.query(QueryBuilders
+            .multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
+            .fuzziness(Fuzziness.AUTO));
+    Search search = new Search.Builder(searchSourceBuilder.toString())
+            // multiple index or types can be added.
+            .addIndex(INDEX)
+            .addType(TYPE)
+            .build();
+    SearchResult result = (SearchResult) execute(search);
+    return getStoryFromJsonObject(result.getJsonObject());
+  }
 
-	public Page<Story> searchByKeywordPage(String keyword,Integer pageSize,Integer currentPage) {
+	public Page<Story> searchByKeywordPage(String keyword,Integer pageSize,Integer currentPage, String orderBy, String order) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders
-				.multiMatchQuery(keyword, "id", "content", "title", "author", "tags")
+		searchSourceBuilder.from((currentPage - 1) * pageSize)
+				.size(pageSize).query(QueryBuilders
+				.multiMatchQuery(keyword, "content", "title", "author", "tags")
 				.fuzziness(Fuzziness.AUTO));
 		Search search = new Search.Builder(searchSourceBuilder.toString())
-				// multiple index or types can be added.
 				.addIndex(INDEX)
 				.addType(TYPE)
 				.build();
-
-		SearchResult result = null;
-		result = (SearchResult) execute(search);
-		Page<Story> page = new Page<Story>( getStoryFromJsonObject(result.getJsonObject()), result.getTotal(),currentPage, pageSize);
-		return page;
+		if (!StringUtils.isEmpty(orderBy)) {
+			searchSourceBuilder.sort(orderBy, SortOrder.valueOf(order.toUpperCase()));
+		}
+		SearchResult result = (SearchResult) execute(search);
+		return new Page<Story>( getStoryFromJsonObject(result.getJsonObject()), result.getTotal(),currentPage, pageSize);
 	}
 
 	private JestResult execute(Action action) {
@@ -267,6 +284,33 @@ public class StoryService {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+
+
+	public List<Story> updateField(String id, MessageWapper wapper){
+		Story stroy = null;
+		try {
+			stroy = getById(id).get(0);
+		} catch (IndexOutOfBoundsException outofBoundsException) {
+			throw new NoSuchStoryException("Cannot find this story!");
+		}
+
+		long value = wapper.getMessageType() == EMessageType.UPVOTE ?
+				stroy.getUpvote() + wapper.getValue() :
+				(wapper.getMessageType() == EMessageType.DOWNVOTE ? (stroy.getDownvote() + wapper.getValue())
+                        : (stroy.getFreq() + wapper.getValue()));
+
+		String script = "{\n" +
+				"    \"script\" : \"ctx._source." + wapper.getMessageType().getField() + " = " + value + "\""  + "\n" +
+				"}";
+		execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return getById(id);
 	}
 
 }
