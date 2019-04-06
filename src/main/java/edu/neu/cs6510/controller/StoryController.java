@@ -153,10 +153,11 @@ public class StoryController {
     @ApiOperation(value = "search by key words")
     @GetMapping("/api/stories/story/search/page/{keyword}")
     public ResponseMessage<Page<Story>> searchByKeyword(@PathVariable(value = "keyword") String keyword,
+                                                        @RequestParam(value = "fields", required = false) List<String> fields,
                                                         @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
                                                         @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
                                                         @RequestParam(value = "orderBy", required = false) String orderBy,
                                                         @RequestParam(value = "order", defaultValue =  "DESC") String order){
-        return Result.success(storyService.searchByKeywordPage(keyword, pageSize, currentPage, orderBy, order));
+        return Result.success(storyService.searchByKeywordPage(keyword, fields, pageSize, currentPage, orderBy, order));
     }
 }

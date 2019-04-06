@@ -20,6 +20,7 @@ import edu.neu.cs6510.util.sqs.SQSUtil;
 import io.searchbox.core.*;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -265,10 +266,12 @@ public class StoryService {
     if (feilds == null || feilds.isEmpty()) {
       feilds = Arrays.asList("content", "title", "author", "tags");
     }
-    searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
-    searchSourceBuilder.query(QueryBuilders
-            .multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
-            .fuzziness(Fuzziness.AUTO));
+    BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+    queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
+    queryBuilder.must(QueryBuilders
+			.multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
+			.fuzziness(Fuzziness.AUTO));
+    searchSourceBuilder.query(queryBuilder);
     Search search = new Search.Builder(searchSourceBuilder.toString())
             // multiple index or types can be added.
             .addIndex(INDEX)
@@ -278,12 +281,18 @@ public class StoryService {
     return getStoryFromJsonObject(result.getJsonObject());
   }
 
-	public Page<Story> searchByKeywordPage(String keyword,Integer pageSize,Integer currentPage, String orderBy, String order) {
+	public Page<Story> searchByKeywordPage(String keyword, List<String> feilds, Integer pageSize,Integer currentPage, String orderBy, String order) {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.from((currentPage - 1) * pageSize)
-				.size(pageSize).query(QueryBuilders
-				.multiMatchQuery(keyword, "content", "title", "author", "tags")
+
+		if (feilds == null || feilds.isEmpty()) {
+			feilds = Arrays.asList("content", "title", "author", "tags");
+		}
+		BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+		queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
+		queryBuilder.must(QueryBuilders
+				.multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
 				.fuzziness(Fuzziness.AUTO));
+		searchSourceBuilder.query(queryBuilder);
 		Search search = new Search.Builder(searchSourceBuilder.toString())
 				.addIndex(INDEX)
 				.addType(TYPE)
