@@ -40,7 +40,7 @@ public class StoryController {
     @GetMapping("/api/stories/story/all/page")
     public ResponseMessage<Page<Story>> findAllStoriesPage(@RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
                                                            @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
-                                                           @RequestParam(value = "orderBy", required = false) String orderBy,
+                                                           @RequestParam(value = "orderBy", defaultValue = "timestamp") String orderBy,
                                                            @RequestParam(value = "order", defaultValue =  "DESC") String order) {
         return Result.success(storyService.getAllPage(pageSize, currentPage, orderBy, order));
     }
@@ -53,7 +53,7 @@ public class StoryController {
 
     @ApiOperation(value = "find all approved stories")
     @GetMapping("/api/stories/story/{status}/page")
-    public ResponseMessage<Page<Story>> findAllApprovedStoriesPage(@PathVariable("status") EStoryStatus storyStatus, @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+    public ResponseMessage<Page<Story>> findStoriesByStatusPage(@PathVariable("status") EStoryStatus storyStatus, @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
                                                                    @RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
                                                                    @RequestParam(value = "orderBy", defaultValue = "timestamp") String orderBy,
                                                                    @RequestParam(value = "order", defaultValue =  "DESC") String order) {
