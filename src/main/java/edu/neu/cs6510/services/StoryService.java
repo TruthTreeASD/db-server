@@ -219,11 +219,21 @@ public class StoryService {
 	}
 
 
-	public void changeStatus(MessageWapper wapper){
-		String script = "{\n" +
-				"    \"script\" : \"ctx._source.isApproved = " + wapper.getMessageType().toString() +  "\""  + "\n" +
-				"}";
-		execute(new Update.Builder(script).index(INDEX).type(TYPE).id(wapper.getId()).build());
+	public void changeStatus(MessageWapper wapper, String id){
+//		String script = "{\n" +
+//				"    \"script\" : \"ctx._source." + wapper.getMessageType().getField() + " = " + wapper.getMessageType() + "\""  + "\n" +
+//				"}";
+		Story stroy = null;
+		try {
+			stroy = getById(id).get(0);
+		} catch (IndexOutOfBoundsException outofBoundsException) {
+			throw new NoSuchStoryException("Cannot find this story!");
+		}
+		stroy.setIsApproved(EStoryStatus.valueOf(wapper.getMessageType().toString()));
+//		String source = "{\""+ wapper.getMessageType().getField() +"\": \"" + wapper.getMessageType().toString() +"\"}";
+		System.out.println(GsonUtil.toJson(stroy));
+//		execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
+		execute(new Index.Builder(GsonUtil.toJson(stroy)).index(INDEX).type(TYPE).id(id).build());
 	}
 
 	public void delete(String id) {
@@ -255,6 +265,7 @@ public class StoryService {
     if (feilds == null || feilds.isEmpty()) {
       feilds = Arrays.asList("content", "title", "author", "tags");
     }
+    searchSourceBuilder.query(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
     searchSourceBuilder.query(QueryBuilders
             .multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
             .fuzziness(Fuzziness.AUTO));
@@ -313,6 +324,8 @@ public class StoryService {
 				stroy.getUpvote() + wapper.getValue() :
 				(wapper.getMessageType() == EMessageType.DOWNVOTE ? (stroy.getDownvote() + wapper.getValue())
                         : (stroy.getFreq() + wapper.getValue()));
+
+
 
 		String script = "{\n" +
 				"    \"script\" : \"ctx._source." + wapper.getMessageType().getField() + " = " + value + "\""  + "\n" +

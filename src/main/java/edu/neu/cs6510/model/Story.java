@@ -11,8 +11,8 @@ public class Story {
     private String author;
     private String title;
     private String content;
-    private int upvote;
-    private int downvote;
+    private long upvote;
+    private long downvote;
     private long freq;
     private List<String> tags;
     private Long timestamp;
@@ -34,19 +34,19 @@ public class Story {
         this.id = id;
     }
 
-    public int getUpvote() {
+    public long getUpvote() {
         return upvote;
     }
 
-    public void setUpvote(int upvote) {
+    public void setUpvote(long upvote) {
         this.upvote = upvote;
     }
 
-    public int getDownvote() {
+    public long getDownvote() {
         return downvote;
     }
 
-    public void setDownvote(int downvote) {
+    public void setDownvote(long downvote) {
         this.downvote = downvote;
     }
 
