@@ -7,7 +7,7 @@ services:
 
 script:
   # build docker image
-  - mvn clean install
+  - mvn clean install -DskipTests
   - docker build -t database_service .
   - docker tag database_service:latest 869798252720.dkr.ecr.us-west-2.amazonaws.com/database_service:latest
 
