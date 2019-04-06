@@ -10,6 +10,7 @@
             timeToIdleSeconds="0"
             timeToLiveSeconds="600"
             memoryStoreEvictionPolicy="LRU" />
+
     <cache
             name="VALUE_PAIGINATION"
             eternal="false"
@@ -39,4 +40,5 @@
             timeToIdleSeconds="0"
             timeToLiveSeconds="3600"
             memoryStoreEvictionPolicy="LRU" />
+
 </ehcache>

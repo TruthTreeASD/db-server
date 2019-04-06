@@ -1,0 +1,46 @@
+sudo: required
+dist: trusty
+language: java
+
+services:
+  - docker
+
+script:
+  # build docker image
+  - mvn clean install -DskipTests
+  - docker build -t database_service .
+  - docker tag database_service:latest 869798252720.dkr.ecr.us-west-2.amazonaws.com/database_service:latest
+
+before_deploy:
+
+  # install ecs-deploy
+  - sudo apt-get update
+  - sudo apt-get install jq -y
+  - curl https://raw.githubusercontent.com/silinternational/ecs-deploy/master/ecs-deploy | sudo tee -a /usr/bin/ecs-deploy
+  - sudo chmod +x /usr/bin/ecs-deploy
+
+  # install python using conda
+  - >-
+    wget https://repo.anaconda.com/archive/Anaconda3-2018.12-Linux-x86_64.sh -O ~/anaconda3.sh
+    || true
+    && bash ~/anaconda3.sh -b -p ~/anaconda3 || true
+    && rm ~/anaconda3.sh
+    && echo 'export PATH="$HOME/anaconda3/bin:$PATH"' >> ~/.bashrc
+    && source ~/.bashrc
+    && conda create -n py27 python=2.7.16 -y
+    && source activate py27
+
+  # install AWS CLI
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+  # login to ECR
+  - eval $(aws ecr get-login --no-include-email --region us-west-2)
+
+deploy:
+  provider: script
+  script:
+
+    docker push $IMAGE_REPO_URL:latest;
+    ecs-deploy -c $CLUSTER_NAME -n $SERVICE_NAME -i $IMAGE_REPO_URL:latest -r us-west-2 --timeout 600;
+  on:
+    branch: daos
