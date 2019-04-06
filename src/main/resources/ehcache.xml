@@ -20,4 +20,27 @@
             timeToIdleSeconds="0"
             timeToLiveSeconds="300"
             memoryStoreEvictionPolicy="LRU" />
+<<<<<<< HEAD
+=======
+
+    <cache
+            name="AVAILABLE_ATTRIBUTE"
+            eternal="false"
+            maxElementsInMemory="500"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="3600"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <cache
+            name="STORY_PAGINATION"
+            eternal="false"
+            maxElementsInMemory="500"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="3600"
+            memoryStoreEvictionPolicy="LRU" />
+>>>>>>> 01dc999903d77e51fa4066035887ea8970a9cd9b
 </ehcache>
