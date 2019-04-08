@@ -1,6 +1,7 @@
 package edu.neu.cs6510.controller;
 
 import edu.neu.cs6510.config.ElasticsearchConfig;
+import edu.neu.cs6510.dto.NewStoryDTO;
 import edu.neu.cs6510.enums.EMessageType;
 import edu.neu.cs6510.enums.EStoryStatus;
 import edu.neu.cs6510.enums.VoteType;
@@ -107,7 +108,7 @@ public class StoryController {
 
     @ApiOperation(value = "add story")
     @PostMapping("/api/stories/story")
-    public ResponseMessage<List<Story>> addStory(@RequestBody Story story) {
+    public ResponseMessage<List<Story>> addStory(@RequestBody NewStoryDTO story) {
         return Result.success(storyService.createStory(story));
     }
 

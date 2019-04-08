@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.neu.cs6510.dto.NewStoryDTO;
 import edu.neu.cs6510.enums.EMessageType;
 import edu.neu.cs6510.enums.EStoryStatus;
 import edu.neu.cs6510.enums.VoteType;
@@ -50,7 +51,7 @@ public class StoryService {
 	private static String INDEX = "stories";
 	private static String TYPE = "story";
 
-	public List<Story> createStory(Story story) {
+	public List<Story> createStory(NewStoryDTO story) {
 		Long timeStamp = System.currentTimeMillis();
 		String id = story.getAuthor() + timeStamp.toString();
 		story.setId(id);
@@ -224,17 +225,26 @@ public class StoryService {
 //		String script = "{\n" +
 //				"    \"script\" : \"ctx._source." + wapper.getMessageType().getField() + " = " + wapper.getMessageType() + "\""  + "\n" +
 //				"}";
-		Story stroy = null;
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(QueryBuilders.idsQuery(TYPE).addIds(id));
+		Search search = new Search.Builder(searchSourceBuilder.toString())
+				// multiple index or types can be added.
+				.addIndex(INDEX)
+				.addType(TYPE)
+				.build();
+		SearchResult result = (SearchResult) execute(search);
+		NewStoryDTO story = null;
 		try {
-			stroy = getById(id).get(0);
-		} catch (IndexOutOfBoundsException outofBoundsException) {
+			JsonArray results = result.getJsonObject().getAsJsonObject("hits").getAsJsonArray("hits");
+			story = GsonUtil.fromJson(results.get(0).getAsJsonObject().getAsJsonObject("_source").toString(), NewStoryDTO.class);
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new NoSuchStoryException("Cannot find this story!");
 		}
-		stroy.setIsApproved(EStoryStatus.valueOf(wapper.getMessageType().toString()));
+		story.setIsApproved(EStoryStatus.valueOf(wapper.getMessageType().toString()));
 //		String source = "{\""+ wapper.getMessageType().getField() +"\": \"" + wapper.getMessageType().toString() +"\"}";
-		System.out.println(GsonUtil.toJson(stroy));
 //		execute(new Update.Builder(script).index(INDEX).type(TYPE).id(id).build());
-		execute(new Index.Builder(GsonUtil.toJson(stroy)).index(INDEX).type(TYPE).id(id).build());
+		execute(new Index.Builder(GsonUtil.toJson(story)).index(INDEX).type(TYPE).id(id).build());
 	}
 
 	public void delete(String id) {
@@ -264,7 +274,7 @@ public class StoryService {
   public List<Story> searchByKeyword(String keyword, List<String> feilds) {
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     if (feilds == null || feilds.isEmpty()) {
-      feilds = Arrays.asList("content", "title", "author", "tags");
+      feilds = Arrays.asList("raw_content", "title", "author", "tags");
     }
     BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
     queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
@@ -285,7 +295,7 @@ public class StoryService {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
 		if (feilds == null || feilds.isEmpty()) {
-			feilds = Arrays.asList("content", "title", "author", "tags");
+			feilds = Arrays.asList("raw_content", "title", "author", "tags");
 		}
 		BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
 		queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
@@ -347,6 +357,7 @@ public class StoryService {
 		}
 		return getById(id);
 	}
+
 
 
 }
