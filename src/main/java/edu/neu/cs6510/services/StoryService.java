@@ -301,7 +301,7 @@ public class StoryService {
 		queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
 		queryBuilder.must(QueryBuilders
 				.multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
-				.fuzziness(Fuzziness.AUTO));
+				.fuzziness(10));
 		searchSourceBuilder.query(queryBuilder);
 		Search search = new Search.Builder(searchSourceBuilder.toString())
 				.addIndex(INDEX)
