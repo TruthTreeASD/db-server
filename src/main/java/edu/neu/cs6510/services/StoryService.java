@@ -274,7 +274,7 @@ public class StoryService {
   public List<Story> searchByKeyword(String keyword, List<String> feilds) {
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     if (feilds == null || feilds.isEmpty()) {
-      feilds = Arrays.asList("raw_content", "title", "author", "tags");
+      feilds = Arrays.asList("rawContent", "title", "author", "tags");
     }
     BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
     queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
@@ -295,7 +295,7 @@ public class StoryService {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
 		if (feilds == null || feilds.isEmpty()) {
-			feilds = Arrays.asList("raw_content", "title", "author", "tags");
+			feilds = Arrays.asList("rawContent", "title", "author", "tags");
 		}
 		BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
 		queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));

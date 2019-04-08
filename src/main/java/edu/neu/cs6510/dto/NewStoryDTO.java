@@ -17,7 +17,7 @@ public class NewStoryDTO {
     private List<String> tags;
     private Long timestamp;
     private EStoryStatus isApproved;
-    private String raw_content;
+    private String rawContent;
 
     public String getId() {
         return id;
@@ -99,11 +99,11 @@ public class NewStoryDTO {
         this.isApproved = isApproved;
     }
 
-    public String getRaw_content() {
-        return raw_content;
+    public String getRawContent() {
+        return rawContent;
     }
 
-    public void setRaw_content(String raw_content) {
-        this.raw_content = raw_content;
+    public void setRawContent(String rawContent) {
+        this.rawContent = rawContent;
     }
 }
