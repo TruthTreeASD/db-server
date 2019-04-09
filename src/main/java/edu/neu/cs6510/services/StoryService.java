@@ -273,14 +273,24 @@ public class StoryService {
 
   public List<Story> searchByKeyword(String keyword, List<String> feilds) {
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-    if (feilds == null || feilds.isEmpty()) {
-      feilds = Arrays.asList("rawContent", "title", "author", "tags");
-    }
+   
     BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
     queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
-    queryBuilder.must(QueryBuilders
-			.multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
-			.fuzziness(Fuzziness.AUTO));
+    if (feilds == null || feilds.isEmpty()) {
+        // feilds = Arrays.asList("rawContent", "title", "author", "tags");
+       	queryBuilder.must(QueryBuilders.multiMatchQuery(keyword)
+           	    .field("title" ,3.0f)
+           	    .field("tags",3.0f)
+           	    .field("rawContent",2.0f)
+           	    .field("author")
+           	    .fuzziness(Fuzziness.AUTO));
+       } else {
+    	   queryBuilder.must(QueryBuilders
+    				.multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
+    				.fuzziness(Fuzziness.AUTO));
+    	    
+       }
+  
     searchSourceBuilder.query(queryBuilder);
     Search search = new Search.Builder(searchSourceBuilder.toString())
             // multiple index or types can be added.
