@@ -313,13 +313,13 @@ public class StoryService {
 				.multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
 				.fuzziness(10));
 		searchSourceBuilder.query(queryBuilder);
+		if (!StringUtils.isEmpty(orderBy)) {
+			searchSourceBuilder.sort(orderBy, SortOrder.valueOf(order.toUpperCase()));
+		}
 		Search search = new Search.Builder(searchSourceBuilder.toString())
 				.addIndex(INDEX)
 				.addType(TYPE)
 				.build();
-		if (!StringUtils.isEmpty(orderBy)) {
-			searchSourceBuilder.sort(orderBy, SortOrder.valueOf(order.toUpperCase()));
-		}
 		SearchResult result = (SearchResult) execute(search);
 		return new Page<Story>( getStoryFromJsonObject(result.getJsonObject()), result.getTotal(),currentPage, pageSize);
 	}
