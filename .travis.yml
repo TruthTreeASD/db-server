@@ -40,6 +40,6 @@ deploy:
   provider: script
   script:
     docker push $IMAGE_REPO_URL:latest;
-    ecs-deploy -c $CLUSTER_NAME -n $SERVICE_NAME -i $IMAGE_REPO_URL:latest -r us-west-2 --timeout 1200;
+    travis_wait 20 ecs-deploy -c $CLUSTER_NAME -n $SERVICE_NAME -i $IMAGE_REPO_URL:latest -r us-west-2 --timeout 1200;
   on:
     branch: master
