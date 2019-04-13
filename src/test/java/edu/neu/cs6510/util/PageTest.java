@@ -47,24 +47,24 @@ public class PageTest {
 
   @Test
   public void getTotal() {
-    Assert.assertEquals(new Integer(1), page.getTotal());
+    Assert.assertEquals(new Long(1), page.getTotal());
   }
 
   @Test
   public void setTotal() {
     page.setTotal(2l);
-    Assert.assertEquals(new Integer(2), page.getTotal());
+    Assert.assertEquals(new Long(2), page.getTotal());
   }
 
   @Test
   public void getTotalPage() {
-    Assert.assertEquals(new Integer(1), page.getTotalPage());
+    Assert.assertEquals(new Long(1), page.getTotalPage());
   }
 
   @Test
   public void setTotalPage() {
     page.setTotalPage(2l);
-    Assert.assertEquals(new Integer(2), page.getTotalPage());
+    Assert.assertEquals(new Long(2), page.getTotalPage());
   }
 
   @Test
