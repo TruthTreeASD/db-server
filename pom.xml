@@ -119,6 +119,10 @@
 
     </dependencies>
 
+    <properties>
+        <dependency.locations.enabled>false</dependency.locations.enabled>
+    </properties>
+
     <build>
         <defaultGoal>
             clean test site
