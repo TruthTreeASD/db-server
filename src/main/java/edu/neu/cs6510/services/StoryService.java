@@ -1,55 +1,48 @@
 package edu.neu.cs6510.services;
 
-import java.awt.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import edu.neu.cs6510.dto.NewStoryDTO;
 import edu.neu.cs6510.enums.EMessageType;
 import edu.neu.cs6510.enums.EStoryStatus;
 import edu.neu.cs6510.enums.VoteType;
 import edu.neu.cs6510.exception.FailedToDeleteStoryException;
 import edu.neu.cs6510.exception.NoSuchStoryException;
+import edu.neu.cs6510.model.Story;
+import edu.neu.cs6510.util.GsonUtil;
 import edu.neu.cs6510.util.Page;
 import edu.neu.cs6510.util.http.ResponseMessage;
 import edu.neu.cs6510.util.http.Result;
 import edu.neu.cs6510.util.sqs.MessageWapper;
 import edu.neu.cs6510.util.sqs.QueueUtil;
-import edu.neu.cs6510.util.sqs.SQSUtil;
+import io.searchbox.action.Action;
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestResult;
 import io.searchbox.core.*;
+import io.searchbox.core.search.sort.Sort;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import edu.neu.cs6510.model.Story;
-import edu.neu.cs6510.util.GsonUtil;
-import io.searchbox.action.Action;
-import io.searchbox.client.JestClient;
-import io.searchbox.client.JestResult;
-import io.searchbox.core.search.sort.Sort;
-import sun.swing.StringUIClientPropertyKey;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
 public class StoryService {
 
 	@Autowired
-	JestClient client;
+	private JestClient client;
 
-	private static String INDEX = "stories";
-	private static String TYPE = "story";
+	private static final String INDEX = "stories";
+	private static final String TYPE = "story";
 
 	public List<Story> createStory(NewStoryDTO story) {
 		Long timeStamp = System.currentTimeMillis();
@@ -271,27 +264,14 @@ public class StoryService {
 //		return getStoryFromJsonObject(result.getJsonObject());
 //	}
 
+    /**
+     * query by keywrod
+     * @param keyword
+     * @param feilds
+     * @return
+     */
   public List<Story> searchByKeyword(String keyword, List<String> feilds) {
-    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-   
-    BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-    queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
-    if (feilds == null || feilds.isEmpty()) {
-        // feilds = Arrays.asList("rawContent", "title", "author", "tags");
-       	queryBuilder.must(QueryBuilders.multiMatchQuery(keyword)
-           	    .field("title" ,3.0f)
-           	    .field("tags",3.0f)
-           	    .field("rawContent",2.0f)
-           	    .field("author")
-           	    .fuzziness(Fuzziness.AUTO));
-       } else {
-    	   queryBuilder.must(QueryBuilders
-    				.multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
-    				.fuzziness(Fuzziness.AUTO));
-    	    
-       }
-  
-    searchSourceBuilder.query(queryBuilder);
+    SearchSourceBuilder searchSourceBuilder = fuzzyQueryBuilder(keyword, feilds);
     Search search = new Search.Builder(searchSourceBuilder.toString())
             // multiple index or types can be added.
             .addIndex(INDEX)
@@ -300,19 +280,15 @@ public class StoryService {
     SearchResult result = (SearchResult) execute(search);
     return getStoryFromJsonObject(result.getJsonObject());
   }
-
+    /**
+     * query by keywrod with pagination
+     * @param keyword
+     * @param feilds
+     * @return
+     */
 	public Page<Story> searchByKeywordPage(String keyword, List<String> feilds, Integer pageSize,Integer currentPage, String orderBy, String order) {
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        SearchSourceBuilder searchSourceBuilder = fuzzyQueryBuilder(keyword, feilds);
 
-		if (feilds == null || feilds.isEmpty()) {
-			feilds = Arrays.asList("rawContent", "title", "author", "tags");
-		}
-		BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-		queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
-		queryBuilder.must(QueryBuilders
-				.multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
-				.fuzziness(10));
-		searchSourceBuilder.query(queryBuilder);
 		if (!StringUtils.isEmpty(orderBy)) {
 			searchSourceBuilder.sort(orderBy, SortOrder.valueOf(order.toUpperCase()));
 		}
@@ -323,6 +299,46 @@ public class StoryService {
 		SearchResult result = (SearchResult) execute(search);
 		return new Page<Story>( getStoryFromJsonObject(result.getJsonObject()), result.getTotal(),currentPage, pageSize);
 	}
+
+    /**
+     * build fuzzy query search source
+     * @param keyword
+     * @param feilds
+     * @return
+     */
+    SearchSourceBuilder fuzzyQueryBuilder(String keyword, List<String> feilds) {
+        keyword = keyword.toLowerCase();
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        queryBuilder.filter(QueryBuilders.matchQuery("isApproved", EStoryStatus.APPROVED));
+        if (feilds == null || feilds.isEmpty()) {
+            // feilds = Arrays.asList("rawContent", "title", "author", "tags");
+            queryBuilder.should(QueryBuilders.multiMatchQuery(keyword)
+                    .field("title" ,3.0f)
+                    .field("tags",3.0f)
+                    .field("rawContent",2.0f)
+                    .field("author")
+                    .fuzziness(Fuzziness.AUTO));
+            for (String word : keyword.split(" ")){
+                queryBuilder.should(QueryBuilders.prefixQuery("title", word));
+                queryBuilder.should(QueryBuilders.prefixQuery("tags", word));
+                queryBuilder.should(QueryBuilders.prefixQuery("rawContent", word));
+                queryBuilder.should(QueryBuilders.prefixQuery("author", word));
+            }
+        } else {
+            queryBuilder.should(QueryBuilders
+                    .multiMatchQuery(keyword, feilds.toArray(new String[feilds.size()]))
+                    .fuzziness(Fuzziness.AUTO));
+            for (String word : keyword.split(" ")){
+                for (String filed : feilds) {
+                    queryBuilder.should(QueryBuilders.prefixQuery(filed, word));
+                }
+            }
+        }
+        queryBuilder.minimumShouldMatch(1);
+        searchSourceBuilder.query(queryBuilder);
+        return searchSourceBuilder;
+    }
 
 	private JestResult execute(Action action) {
 		JestResult result = null;
