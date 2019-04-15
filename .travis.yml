@@ -30,16 +30,10 @@ before_deploy:
   # login to ECR
   - eval $(aws ecr get-login --no-include-email --region us-west-2)
 
-  # download travis_wait script
-  - curl -O https://raw.githubusercontent.com/m3t/travis_wait/master/travis_wait
-  - chmod 755 travis_wait
-  - ls
-
 deploy:
   provider: script
   script:
     docker push $IMAGE_REPO_URL:latest;
-    ls;
     bash ./bin/travis_wait.sh "./bin/ecs-deploy.sh -c $CLUSTER_NAME -n $SERVICE_NAME -i $IMAGE_REPO_URL:latest -r us-west-2 --timeout 1200";
   on:
     branch: master
