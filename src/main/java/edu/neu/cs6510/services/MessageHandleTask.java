@@ -1,13 +1,10 @@
 package edu.neu.cs6510.services;
 
-import com.amazonaws.services.sqs.model.Message;
 import edu.neu.cs6510.config.SchedulerConfig;
 import edu.neu.cs6510.enums.EMessageType;
-import edu.neu.cs6510.enums.VoteType;
 import edu.neu.cs6510.util.GsonUtil;
 import edu.neu.cs6510.util.sqs.MessageWapper;
 import edu.neu.cs6510.util.sqs.QueueUtil;
-import edu.neu.cs6510.util.sqs.SQSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,6 @@ public class MessageHandleTask {
      */
     @Scheduled(cron = "*/15 * * * * ?")
     public void finishInspectionJob(){
-        logger.info("<------------- Fetching messages from SQS ------------->");
 //        List<Message> messages = SQSUtil.receiveMessages();
 //        for (Message message : messages) {
 //            messageHandler(GsonUtil.fromJson(message.getBody(), MessageWapper.class), storyService);
@@ -47,7 +43,6 @@ public class MessageHandleTask {
             entry.getKey().setValue(entry.getValue());
             messageHandler(entry.getKey(), storyService);
         }
-        logger.info("<------------- Processed "+ messages.size() +" messages, updated "+ cnt.size() +" stories------------->");
     }
 
     private static void messageHandler(MessageWapper wapper, StoryService storyService) {
